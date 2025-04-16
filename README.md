@@ -1,2 +1,2 @@
-# LapineWebEngine
-A simple infrastructure for PWAs with Cloudflare as backend.
+# Lapine Web Engine
+A PWA framework using web components and Cloudflare.
