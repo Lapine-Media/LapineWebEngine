@@ -11,20 +11,32 @@ const port = 3000;
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const assets = {
+	'/': 'markup/index.html',
+	'/favicon.ico': 'graphics/bunny.svg'
+}
+
+const types = {
+	'.html': 'text/html',
+	'.js': 'application/javascript',
+	'.css': 'text/css',
+	'.svg': 'image/svg+xml'
+}
+
 const backend = {
 	fetch: function(request,response) {
 
-		console.log(request.url);
-
-		const filePath = path.join(__dirname, 'markup/index.html');
+		const urlPath = assets[request.url] || request.url;
+		const filePath = path.join(__dirname,urlPath);
+		const parsed = path.parse(filePath);
 		const stream = fs.createReadStream(filePath);
-	    const stat = fs.statSync(filePath);
+		const stat = fs.statSync(filePath);
 		const options = {
-			'Content-Type': 'text/html',
-	        'Content-Length': stat.size
+			'Content-Type': types[parsed.ext],
+			'Content-Length': stat.size
 		}
 
-	    response.writeHead(200,options);
+		response.writeHead(200,options);
 		stream.pipe(response);
 
 	},
