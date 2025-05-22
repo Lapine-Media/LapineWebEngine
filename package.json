@@ -22,7 +22,7 @@
 	"start": "node src/index.js"
   },
   "dependencies": {
-    "open": "^10.1.1",
+    "open": "^10.1.2",
     "ws": "^8.18.1"
   }
 }
