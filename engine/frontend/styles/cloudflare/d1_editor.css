@@ -1,0 +1,296 @@
+
+article.editor {
+	overflow: hidden;
+	border: 0;
+    background: none;
+
+	.border {
+		background: repeating-linear-gradient( -45deg, transparent, transparent 8px, var(--color-borders) 8px, var(--color-borders) 16px );
+	    background-size: 45px;
+		height: 100%;
+	    border-radius: 8px;
+	    padding: 4px;
+		overflow: hidden;
+		position: relative;
+
+		& button.exit {
+			position: absolute;
+	        top: 0;
+	        right: 0;
+	        z-index: 10;
+	        border-radius: 4px 0 4px 16px;
+		}
+
+		& .d1_editor {
+			display: grid;
+			grid-template-columns: 320px 1fr 320px;
+			grid-template-rows: 1fr 1fr;
+			gap: 8px;
+			padding: 8px;
+			background-color: var(--color-borders-dark);
+			border: 1px solid var(--color-borders);
+			border-radius: 4px;
+			height: 100%;
+			overflow: hidden;
+
+			section {
+				display: flex;
+				flex-direction: column;
+				gap: 8px;
+				position: relative;
+				overflow: hidden;
+			}
+			.content {
+				background-color: var(--color-background-2);
+				border: 1px solid var(--color-borders);
+				border-radius: 4px;
+				padding: 8px;
+				overflow: auto;
+				flex: 1;
+
+				&.loading {
+					background: repeating-linear-gradient( -45deg, transparent, transparent 8px, var(--color-borders) 8px, var(--color-borders) 16px );
+				    background-size: 45px;
+
+					&:before {
+						content: 'Loading...';
+						display: flex;
+						width: 100%;
+						height: 100%;
+						justify-content: center;
+						align-items: center;
+					}
+				}
+			}
+			.corner {
+				position: absolute;
+				right: 0;
+				bottom: 0;
+				background-color: var(--color-borders-dark);
+				padding: 8px 0 0 8px;
+				border-width: 1px 0 0 1px;
+				border-style: solid;
+				border-radius: 24px 0 0 0;
+				border-color: var(--color-borders);
+				display: flex;
+				gap: 4px;
+
+				& button {
+					border-radius: 16px 4px 16px 4px;
+				}
+			}
+
+			& .overview {
+				grid-area: 1 / 1 / 3 / 2;
+
+				& section {
+					padding: 8px 16px 48px 16px;
+				}
+				dl {
+					display: grid;
+					gap: 4px;
+					margin: 0;
+					padding: 0 0 16px 0;
+					border-bottom: 1px solid var(--color-borders);
+				}
+				dt {
+					color: var(--color-orange);
+					font-weight: 700;
+					text-transform: capitalize;
+					border-top: 1px solid var(--color-borders);
+					padding-top: 16px;
+					margin-top: 12px;
+				}
+				dd {
+					cursor: pointer;
+					border-radius: 4px;
+					padding: 2px 4px;
+					margin: 0 0 0 32px;
+					transition: background-color .3s;
+				}
+				dd:hover {
+					background-color: var(--color-borders);
+				}
+				dd.selected,
+				dd.selected:hover {
+					background-color: var(--color-highligh);
+				}
+				dd::before {
+					content: '\25CF\2002';
+					color: var(--color-orange);
+					transition: color .3s;
+				}
+				dd:hover::before,
+				dd.selected::before {
+					color: var(--color-white);
+				}
+			}
+			& .center {
+				grid-area: 1 / 2 / 3 / 3;
+				display: grid;
+				grid-template-columns: 1fr;
+				grid-template-rows: 1fr 1fr;
+				gap: 8px;
+				transition: grid-template-rows .3s;
+
+				& .query {
+					padding: 0;
+
+					& tab-textarea {
+						flex: 1;
+					}
+				}
+				& .results {
+
+					& .tables {
+						background-color: var(--color-background-2);
+						border: 1px solid var(--color-borders);
+						border-radius: 4px;
+						padding: 8px;
+						flex: 1;
+						overflow: auto;
+						font-family: 'Roboto Mono';
+						font-size: 9px;
+						color: var(--color-pink);
+						white-space: break-spaces;
+						display: flex;
+						flex-direction: column;
+						align-items: start;
+						gap: 8px;
+
+						& ol {
+							margin: 0;
+							padding: 0 0 0 28px;
+							display: grid;
+							gap: 8px;
+						}
+
+						& table {
+							border: 1px solid var(--color-borders);
+							border-radius: 2px;
+							border-spacing: 0px;
+		                    border-collapse: collapse;
+
+							& thead {
+								background-color: var(--color-borders-darker);
+
+								& th {
+									font-weight: 700;
+									padding: 2px;
+									border: 1px solid var(--color-borders);
+								}
+							}
+
+							& tbody {
+
+								& tr {
+									cursor: pointer;
+
+									& td {
+										padding: 0px 4px;
+										border: 1px solid var(--color-borders);
+									}
+									&:hover {
+										color: var(--color-white);
+		                                background: var(--color-borders);
+									}
+									&.selected,
+									&.selected:hover {
+										color: var(--color-white);
+										background-color: var(--color-highligh);
+									}
+
+								}
+							}
+						}
+
+					}
+				}
+
+				&[data-size="same"] {
+					grid-template-rows: 1fr 1fr;
+				}
+				&[data-size="query"] {
+					grid-template-rows: 4fr .5fr;
+
+					& .results .tables {
+						overflow: hidden;
+						white-space: nowrap;
+						pointer-events: none;
+						opacity: 0.5;
+					}
+				}
+				&[data-size="results"] {
+					grid-template-rows: .5fr 4fr;
+
+					& .query tab-textarea::part(textarea) {
+						overflow: hidden;
+						white-space: nowrap;
+						pointer-events: none;
+						opacity: 0.5;
+					}
+				}
+			}
+			& .options {
+				grid-area: 1 / 3 / 2 / 4;
+
+				& form {
+					& fieldset {
+						& legend {
+							text-transform: capitalize;
+						}
+						& output {
+							display: block;
+							color: var(--color-orange);
+							font-weight: 400;
+							font-size: 12px;
+							justify-content: center;
+							border: 1px solid var(--color-borders);
+							padding: 4px;
+							border-radius: 4px;
+							background-color: var(--color-borders-darker);
+							font-family: 'Roboto Mono';
+							margin-bottom: 6px;
+							text-align: center;
+						}
+						& button {
+							display: none;
+						}
+						& footer {
+							display: grid;
+							gap: 8px;
+							justify-content: center;
+							width: 100%;
+						}
+					}
+					&[data-selected="database"] button.database,
+					&[data-selected="table"] button.table,
+					&[data-selected="row"] button.row,
+					&[data-selected="trigger"] button.trigger,
+					&[data-selected="migration"] button.migration {
+						display: block;
+					}
+					&[data-selected="row"] output {
+						white-space: break-spaces;
+						text-align: left;
+						tab-size: 2;
+						font-size: 9px;
+					}
+					&[data-selected="none"] {
+						display: none;
+					}
+				}
+			}
+			& .migrations {
+				grid-area: 2 / 3 / 3 / 4;
+
+				& .content {
+					display: flex;
+					flex-direction: column;
+					gap: 4px;
+					padding-bottom: 64px;
+				}
+			}
+		}
+	}
+}

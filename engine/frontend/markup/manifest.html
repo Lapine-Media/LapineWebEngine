@@ -1,0 +1,141 @@
+
+<div id="manifest_page" class="page" data-state="information">
+	<div class="header">
+		<a href="manifest/menu/page?uni=information">Information</a>
+		<a href="manifest/menu/page?uni=appearance">Appearance</a>
+		<a href="manifest/menu/page?uni=urls">URLs</a>
+		<a href="manifest/menu/page?uni=shortcuts">Shortcuts</a>
+		<a href="manifest/menu/page?uni=icons">Icons</a>
+		<a href="manifest/menu/page?uni=screenshots">Screenshots</a>
+	</div>
+	<div class="content">
+		<form action="manifest">
+			<fieldset class="information">
+				<legend>Information</legend>
+
+				<label>
+					<span>id</span>
+					<input type="text" name="id">
+				</label>
+				<p>Used to specify a unique identifier for your web application.</p>
+
+				<label>
+					<span>name</span>
+					<input type="text" name="name">
+				</label>
+				<p>The full name of your web application.</p>
+
+				<label>
+					<span>short_name</span>
+					<input type="text" name="short_name">
+				</label>
+				<p>May be used when the full name is too long for the available space.</p>
+
+				<label>
+					<span>description</span>
+					<input type="text" name="description">
+				</label>
+				<p>This text helps users understand your app's purpose when viewing it in an app store.</p>
+
+				<label>
+					<span>categories</span>
+					<input type="text" name="categories">
+				</label>
+				<p>These categories help users discover your app in app stores.</p>
+
+			</fieldset>
+			<fieldset class="appearance">
+				<legend>Appearance</legend>
+
+				<label>
+					<span>background_color</span>
+					<input type="text" name="background_color">
+				</label>
+				<p>This color appears in the application window before your application's stylesheets have loaded.</p>
+
+				<label>
+					<span>theme_color</span>
+					<input type="text" name="theme_color">
+				</label>
+				<p>This color may be applied to various browser UI elements, such as the toolbar, address bar, and status bar.</p>
+
+				<label>
+					<span>display</span>
+					<select name="display">
+						<option value="fullscreen">fullscreen</option>
+						<option value="standalone">standalone</option>
+						<option value="minimal-ui">minimal-ui</option>
+						<option value="browser">browser</option>
+					</select>
+				</label>
+
+				<p>Determines how much of the browser UI is shown to the user when the app is launched within the context of an operating system.</p>
+
+				<label>
+					<span>orientation</span>
+					<select name="orientation">
+						<option value="any">any</option>
+						<option value="natural">natural</option>
+						<option value="portrait">portrait</option>
+						<option value="portrait-primary">portrait-primary</option>
+						<option value="portrait-secondary">portrait-secondary</option>
+						<option value="landscape">landscape</option>
+						<option value="landscape-primary">landscape-primary</option>
+						<option value="landscape-secondary">landscape-secondary</option>
+					</select>
+				</label>
+				<p>How the app should be displayed when launched and during use, in relation to the device's screen orientation.</p>
+
+			</fieldset>
+			<fieldset class="urls">
+				<legend>URLs</legend>
+
+				<label>
+					<span>start_url</span>
+					<input type="text" name="start_url">
+				</label>
+				<p>The URL that should be opened when a user launches your web application.</p>
+
+				<label>
+					<span>scope</span>
+					<input type="text" name="scope">
+				</label>
+				<p>The top-level URL path that contains your web application's pages and subdirectories.</p>
+
+			</fieldset>
+			<fieldset class="shortcuts">
+				<legend>Shortcuts</legend>
+
+				<label>
+					<span>shortcuts</span>
+					<input type="text" name="shortcuts">
+				</label>
+				<p>Links to key tasks or pages within your web application, typically displayed when a user interacts with the web app's icon.</p>
+
+			</fieldset>
+			<fieldset class="icons">
+				<legend>Icons</legend>
+
+				<label>
+					<span>icons</span>
+					<input type="text" name="icons">
+				</label>
+				<p>Image files that define the icons to represent your web application.</p>
+
+			</fieldset>
+			<fieldset class="screenshots">
+				<legend>Screenshots</legend>
+
+				<label>
+					<span>screenshots</span>
+					<input type="text" name="screenshots">
+				</label>
+				<p>These images help users preview your web app's interface and features in app stores.</p>
+
+			</fieldset>
+			<footer>
+				<button type="submit" name="settings" value="save">Save</button>
+			</footer>
+		</form>
+	</div>
+</div>

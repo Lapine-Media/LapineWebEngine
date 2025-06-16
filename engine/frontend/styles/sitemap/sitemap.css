@@ -1,0 +1,154 @@
+
+article.sitemap {
+	overflow: hidden;
+
+	& > .page {
+		display: grid;
+		grid-template-columns: 320px 1fr;
+		overflow: hidden;
+		height: 100%;
+
+		& .left {
+			display: grid;
+            grid-template-rows: 40px 1fr;
+            overflow: hidden;
+
+			& .menu {
+				flex-direction: row;
+				justify-content: space-evenly;
+				align-items: center;
+				background-color: var(--color-borders-dark);
+				border-bottom: 1px solid var(--color-borders);
+			}
+			& .forms {
+				overflow: auto;
+			    padding: 8px 8px 16px 8px;
+			}
+		}
+		& .right {
+			border-left: 1px solid var(--color-borders);
+			overflow: auto;
+		    padding: 8px 16px 16px 16px;
+		}
+	}
+}
+
+/* ///////////////////////////////////////////////////////////////////////// */
+
+.dropzone {
+	background: repeating-linear-gradient( -45deg, transparent, transparent 8px, var(--color-borders) 8px, var(--color-borders) 16px );
+    background-size: 45px;
+	border: 1px solid var(--color-borders);
+    border-radius: 2px;
+	height: 128px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	user-select: none;
+	margin-bottom: 0;
+
+	& .text {
+		display: inline-block;
+	    padding: 2px 3px;
+	    color: var(--color-borders-dark);
+	    background-color: var(--color-borders);
+		border: 1px solid var(--color-borders-dark);
+	    border-radius: 2px;
+	    text-shadow: none;
+	    text-transform: uppercase;
+	    font-size: 12px;
+	    font-weight: bold;
+		pointer-events: none;
+	}
+}
+.dropzone[data-over="true"] {
+	border-color: var(--color-accept);
+	background: var(--gradient-accept);
+	background-size: 45px;
+	animation: var(--animation-accept);
+}
+.dropzone[data-over="true"] .text {
+	background-color: var(--color-accept);
+}
+.dropzone[data-over="false"] {
+	border-color: var(--color-reject);
+	background: var(--gradient-reject);
+	background-size: 45px;
+	animation: var(--animation-reject);
+}
+.dropzone[data-over="false"] .text {
+	background-color: var(--color-reject);
+}
+
+/* ///////////////////////////////////////////////////////////////////////// */
+
+.depot .undoable {
+		display: none;
+		color: var(--color-orange);
+		margin-top: 8px;
+
+		& div {
+			flex: 1;
+		}
+		& span {
+			color: var(--color-white);
+			display: block;
+		}
+	}
+}
+.depot[data-undoable="true"] .undoable {
+	display: flex;
+}
+
+/* ///////////////////////////////////////////////////////////////////////// */
+
+.csp_file {
+	display: flex;
+	width: 100%;
+
+	& input {
+		border-radius: 4px 0 0 4px;
+	}
+	& button {
+		border-radius: 0 16px 16px 0;
+		padding: 0 16px 0 12px;
+	}
+}
+
+.condition textarea {
+	background-image: linear-gradient(var(--color-borders) 1px,transparent 1px);
+    background-size: 100% 20px;
+    background-attachment: local;
+    background-position-y: -1px;
+    line-height: 20px;
+    padding-top: 0;
+}
+
+/* ///////////////////////////////////////////////////////////////////////// */
+
+.forms form {
+	display: none;
+}
+
+.forms[data-state="none"] form.depot,
+.forms[data-state="none"] form.files,
+.forms[data-state="root"] form.site,
+.forms[data-state="frame"] form.frame,
+.forms[data-state="page"] form.page,
+.forms[data-state="title"] form.title,
+.forms[data-state="redirect"] form.redirect,
+.forms[data-state="condition"] form.condition,
+.forms[data-state="element"] form.element {
+	display: flex;
+}
+
+.menu[data-edited="true"] .save_map {
+	background: var(--gradient-edited);
+	background-size: 45px;
+	animation: var(--animation-accept);
+	border-radius: 16px;
+	padding: 2px;
+}
+.menu[data-edited="true"] .save_map button {
+	padding: 6px 14px;
+}

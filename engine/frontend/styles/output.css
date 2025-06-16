@@ -1,0 +1,118 @@
+
+aside {
+	position: relative;
+	display: grid;
+	grid-template-rows: auto 32px 1fr;
+	row-gap: 8px;
+	padding: 16px 16px 16px 0;
+
+	& .log {
+		font-family: 'Roboto Mono', monospace;
+		font-size: 9px;
+		background-color: var(--color-log-background);
+		color: var(--color-idle-1);
+		border: 1px solid var(--color-idle-2);
+		border-radius: 4px;
+		outline: 0;
+		overflow-wrap: anywhere;
+		overflow: auto;
+		white-space: break-spaces;
+
+		& ::selection {
+			background-color: var(--color-idle-1);
+			color: var(--color-idle-2);
+		}
+
+		& > div {
+			margin-bottom: 2px;
+			display: grid;
+			gap: 2px;
+		}
+
+		& hr {
+			border-width: 1px 0 0 0;
+			border-style: dashed;
+			border-color: var(--color-idle-2);
+			width: 100%;
+		}
+	}
+
+	& .live {
+		flex: 0;
+		flex-basis: auto;
+		padding: 8px;
+		height: 30px;
+	    display: flex;
+	    align-items: center;
+	}
+
+	& .terminal {
+		flex: 1;
+		padding: 8px 8px 64px 8px;
+		border-radius: 4px 0 16px 4px;
+
+		&::-webkit-scrollbar-track {
+			border-radius: 0px;
+			background-color: var(--color-log-background);
+			border-left: 1px solid var(--color-idle-2);
+
+			&:hover {
+				background-color: var(--color-log-background);
+			}
+			&:active {
+				background-color: var(--color-log-background);
+			}
+		}
+		&::-webkit-scrollbar-thumb {
+			border-radius: 1px;
+			background-color: var(--color-idle-2);
+
+			&:hover {
+				background-color: var(--color-accept);
+			}
+			&:active {
+				background-color: var(--color-accept);
+			}
+		}
+	}
+
+	& .footer {
+		text-align: right;
+	    position: absolute;
+		bottom: 16px;
+		right: 16px;
+	    padding: 8px 0 0 8px;
+	    background-color: var(--color-background-3);
+	    border-radius: 24px 0 4px 0;
+	    border-style: solid;
+	    border-width: 1px 0 0 1px;
+	    border-color: var(--color-idle-2);
+
+		& button {
+			border-radius: 16px 4px;
+		}
+	}
+}
+
+/* ///////////////////////////////////////////////////////////////////////// */
+
+aside .live[data-type="accept"],
+aside .log div.accept {
+	font-weight: bold;
+	color: var(--color-accept);
+}
+aside .live[data-type="reject"],
+aside .log div.reject {
+	font-weight: bold;
+	color: var(--color-reject);
+}
+aside .live[data-type="inform"],
+aside .log div.inform {
+	font-weight: bold;
+	color: var(--color-inform);
+}
+aside .live[data-type="danger"],
+aside .log div.danger {
+	font-weight: bold;
+	color: var(--color-danger);
+}

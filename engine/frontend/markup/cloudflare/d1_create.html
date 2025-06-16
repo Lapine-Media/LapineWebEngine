@@ -1,0 +1,28 @@
+
+<form action="d1">
+	<fieldset>
+		<legend>Create D1 database</legend>
+
+		<label>
+			<span>Database name</span>
+			<input type="text" name="name">
+		</label>
+		<p>Only use letters, numbers, and hyphens.</p>
+
+		<label>
+			<span>Location</span>
+			<select name="primary_location_hint">
+				<option value="weur">Western Europe</option>
+				<option value="eeur">Eastern Europe</option>
+				<option value="apac">Asia Pacific</option>
+				<option value="oc">Oceania</option>
+				<option value="wnam">Western North America</option>
+				<option value="enam">Eastern North America</option>
+			</select>
+		</label>
+
+	</fieldset>
+	<footer>
+		<button type="submit" name="database" value="create confirm">Create</button>
+	</footer>
+</form>

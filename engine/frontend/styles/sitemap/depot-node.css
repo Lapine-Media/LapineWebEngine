@@ -1,0 +1,32 @@
+
+@import 'nodes.css';
+
+:host {
+	cursor: grab;
+    user-select: none;
+    border-top: 1px solid var(--color-borders);
+	padding: 8px 0;
+}
+.container[data-dragged="true"] {
+	opacity: 0.25;
+}
+.container * {
+	pointer-events: none;
+}
+.container {
+	flex-direction: row;
+}
+.text {
+	margin-left: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.text .title {
+	font-size: 18px;
+	font-weight: bold;
+	color: var(--color-orange);
+}
+.text .description {
+	font-size: 12px;
+}

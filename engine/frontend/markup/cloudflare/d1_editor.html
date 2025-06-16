@@ -1,0 +1,78 @@
+
+<div class="border">
+	<button class="exit" form="d1_form" type="submit" name="editor" value="stop">Exit editor</button>
+	<div id="d1_editor" class="d1_editor">
+		<section class="overview">
+			<h3>Database</h3>
+			<div id="database" class="content loading"></div>
+			<div class="corner">
+				<button form="d1_form" type="submit" name="ui" value="reload">Reload</button>
+			</div>
+		</section>
+		<div id="center" class="center" data-size="same">
+			<section class="query">
+				<h3>Query</h3>
+				<tab-textarea form="d1_form" id="query" name="query"></tab-textarea>
+				<div class="corner">
+					<button form="d1_form" type="submit" name="ui" value="execute">Execute</button>
+				</div>
+			</section>
+			<section class="results">
+				<h3>Results</h3>
+				<div id="results" class="content tables"></div>
+				<div class="corner">
+					<button form="d1_form" type="submit" name="ui" value="size">Size</button>
+				</div>
+			</section>
+		</div>
+		<section class="options">
+			<h3>Options</h3>
+			<div class="content">
+				<form id="d1_form" action="d1" data-selected="none">
+					<fieldset>
+						<legend id="selected">Selected</legend>
+						<div class="selected">
+							<output name="name">Name</output>
+							<input type="hidden" name="type" value="">
+							<input type="file" name="import" accept="application/sql" hidden>
+						</div>
+						<footer>
+							<button class="database" type="submit" name="help" value="create_table">Create table</button>
+							<button class="database" type="submit" name="help" value="create_view">Create view</button>
+							<button class="database" type="submit" name="io" value="export options">Export to file</button>
+							<button class="database" type="submit" name="io" value="import">Import from file</button>
+
+							<button class="table" type="submit" name="help" value="select_from">Select from</button>
+							<button class="table" type="submit" name="help" value="view_columns">View columns</button>
+							<button class="table" type="submit" name="help" value="alter_table">Alter table</button>
+							<button class="table" type="submit" name="help" value="delete_from">Delete from</button>
+							<button class="table" type="submit" name="help" value="drop_table">Drop table</button>
+
+							<button class="table row" type="submit" name="help" value="insert_into">Insert into</button>
+							<button class="row" type="submit" name="help" value="edit_row">Edit row</button>
+							<button class="row" type="submit" name="help" value="remove_row">Remove row</button>
+
+							<button class="table index" type="submit" name="help" value="create_index">Create index</button>
+							<button class="index" type="submit" name="help" value="edit_index">Edit index</button>
+							<button class="index" type="submit" name="help" value="remove_index">Remove index</button>
+
+							<button class="table trigger" type="submit" name="help" value="create_trigger">Create trigger</button>
+							<button class="trigger" type="submit" name="help" value="edit_trigger">Edit trigger</button>
+							<button class="trigger" type="submit" name="help" value="remove_trigger">Remove trigger</button>
+
+							<button class="migration" type="submit" name="migration" value="load">Load SQL</button>
+							<button class="migration" type="submit" name="migration" value="remove options">Remove</button>
+						</footer>
+					</fieldset>
+				</form>
+			</div>
+		</section>
+		<section class="migrations">
+			<h3>Migrations</h3>
+			<div id="migrations" class="content list loading"></div>
+			<div class="corner">
+				<button form="d1_form" type="submit" name="migration" value="apply options">Apply</button>
+			</div>
+		</section>
+	</div>
+</div>

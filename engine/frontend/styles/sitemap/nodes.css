@@ -1,0 +1,106 @@
+
+@import '../common.css';
+
+@keyframes stripes {
+	from {
+		background-position-x: 0px;
+	}
+	to {
+		background-position-x: 45px;
+	}
+}
+
+:host {
+	display: block;
+	color: var(--color-white);
+}
+
+.container {
+	display: flex;
+	flex-direction: column;
+}
+.icon {
+	width: 32px;
+	min-width: 32px;
+    height: 32px;
+	border: 4px solid var(--color-white);
+	cursor: grab;
+}
+.type {
+	font-size: 12px;
+	text-align: center;
+	color: var(--color-orange);
+}
+
+.container[data-type="root"] .icon {
+	border-radius: 20px;
+	background-color: var(--color-white);
+	border-color: var(--color-orange);
+    cursor: pointer;
+}
+.container[data-type="frame"] .icon {
+	border-radius: 2px 20px 20px 2px;
+	background-color: var(--color-white);
+	border-color: var(--color-white);
+}
+.container[data-type="page"] .icon {
+	border-radius: 2px 2px 2px 2px;
+	background-color: var(--color-white);
+}
+.container[data-type="title"] .icon {
+	border-radius: 20px 2px 2px 20px;
+	background-color: var(--color-orange);
+	border-color: var(--color-orange);
+}
+.container[data-type="redirect"] .icon {
+	border-radius: 20px;
+	border-color: var(--color-orange);
+}
+.container[data-type="redirect"] .icon::before {
+	content: '\21A9';
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-weight: 900;
+	font-size: 20px;
+	color: var(--color-orange);
+	padding-top: 3px;
+}
+.container[data-type="element"] .icon {
+	border-radius: 20px;
+	border-color: var(--color-orange);
+}
+.container[data-type="element"] .icon::before {
+	content: '</>';
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-weight: 900;
+	font-size: 14px;
+	color: var(--color-orange);
+	padding-top: 3px;
+}
+
+
+.container[data-conditions="true"] .icon::before {
+	content: '?';
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100%;
+    font-weight: bold;
+    font-size: 24px;
+	color: var(--color-background-2);
+    text-shadow: none;
+}
+.container[data-conditions="true"][data-type="element"] .icon::before {
+	color: var(--color-orange);
+	margin-top: -3px;
+}
+
+.container[data-conditions="true"][data-hidden="true"] .icon::before {
+	color: var(--color-white);
+}
+.container[data-conditions="true"][data-hidden="true"][data-selected="true"] .icon::before {
+	color: var(--color-highligh);
+}

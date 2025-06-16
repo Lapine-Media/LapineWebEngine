@@ -1,0 +1,41 @@
+
+<div class="page">
+	<div class="left">
+		<div class="details">
+			<div class="icon type"></div>
+			<div class="about">
+				<div class="title"><span id="project_title"></span> <span id="project_version"></span></div>
+				<div id="project_description" class="description"></div>
+			</div>
+			<div class="icon git"></div>
+		</div>
+		<form action="project">
+			<fieldset>
+				<legend>Notes</legend>
+				<label>
+					<span>/notes.txt</span>
+					<tab-textarea id="notes"></tab-textarea>
+				</label>
+			</fieldset>
+			<footer>
+				<button type="submit" name="notes" value="save">Save</button>
+			</footer>
+		</form>
+	</div>
+	<div class="right">
+		<form action="project">
+			<fieldset>
+				<legend>Scripts</legend>
+				<div id="project_scripts" class="list"></div>
+			</fieldset>
+			<fieldset>
+				<legend>Actions</legend>
+				<div id="project_actions" class="list"></div>
+			</fieldset>
+			<fieldset>
+				<legend>Kits</legend>
+				<div id="kit_list" class="list"></div>
+			</fieldset>
+		</form>
+	</div>
+</div>

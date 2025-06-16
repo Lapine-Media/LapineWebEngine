@@ -1,0 +1,48 @@
+
+<form action="r2">
+	<fieldset>
+		<legend>Create R2 bucket</legend>
+
+		<label>
+			<span>Bucket name</span>
+			<input type="text" name="name">
+		</label>
+		<p>Only use letters, numbers, and hyphens.</p>
+
+		<label>
+			<span>Location</span>
+			<select name="location">
+				<option value="weur">Western Europe</option>
+				<option value="eeur">Eastern Europe</option>
+				<option value="apac">Asia Pacific</option>
+				<option value="oc">Oceania</option>
+				<option value="wnam">Western North America</option>
+				<option value="enam">Eastern North America</option>
+			</select>
+		</label>
+		<p>Explained in <a href="https://developers.cloudflare.com/r2/reference/data-location/" target="_blank">Cloudflare R2 data location</a></p>
+
+		<label>
+			<span>Jurisdiction</span>
+			<select name="jurisdiction">
+				<option value="default">Default</option>
+				<option value="eu">GDPR (European Union)</option>
+				<option value="fedramp">FedRAMP (United States)</option>
+			</select>
+		</label>
+		<p>Explained in <a href="https://developers.cloudflare.com/r2/reference/data-location/" target="_blank">Cloudflare R2 data location</a></p>
+
+		<label>
+			<span>Storage class</span>
+			<select name="storage-class">
+				<option value="Standard">Standard</option>
+				<option value="InfrequentAccess">Infrequent Access</option>
+			</select>
+		</label>
+		<p>Explained in <a href="https://developers.cloudflare.com/r2/buckets/storage-classes/" target="_blank">Cloudflare R2 storage classes</a></p>
+
+	</fieldset>
+	<footer>
+		<button type="submit" name="buckets" value="create confirm">Create</button>
+	</footer>
+</form>

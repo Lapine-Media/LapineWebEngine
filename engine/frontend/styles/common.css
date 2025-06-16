@@ -1,0 +1,137 @@
+
+@keyframes stripes {
+	from {
+		background-position-x: 0px;
+	}
+	to {
+		background-position-x: 45px;
+	}
+}
+
+:root {
+	--color-accept: #00FF77;
+	--color-reject: #FF0022;
+	--color-danger: #FFCC22;
+	--color-inform: #00CCFF;
+
+	--color-background-1: #220022;
+	--color-background-2: #110022;
+	--color-background-3: #000011;
+	--color-background-4: #00000066;
+
+	--color-links: #0099FF;
+	--color-links-2: #66CCFF;
+	--color-borders: #550066;
+	--color-borders-light: #440055;
+	--color-borders-lighter: #330044;
+	--color-borders-dark: #220033;
+	--color-borders-darker: #220022;
+	--color-highligh: #FF00CC;
+
+	--color-idle-1: #77CC99;
+	--color-idle-2: #004444;
+	--color-log-background: #000f0f;
+
+	--color-notes-background: #000033;
+	--color-notes-foreground: #000066;
+
+	--color-white: #FFFFCC;
+	--color-orange: #FFCC88;
+	--color-blue: #9966FF;
+	--color-pink: #CC66CC;
+	--color-gray: #888877;
+	--color-nav: #0099FF11;
+	--color-nav-2: #0099FF33;
+	--color-nav-solid: #110033;
+
+	--color-red-light: #883355;
+	--color-red-dark: #330022;
+	--color-red-darker: #220011;
+
+	--gradient-background: linear-gradient(130deg, #220022 0%, #110022 50%, #110022 75%, #000011 100%);
+	--gradient-accept: repeating-linear-gradient(-45deg, transparent, transparent 8px, var(--color-accept) 8px, var(--color-accept) 16px);
+	--gradient-reject: repeating-linear-gradient(-45deg, transparent, transparent 8px, var(--color-reject) 8px, var(--color-reject) 16px);
+	--gradient-edited: repeating-linear-gradient(-45deg, transparent, transparent 8px, var(--color-highligh) 8px, var(--color-highligh) 16px);
+	--gradient-stripe: repeating-linear-gradient(-45deg, transparent, transparent 8px, var(--color-borders) 8px, var(--color-borders) 16px);
+
+	--animation-accept: stripes 1s linear 0s infinite normal;
+	--animation-reject: stripes 1s linear 0s infinite reverse;
+
+}
+
+* {
+	box-sizing: border-box;
+	-webkit-font-smoothing: subpixel-antialiased;
+}
+*::-moz-selection {
+	background-color: var(--color-highligh);
+	color: var(--color-white);
+}
+*::selection {
+	background-color: var(--color-highligh);
+	color: var(--color-white);
+}
+
+*::-webkit-scrollbar {
+	height: 8px;
+	width: 8px;
+}
+*::-webkit-scrollbar-track {
+	border-radius: 0px;
+	background-color: var(--color-borders-dark);
+	border-left: 1px solid var(--color-borders);
+}
+*::-webkit-scrollbar-track:hover {
+	background-color: var(--color-borders-dark);
+}
+*::-webkit-scrollbar-track:active {
+	background-color: var(--color-borders-dark);
+}
+*::-webkit-scrollbar-thumb {
+	border-radius: 1px;
+	background-color: var(--color-borders);
+}
+*::-webkit-scrollbar-thumb:hover {
+	background-color: var(--color-highligh);
+}
+*::-webkit-scrollbar-thumb:active {
+	background-color: var(--color-highligh);
+}
+
+a > * {
+	pointer-events: none;
+}
+img {
+	width: 100%;
+	height: auto;
+}
+[hidden] {
+	display: none !important;
+}
+
+/* ///////////////////////////////////////////////////////////////////////// */
+
+lapine-svg {
+	display: block;
+	height: 14px;
+}
+lapine-svg::part(svg) {
+	width: 14px;
+	height: 14px;
+}
+lapine-svg::part(arrow) {
+	fill: var(--color-white);
+}
+
+/* ///////////////////////////////////////////////////////////////////////// */
+
+.list {
+	display: grid;
+	row-gap: 8px;
+}
+.cards {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	border-radius: 4px;
+}

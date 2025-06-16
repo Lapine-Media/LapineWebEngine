@@ -1,0 +1,47 @@
+
+@import '../common.css';
+@import '../forms.css';
+
+:host {
+	display: block;
+}
+
+.container {
+	border: 1px solid var(--color-borders);
+    background-color: var(--color-borders-darker);
+    padding: 8px;
+	border-radius: 4px;
+
+	strong {
+		font-weight: 700;
+		color: var(--color-orange);
+		margin-right: 4px;
+	}
+
+	& .data {
+		display: grid;
+		gap: 4px;
+	}
+	& .info {
+		display: none;
+		gap: 4px;
+		border-top: 1px solid var(--color-borders);
+		padding-top: 8px;
+		margin-top: 8px;
+	}
+	& .buttons {
+		display: flex;
+		align-items: center;
+		gap: 4px;
+		border-top: 1px solid var(--color-borders);
+		padding-top: 8px;
+		margin-top: 8px;
+	}
+	&[data-info="true"] .info {
+		display: grid;
+	}
+	&[data-bound="true"] .buttons #bind,
+	&[data-info="true"] .buttons #info {
+		display: none;
+	}
+}

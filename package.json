@@ -1,7 +1,7 @@
 {
   "name": "lapine",
   "version": "1.0.1",
-  "description": "A PWA framework using web components and Cloudflare",
+  "description": "A PWA framework based on Web Components and Cloudflare",
   "keywords": [
     "PWA",
     "Cloudflare"
@@ -17,12 +17,17 @@
   "license": "MIT",
   "author": "frankichiro",
   "type": "module",
-  "main": "src/index.js",
+  "main": "engine/frontend/index.js",
+  "bin": "engine/backend/index.js",
   "scripts": {
-	"start": "node src/index.js"
+    "start": "node engine/backend/index.js"
   },
   "dependencies": {
+    "autoprefixer": "^10.4.21",
+    "jsonc-simple-parser": "^3.0.0",
     "open": "^10.1.1",
+    "postcss": "^8.5.3",
+    "terser": "^5.39.0",
     "ws": "^8.18.1"
   }
 }

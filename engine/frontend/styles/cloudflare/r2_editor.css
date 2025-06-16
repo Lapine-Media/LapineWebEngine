@@ -1,0 +1,77 @@
+
+.border {
+	background: repeating-linear-gradient( -45deg, transparent, transparent 8px, var(--color-borders) 8px, var(--color-borders) 16px );
+    background-size: 45px;
+	height: 100%;
+    border-radius: 8px;
+    padding: 4px;
+	overflow: hidden;
+	position: relative;
+
+	& button.exit {
+		position: absolute;
+        top: 0;
+        right: 0;
+        z-index: 10;
+        border-radius: 4px 0 4px 16px;
+	}
+
+	& .r2_editor {
+		display: grid;
+		/*grid-template-columns: 320px 1fr 320px;
+		grid-template-rows: 1fr 1fr;*/
+		gap: 8px;
+		padding: 8px;
+		background-color: var(--color-borders-dark);
+		border-radius: 4px 4px 0 4px;
+		height: 100%;
+		overflow: hidden;
+
+		section {
+			display: flex;
+			flex-direction: column;
+			gap: 8px;
+			position: relative;
+			overflow: hidden;
+		}
+		.content {
+			background-color: var(--color-background-2);
+			border: 1px solid var(--color-borders);
+			border-radius: 4px;
+			padding: 8px;
+			overflow: auto;
+			flex: 1;
+
+			&.loading {
+				background: repeating-linear-gradient( -45deg, transparent, transparent 8px, var(--color-borders) 8px, var(--color-borders) 16px );
+			    background-size: 45px;
+
+				&:before {
+					content: 'Loading...';
+					display: flex;
+					width: 100%;
+					height: 100%;
+					justify-content: center;
+					align-items: center;
+				}
+			}
+		}
+		.corner {
+			position: absolute;
+			right: 0;
+			bottom: 0;
+			background-color: var(--color-borders-dark);
+			padding: 8px 0 0 8px;
+			border-width: 1px 0 0 1px;
+			border-style: solid;
+			border-radius: 24px 0 0 0;
+			border-color: var(--color-borders);
+			display: flex;
+			gap: 4px;
+
+			& button {
+				border-radius: 16px 4px 16px 4px;
+			}
+		}
+	}
+}

@@ -1,0 +1,58 @@
+
+@import '../common.css';
+
+:host {
+	display: block;
+
+
+}
+
+.container {
+	padding: 2px 4px;
+	font-family: 'Roboto Mono';
+	font-size: 9px;
+	border-radius: 4px;
+	background-color: var(--color-borders-dark);
+	color: var(--color-pink);
+	cursor: pointer;
+	transition: color .3s, background-color .3s;
+	display: flex;
+	align-items: center;
+	gap: 2px;
+
+	& .name {
+		flex: 1;
+	}
+	& .icon {
+		width: 16px;
+		height: 16px;
+		border: 1px solid var(--color-borders);
+		border-radius: 8px;
+		background-color: var(--color-borders-darker);
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		transition: border-color .3s;
+	}
+	&.local .local,
+	&.preview .preview,
+	&.remote .remote {
+		background-color: var(--color-borders);
+	}
+}
+
+:host(:hover) .container {
+	background-color: var(--color-borders);
+	color: var(--color-white);
+	& .icon {
+		border-color: var(--color-borders-dark);
+	}
+}
+:host(.selected) .container,
+:host(.selected:hover) .container {
+	background-color: var(--color-highligh);
+	color: var(--color-white);
+	& .icon {
+		border-color: var(--color-borders-dark);
+	}
+}

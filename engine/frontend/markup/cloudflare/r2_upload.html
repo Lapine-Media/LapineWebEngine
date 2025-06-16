@@ -1,0 +1,106 @@
+<!--
+
+objectPath  The destination object path in the form of {bucket}/{key}  [string] [required]
+
+	  --file                       The path of the file to upload  [string]
+  -p, --pipe                       Enables the file to be piped in, rather than specified with the --file option  [boolean]
+      --content-type, --ct         A standard MIME type describing the format of the object data  [string]
+      --content-disposition, --cd  Specifies presentational information for the object  [string]
+      --content-encoding, --ce     Specifies what content encodings have been applied to the object and thus what decoding mechanisms must be applied to obtain the media-type referenced by the Content-Type header field  [string]
+      --content-language, --cl     The language the content is in  [string]
+      --cache-control, --cc        Specifies caching behavior along the request/reply chain  [string]
+  -e, --expires                    The date and time at which the object is no longer cacheable  [string]
+      --local                      Interact with local storage  [boolean]
+      --remote                     Interact with remote storage  [boolean]
+      --persist-to                 Directory for local persistence  [string]
+  -J, --jurisdiction               The jurisdiction where the object will be created  [string]
+  -s, --storage-class              The storage class of the object to be created  [string]
+-->
+
+<form id="r2_upload" action="r2" enctype="multipart/form-data">
+	<fieldset>
+		<legend>Create R2 bucket</legend>
+
+		<label>
+			<span>File</span>
+			<input type="file" name="file">
+		</label>
+
+		<label>
+			<span>Name</span>
+			<input type="text" name="name">
+		</label>
+
+		<label>
+			<span>Content type</span>
+			<input type="text" name="contentType">
+		</label>
+
+		<label>
+			<span>Target</span>
+			<select name="target">
+				<option value="local">Local</option>
+				<option value="remote">Remote</option>
+				<option value="both">Both</option>
+			</select>
+		</label>
+
+		<details>
+			<summary>Advanced</summary>
+			<label>
+				<span>Content disposition</span>
+				<input type="text" name="contentDisposition" value="inline">
+			</label>
+
+			<label>
+				<span>Content encoding</span>
+				<input type="text" name="contentEncoding">
+			</label>
+
+			<label>
+				<span>Content language</span>
+				<input type="text" name="contentLanguage">
+			</label>
+
+			<label>
+				<span>Cache control</span>
+				<input type="text" name="cacheControl">
+			</label>
+
+			<label>
+				<span>Cache expiry</span>
+				<input type="text" name="cacheExpiry">
+			</label>
+
+			<label>
+				<span>Jurisdiction</span>
+				<select name="jurisdiction">
+					<option value="default">Default</option>
+					<option value="eu">GDPR (European Union)</option>
+					<option value="fedramp">FedRAMP (United States)</option>
+				</select>
+			</label>
+			<p>Explained in <a href="https://developers.cloudflare.com/r2/reference/data-location/" target="_blank">Cloudflare R2 data location</a></p>
+
+			<label>
+				<span>Storage class</span>
+				<select name="storageClass">
+					<option value="Standard">Standard</option>
+					<option value="InfrequentAccess">Infrequent Access</option>
+				</select>
+			</label>
+			<p>Explained in <a href="https://developers.cloudflare.com/r2/buckets/storage-classes/" target="_blank">Cloudflare R2 storage classes</a></p>
+
+			<label>
+				<span>Custom metadata</span>
+				<textarea name="customMetadata">{}</textarea>
+			</label>
+			<p>Data as JSON object.</p>
+
+		</details>
+
+	</fieldset>
+	<footer>
+		<button type="submit" name="objects" value="upload confirm">Upload</button>
+	</footer>
+</form>

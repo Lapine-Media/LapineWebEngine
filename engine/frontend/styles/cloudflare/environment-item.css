@@ -1,0 +1,28 @@
+
+@import '../common.css';
+@import '../forms.css';
+
+:host {
+	display: block;
+}
+
+.container {
+	border: 1px solid var(--color-borders);
+	border-radius: 4px;
+	padding: 8px;
+	background-color: var(--color-borders-dark);
+
+	& .header {
+		display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 8px;
+
+		& .name {
+			font-family: 'Asap';
+			font-weight: 600;
+			text-transform: capitalize;
+			color: var(--color-orange);
+		}
+	}
+}

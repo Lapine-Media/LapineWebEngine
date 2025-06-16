@@ -1,0 +1,48 @@
+
+<form id="binding" class="view_binding" action="bindings">
+	<fieldset>
+		<legend>Binding</legend>
+		<label>
+			<span>Name</span>
+			<input type="text" name="binding">
+		</label>
+		<label>
+			<span>Environment</span>
+			<input type="text" name="environment">
+		</label>
+		<input type="hidden" name="type" value="">
+	</fieldset>
+	<fieldset name="d1_databases" hidden>
+		<legend>D1 database</legend>
+		<label>
+			<span>Database name</span>
+			<input type="text" name="database_name" readonly>
+		</label>
+		<label>
+			<span>Database id</span>
+			<input type="text" name="database_id" readonly>
+		</label>
+		<label>
+			<span>Preview database id</span>
+			<input type="text" name="preview_database_id">
+		</label>
+		<label>
+			<span>Migrations directory</span>
+			<input type="text" name="migrations_dir" value="migrations">
+		</label>
+	</fieldset>
+	<fieldset name="r2_buckets" hidden>
+		<legend>R2 bucket</legend>
+		<label>
+			<span>Bucket name</span>
+			<input type="text" name="bucket_name" readonly>
+		</label>
+		<label>
+			<span>Preview bucket name</span>
+			<input type="text" name="preview_bucket_name">
+		</label>
+	</fieldset>
+	<footer>
+		<button type="submit" name="add" value="confirm" hidden>Add</button>
+	</footer>
+</form>

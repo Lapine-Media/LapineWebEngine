@@ -1,0 +1,2 @@
+
+SELECT * FROM ?table_name ORDER BY id DESC LIMIT 100;
