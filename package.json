@@ -27,7 +27,7 @@
     "jsonc-simple-parser": "^3.0.0",
     "open": "^10.1.1",
     "postcss": "^8.5.3",
-    "terser": "^5.39.0",
+    "terser": "^5.41.0",
     "ws": "^8.18.1"
   }
 }
