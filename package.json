@@ -23,7 +23,7 @@
     "start": "node engine/backend/index.js"
   },
   "dependencies": {
-    "autoprefixer": "^10.4.21",
+    "autoprefixer": "^10.4.22",
     "jsonc-simple-parser": "^3.0.0",
     "open": "^10.1.1",
     "postcss": "^8.5.3",
