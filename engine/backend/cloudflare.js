@@ -96,7 +96,7 @@ export default async function(name,value,data,id) {
 				if (Worker.data && Object.keys(Worker.instances).length > 0) {
 					const context = getContext(Worker.data);
 					IO.log('normal', context.editor+' editor is active.');
-					IO.signal(context.signal, 'editor', 'started', Worker.data);
+					IO.signal(context.signal, 'editor', 'reloaded', Worker.data);
 					IO.log('line');
 				}
 				break;
@@ -105,7 +105,7 @@ export default async function(name,value,data,id) {
 					const context = getContext(Worker.data);
 					Worker.stop();
 					IO.log('accept', 'Exited '+context.editor+' editor.');
-					IO.signal(id, 'editor', 'stopped');
+					IO.signal(context.signal, 'editor', 'stopped');
 					IO.log('line');
 				}
 				break;

@@ -113,6 +113,11 @@ export const Environments = new class {
 				console.log(event.detail.data.data);
 				IO.sendSignal(false,'cloudflare','start','editor',event.detail.data.data);
 				break;
+			case 'editor closed':
+				document.body.dataset.editor = false;
+				message = new LapineMessage('reject','An error has occured','Something caused the editor to close. Check the Output window for more information.');
+				message.display(false);
+				break;
 			default:
 				console.log(event.detail);
 		}

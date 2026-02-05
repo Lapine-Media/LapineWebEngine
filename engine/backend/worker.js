@@ -19,6 +19,7 @@ export default {
 			const editorPath = path.join(Settings.paths.lapine, 'engine', 'backend', 'editor', 'index.js');
             const projectPath = Settings.paths.project;
             const configPath = path.join(projectPath, 'wrangler.json');
+			const binding = data.binding || data.name;
 			const args = [
                 'wrangler', 'dev',
                 editorPath,
@@ -27,7 +28,9 @@ export default {
                 '--inspector-port', String(ports[1]),
                 '--cwd', projectPath,
                 '--config', configPath,
-                '--define', 'BINDING:"'+data.binding+'"',
+				'--var', 'context:'+data.binding_path,
+				'--define', 'BINDING:"'+binding+'"',
+				...(data.binding_environment !== 'top' ? ['--env',data.binding_environment] : []),
                 ...(location === 'remote' ? ['--remote'] : []),
                 ...(data.preview ? ['--preview'] : [])
             ];
@@ -49,20 +52,21 @@ export default {
 			const stdout = chunk => {
                 const string = chunk.toString();
 				IO.log('normal',string);
+				console.log(`[${location} STDOUT]`, chunk.toString());
 			};
 			const stderr = chunk => {
 				const string = chunk.toString();
-                if (string.includes('Error') || string.includes('error')) {
+				//if (string.includes('Error') || string.includes('error')) {
 					const html = convert.toHtml(string);
 					IO.log('danger',html);
-                }
+				//}
 			};
 			const close = code => {
 				IO.log('normal', location+' worker stopped (Code '+code+')');
 				if (this.instances && this.instances[location] === instance) {
-                    delete this.instances[location];
+					delete this.instances[location];
                     if (Object.keys(this.instances).length === 0) {
-                        IO.signal('cloudflare', 'editor', 'stopped');
+						IO.signal('environments', 'editor', 'closed');
                     }
                 }
             }

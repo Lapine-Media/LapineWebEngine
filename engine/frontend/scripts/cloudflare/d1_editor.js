@@ -16,21 +16,27 @@ export const D1Editor = new class {
 			switch (event.detail.name+' '+event.detail.value) {
 				case 'editor started':
 					this.#data = event.detail.data;
-					console.log(event.detail.data);
 					signal = () => {
 						document.body.dataset.editor = true;
 						IO.sendSignal(false,'d1','editor','setup');
 					}
 					Index.openLink('/markup/cloudflare/d1/d1_editor.html','editor',signal);
 					break;
+				case 'editor reloaded':
+					this.#data = event.detail.data;
+					IO.sendSignal(false,'d1','editor','setup');
+					break;
 				case 'close editor':
-					signal = () => document.body.dataset.editor = false;
-					IO.sendSignal(false,'cloudflare','stop','editor',this.#data,signal);
+					IO.sendSignal(false,'cloudflare','stop','editor',this.#data);
 					break;
-				/*case 'database list':
-
+				case 'database list':
+					this.#listDatabase(event.detail.data);
 					break;
-				case 'migration list':
+				case 'editor stopped':
+					console.log('editor stopped');
+					document.body.dataset.editor = false;
+					break;
+				/*case 'migration list':
 
 					break;*/
 				default:
@@ -43,7 +49,7 @@ export const D1Editor = new class {
 	}
 	#listDatabase(data) {
 
-		this.#tables = [];
+		/*this.#tables = [];
 
 		let type = '';
 		const dl = document.createElement('dl');
@@ -68,7 +74,7 @@ export const D1Editor = new class {
 
 		makeDT(name);
 		makeDD('database',this.#editor.database_name);
-
+console.log(data);
 		for (const item of data.results) {
 			if (item.type != type) {
 				makeDT(item.type+'s');
@@ -80,7 +86,48 @@ export const D1Editor = new class {
 			makeDD(item.type,item.name);
 		}
 
-		Index.update(Index.elements.editor.database,dl);
+		Index.update(Index.elements.editor.database,dl);*/
+
+		const schema = data;
+
+		const container = Index.elements.editor.database; // Your target container
+    container.innerHTML = ''; // Clear "Loading..."
+
+    const list = document.createElement('ul');
+    list.className = 'schema-list';
+
+    // schema is { tableName: [columns...] }
+    for (const [tableName, columns] of Object.entries(schema)) {
+
+        // 1. Table Item
+        const tableItem = document.createElement('li');
+        const title = document.createElement('div');
+        title.className = 'table-name';
+        title.textContent = tableName;
+
+        // Click to SELECT * FROM table
+        title.onclick = () => {
+            IO.sendSignal(false, 'd1', 'editor', 'query', { query: `SELECT * FROM ${tableName} LIMIT 100` });
+        };
+
+        tableItem.append(title);
+
+        // 2. Columns List (Nested)
+        const colList = document.createElement('ul');
+        colList.className = 'column-list';
+
+        for (const col of columns) {
+            const colItem = document.createElement('li');
+            colItem.textContent = `${col.name} (${col.type})`;
+            // Optional: Click to add column name to query editor
+            colList.append(colItem);
+        }
+
+        tableItem.append(colList);
+		list.append(tableItem);
+    }
+
+	container.append(list);
 
 	}
 }

@@ -5,10 +5,29 @@ import R2Editor from './r2.js';
 export default {
 	async fetch(request,env) {
 		try {
-			console.log('editor env: ',env);
+
 			const url = new URL(request.url);
-			const method = url.pathname.split('/')[1];
-			const binding = env[BINDING];
+            const method = url.pathname.split('/')[1];
+
+            // --- DEBUGGING BLOCK ---
+            // This will print to your Lapine Output panel
+            if (method === 'debug' || method === 'list') {
+                console.log(`[Proxy] Context: ${env.context}`);
+				try {
+					console.log(`[Proxy] Target Binding Name: "${BINDING}"`);
+				} catch (error) {
+					console.log('NO BINDING: ',error);
+				}
+
+                console.log(`[Proxy] Available Env Keys: ${Object.keys(env).join(', ')}`);
+            }
+            // -----------------------
+
+            const binding = env[BINDING];
+            if (!binding) {
+                throw new Error(`Binding "${BINDING}" not found in environment. Available: ${Object.keys(env).join(', ')}`);
+            }
+
 			const type = request.headers.get('Content-Type');
 			let data = {};
 			switch (true) {
@@ -21,23 +40,27 @@ export default {
 					data = await request.json();
 					break;
 			}
+
 			let result = null;
-			switch (env.context) {
-				case 'd1_databases':
-					result = await D1Editor[method](binding,data);
-					break;
-				case 'r2_buckets':
-					result = await R2Editor[method](binding,data);
-					break;
-			}
-			const options = {
-				status: 200,
-				statusText: 'OK',
-				headers: {
-					'Access-Control-Allow-Origin': 'http://127.0.0.1:3000'
-				}
-			};
-			return Response.json(result,options);
+
+            // Ensure data.type from frontend matches these cases exactly
+            switch (env.context) {
+                case 'd1_databases':
+                    result = await D1Editor[method](binding, data);
+                    break;
+                case 'r2_buckets':
+                    result = await R2Editor[method](binding, data);
+                    break;
+                default:
+					throw new Error('Unknown Context: "'+env.context+'"');
+            }
+
+            const options = {
+                status: 200,
+                headers: { 'Access-Control-Allow-Origin': '*' }
+            };
+            return Response.json(result, options);
+
 		} catch (error) {
 			console.log('editor error: ',error);
 			const options = {
