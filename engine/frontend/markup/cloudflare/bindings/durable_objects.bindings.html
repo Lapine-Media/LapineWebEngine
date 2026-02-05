@@ -1,0 +1,46 @@
+
+<form id="bindings" action="environments">
+	<fieldset>
+		<legend>Durable Object</legend>
+		<div>
+			<small>For reference, see <a href="https://developers.cloudflare.com/workers/wrangler/configuration/#durable-objects" target="_blank">developers.cloudflare.com</a>.</small>
+		</div>
+		<div>
+			<label>
+				<span>Name</span>
+				<input type="text" name="name">
+			</label>
+			<small>Name of 'env.' binding property in the User Worker.</small>
+		</div>
+		<div>
+			<label>
+				<span>Class name</span>
+				<input type="text" name="class_name">
+			</label>
+			<small>The exported class name of the Durable Object.</small>
+		</div>
+		<div>
+			<label>
+				<span>Script name</span>
+				<input type="text" name="script_name">
+			</label>
+			<small>The script where the Durable Object is defined (if it's external to this Worker).</small>
+		</div>
+		<div>
+			<label>
+				<span>Environment</span>
+				<input type="text" name="environment">
+			</label>
+			<small>The service environment of the script name to bind to.</small>
+		</div>
+	</fieldset>
+	<footer>
+		<input type="hidden" name="binding_identity" value="">
+		<input type="hidden" name="binding_environment" value="">
+		<input type="hidden" name="binding_path" value="durable_objects.bindings">
+		<input type="hidden" name="binding_type" value="array">
+		<button class="add" type="submit" name="add" value="binding">Add</button>
+		<button class="remove" type="submit" name="remove" value="binding">Remove</button>
+		<button class="save" type="submit" name="save" value="binding">Save</button>
+	</footer>
+</form>

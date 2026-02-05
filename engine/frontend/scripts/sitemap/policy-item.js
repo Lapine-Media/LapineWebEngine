@@ -1,15 +1,17 @@
 
-import { Index,IO } from '../frontend.js';
+import { Index } from '../frontend.js';
 
 export class PolicyItem extends HTMLElement {
-	#data;
 	#template;
 	#internals;
 	static formAssociated = true;
-	static observedAttributes = ['name','type'];
-	constructor(key,value) {
+	static observedAttributes = ['id','name','type','value'];
+	constructor() {
 
 		super();
+
+		this.#internals = this.attachInternals();
+		this.#template = Index.getTemplate('policy-item');
 
 		const options = {
 			mode: 'open',
@@ -18,16 +20,12 @@ export class PolicyItem extends HTMLElement {
 
 		this.attachShadow(options);
 
-		this.#data = {key,value};
-		this.#internals = this.attachInternals();
-
 	}
 	get form() {
 		return this.#internals.form;
 	}
 	set value(value) {
-		this.#template.input.value = value;
-		this.#internals.setFormValue(value);
+		this.setAttribute('value',value);
 	}
 	get value() {
 		return this.#template.input.value;
@@ -46,6 +44,10 @@ export class PolicyItem extends HTMLElement {
 	}
 	attributeChangedCallback(name,oldValue,newValue) {
 		switch (name) {
+			case 'id':
+				this.#template.label.htmlFor = newValue;
+				this.#template.input.id = newValue;
+				break;
 			case 'name':
 				this.#template.input.name = newValue;
 				this.#template.label.textContent = newValue;
@@ -53,19 +55,14 @@ export class PolicyItem extends HTMLElement {
 			case 'type':
 				this.#template.input.type = newValue;
 				break;
+			case 'value':
+				this.#template.input.value = newValue;
+				this.#internals.setFormValue(newValue);
+				break;
 		}
 	}
 	connectedCallback() {
 
-		this.#template = Index.getTemplate('policy-item');
-
-		this.id = this.#data.key;
-		this.name = this.#data.key;
-		this.value = this.#data.value;
-		this.type = 'text';
-
-		this.#template.label.htmlFor = 'value';
-		this.#template.input.id = 'value';
 		this.#template.input.onchange = event => {
 			this.#internals.setFormValue(event.target.value);
 		}

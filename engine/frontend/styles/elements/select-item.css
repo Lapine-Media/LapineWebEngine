@@ -1,0 +1,19 @@
+
+@import '../common.css';
+@import '../forms.css';
+
+:host {
+	display: block;
+}
+.container {
+	display: flex;
+    align-items: center;
+    justify-content: space-between;
+	width: 100%;
+}
+.container select {
+	border-radius: 4px 0 0 4px;
+}
+.container button {
+	border-radius: 0 16px 16px 0;
+}

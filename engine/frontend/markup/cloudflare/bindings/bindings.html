@@ -1,0 +1,91 @@
+
+<form id="bindings" action="environments">
+	<fieldset>
+		<legend>Binding options</legend>
+		<div>
+			<label>
+				<input type="radio" name="binding_path" value="ai">
+				<span>AI Project</span>
+			</label>
+			<small><a href="https://developers.cloudflare.com/workers-ai/" target="_blank">Cloudflare Workers AI</a> - Connect your worker to machine learning models.</small>
+		</div>
+		<div>
+			<label>
+				<input type="radio" name="binding_path" value="analytics_engine_datasets">
+				<span>Analytics Engine</span>
+			</label>
+			<small><a href="https://developers.cloudflare.com/analytics/analytics-engine/" target="_blank">Workers Analytics Engine</a> - Track and query your own data points.</small>
+		</div>
+		<div>
+			<label>
+				<input type="radio" name="binding_path" value="assets">
+				<span>Static Assets</span>
+			</label>
+			<small><a href="https://developers.cloudflare.com/workers/static-assets/" target="_blank">Static Assets</a> - Serve HTML, CSS, images and other files from your Worker.</small>
+		</div>
+		<div>
+			<label>
+				<input type="radio" name="binding_path" value="d1_databases">
+				<span>D1 Database</span>
+			</label>
+			<small><a href="https://developers.cloudflare.com/d1/" target="_blank">Cloudflare D1</a> - Connect to an SQLite relational database.</small>
+		</div>
+		<div>
+			<label>
+				<input type="radio" name="binding_path" value="durable_objects.bindings">
+				<span>Durable Object</span>
+			</label>
+			<small><a href="https://developers.cloudflare.com/durable-objects/" target="_blank">Cloudflare Durable Objects</a> - Create collaborative applications with real-time interactions.</small>
+		</div>
+		<div>
+			<label>
+				<input type="radio" name="binding_path" value="images">
+				<span>Images</span>
+			</label>
+			<small><a href="https://developers.cloudflare.com/images/" target="_blank">Cloudflare Images</a> - Store, transform, optimize, and deliver images at scale.</small>
+		</div>
+		<div>
+			<label>
+				<input type="radio" name="binding_path" value="kv_namespaces">
+				<span>KV Namespace</span>
+			</label>
+			<small><a href="https://developers.cloudflare.com/kv/" target="_blank">Cloudflare Workers KV</a> - Simple non-relational key-value data storage.</small>
+		</div>
+		<div>
+			<label>
+				<input type="radio" name="binding_path" value="queues.producers">
+				<span>Queue Producer</span>
+			</label>
+			<label>
+				<input type="radio" name="binding_path" value="queues.consumers">
+				<span>Queue Consumer</span>
+			</label>
+			<small><a href="https://developers.cloudflare.com/queues/" target="_blank">Cloudflare Queues</a> - Send and receive messages with guaranteed delivery, using batching, retries and delays.</small>
+		</div>
+		<div>
+			<label>
+				<input type="radio" name="binding_path" value="r2_buckets">
+				<span>R2 Bucket</span>
+			</label>
+			<small><a href="https://developers.cloudflare.com/r2/" target="_blank">Cloudflare R2</a> - Store large amounts of unstructured data.</small>
+		</div>
+		<div>
+			<label>
+				<input type="radio" name="binding_path" value="services">
+				<span>Service</span>
+			</label>
+			<small><a href="https://developers.cloudflare.com/workers/runtime-apis/bindings/service-bindings/" target="_blank">Service bindings</a> - Fast Worker-to-Worker communication using JavaScript.</small>
+		</div>
+		<div>
+			<label>
+				<input type="radio" name="binding_path" value="vars">
+				<span>Environment variables</span>
+			</label>
+			<small><a href="https://developers.cloudflare.com/workers/configuration/environment-variables/" target="_blank">Environment variables</a> - Attach text strings or JSON values to your Worker.</small>
+		</div>
+	</fieldset>
+	<footer>
+		<input type="hidden" name="binding_environment" value="">
+		<button type="submit" name="select" value="binding">Select</button>
+	</footer>
+</form>

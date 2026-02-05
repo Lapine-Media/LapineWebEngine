@@ -46,6 +46,9 @@ html {
 				grid-area: 5 / 1 / 6 / 2;
 			}
 		}
+		& .caution {
+			color: var(--color-reject);
+		}
 
 		h2 {
 			font-family: 'Lilita One', sans-serif;
@@ -95,9 +98,16 @@ html {
 					margin: 0;
 				}
 			}
-			& label {
+			& .options {
+				display: flex;
 				justify-content: end;
+				gap: 16px;
 				padding: 0 16px;
+
+				& div {
+					display: flex;
+					align-items: center;
+				}
 			}
 		}
 		& nav {
@@ -163,151 +173,6 @@ html {
 	}
 }
 
-
-
-
-
-/*header { grid-area: 1 / 1 / 2 / 4; }
-nav { grid-area: 2 / 1 / 3 / 4; }
-main { grid-area: 3 / 1 / 4 / 3; }
-aside { grid-area: 3 / 3 / 4 / 4; }
-
-header {
-	display: flex;
-	justify-content: center;
-	column-gap: 32px;
-	padding: 0 16px;
-}
-header .about {
-	display: flex;
-	align-items: center;
-	font-weight: 700;
-    font-size: 14px;
-}
-header .logo {
-	flex: 1;
-	display: flex;
-    justify-content: center;
-	align-items: center;
-	padding-top: 8px;
-}
-header .logo img {
-	width: 32px;
-	height: 32px;
-	margin-right: 8px;
-	margin-bottom: 12px;
-}
-header label {
-	padding-top: 4px;
-}
-nav {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	height: 40px;
-	overflow: hidden;
-	background-color: var(--color-borders);
-}
-main {
-	display: flex;
-	overflow: auto;
-}
-main article {
-	flex: 1;
-	padding: 16px 0 16px 16px;
-	display: none;
-	flex-direction: column;
-    row-gap: 8px;
-	overflow: auto;
-}
-aside {
-	display: flex;
-	flex-direction: column;
-	row-gap: 8px;
-	padding: 16px;
-	overflow: hidden;
-}
-
-/* ///////////////////////////////////////////////////////////////////////// */
-
-/*nav > div {
-	flex: 1;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	position: relative;
-	height: 100%;
-}
-nav > div .color {
-	width: 100%;
-    height: 100%;
-    transform: skewX(-35deg);
-	transition: background-color .3s;
-}
-nav > div button {
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	background-color: transparent;
-	font-family: 'Lilita One', sans-serif;
-	font-size: 22px;
-	font-weight: 400;
-}
-nav > div button:hover {
-	background-color: transparent;
-	box-shadow: none;
-}
-nav > div:nth-child(even) .color {
-	background-color: var(--color-borders-light);
-}
-nav > div:nth-child(odd) .color {
-	background-color: var(--color-borders);
-}
-nav > div:hover .color {
-	background-color: var(--color-highligh);
-}
-
-/* ///////////////////////////////////////////////////////////////////////// */
-
-/*h1,h2 {
-	font-family: 'Lilita One', sans-serif;
-	font-weight: 400;
-	text-transform: uppercase;
-	color: var(--color-white);
-	margin: 0;
-}
-h1 {
-	margin-bottom: 6px;
-}
-h3 {
-	font-family: 'Asap';
-    font-weight: 600;
-    font-size: 16px;
-    text-transform: none;
-    color: var(--color-orange);
-	margin: 0;
-}
-a {
-	color: var(--color-orange);
-}
-a.active {
-	color: var(--color-highligh);
-}
-hr.stripes {
-	position: absolute;
-	width: 100%;
-	border: 0;
-    height: 4px;
-    margin: 0;
-	background: var(--gradient-stripe);
-}
-hr.top {
-	top: 0;
-}
-hr.bottom {
-	bottom: 0;
-}
-
 /* ///////////////////////////////////////////////////////////////////////// */
 
 dialog[open] {
@@ -342,8 +207,8 @@ dialog.overlay {
 	    color: var(--color-white);
 	    flex-direction: column;
 		max-height: 100%;
-		min-width: 320px;
-	    max-width: 960px;
+		min-width: 480px;
+		max-width: 800px;
 		padding: 64px 0;
 
 		& .header {
@@ -370,6 +235,9 @@ dialog.overlay {
 		    row-gap: 16px;
 		}
 	}
+	&[data-max="true"] .container {
+		width: 100%;
+	}
 }
 
 dialog.messages {
@@ -382,6 +250,10 @@ dialog.messages {
 	row-gap: 4px;
 	background-color: transparent;
 	outline: none;
+
+	& lapine-message:first-of-type {
+		margin-top: 4px;
+	}
 }
 
 body[data-state="blocked"] dialog.overlay .container {

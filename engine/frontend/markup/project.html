@@ -11,14 +11,24 @@
 		</div>
 		<form action="project">
 			<fieldset>
+				<legend>Settings</legend>
+				<div class="settings">
+					<button type="submit" name="package" value="edit">Package</button>
+					<button type="submit" name="wrangler" value="edit">Wrangler</button>
+					<button type="submit" name="devvars" value="edit">.dev.vars</button>
+				</div>
+			</fieldset>
+			<fieldset class="notes">
 				<legend>Notes</legend>
-				<label>
-					<span>/notes.txt</span>
-					<tab-textarea id="notes"></tab-textarea>
-				</label>
+				<div>
+					<label>
+						<span>/notes.txt</span>
+						<tab-textarea id="notes" name="notes"></tab-textarea>
+					</label>
+				</div>
 			</fieldset>
 			<footer>
-				<button type="submit" name="notes" value="save">Save</button>
+				<button type="submit" name="save" value="notes">Save</button>
 			</footer>
 		</form>
 	</div>
@@ -28,14 +38,35 @@
 				<legend>Scripts</legend>
 				<div id="project_scripts" class="list"></div>
 			</fieldset>
-			<fieldset>
+			<fieldset id="project_actions">
 				<legend>Actions</legend>
-				<div id="project_actions" class="list"></div>
+				<select-item name="confirm">
+					<optgroup label="Folders">
+						<option value="pwa">Add PWA folder</option>
+						<option value="kits">Add Kits folder</option>
+					</optgroup>
+					<optgroup label="Updates">
+						<option value="wrangler">Update Wrangler</option>
+						<option value="lapine">Update Lapine Web Engine</option>
+					</optgroup>
+					<optgroup label="Other">
+						<option value="prefix">Scan and prefix all CSS</option>
+						<option value="hashes">Create content hashes</option>
+						<option value="audit">Audit site</option>
+					</optgroup>
+				</select-item>
 			</fieldset>
 			<fieldset>
 				<legend>Kits</legend>
 				<div id="kit_list" class="list"></div>
 			</fieldset>
 		</form>
+
+		<!--form action="sound">
+			<button type="submit" name="play" value="accept">Accept</button>
+			<button type="submit" name="play" value="reject">Reject</button>
+			<button type="submit" name="play" value="danger">Danger</button>
+			<button type="submit" name="play" value="inform">Inform</button>
+		</form-->
 	</div>
 </div>

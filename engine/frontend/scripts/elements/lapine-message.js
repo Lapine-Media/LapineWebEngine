@@ -1,5 +1,5 @@
 
-import { Index,IO } from '../frontend.js';
+import { Index,IO,Sound } from '../frontend.js';
 
 export class LapineMessage extends HTMLElement {
 	type;
@@ -15,8 +15,8 @@ export class LapineMessage extends HTMLElement {
 		this.text = text;
 		this.attachShadow({mode: 'open'});
 	}
-	addButton(icon,label,signal = null) {
-		const button = {icon,label,signal};
+	addButton(icon,label,signal = null,...data) {
+		const button = {icon,label,signal,data};
 		this.buttons.push(button);
 	}
 	display(timeout = false) {
@@ -26,13 +26,11 @@ export class LapineMessage extends HTMLElement {
 		this.#timeout = timeout ? 5000 : 0;
 		Index.elements.frame.messages.prepend(this);
 		Index.elements.frame.messages.show();
+		Sound.play(this.type);
 	}
 	handleEvent(button,event) {
 		event.preventDefault();
-		if (button.signal) {
-			const {context,name,value,data} = button.signal;
-			IO.signal(context,name,value,data);
-		}
+		IO.receiveSignal(button.signal,button.data);
 		this.remove();
 	}
 	async connectedCallback() {

@@ -33,10 +33,12 @@
 	</div>
 </template>
 
-<template id="action-item">
-	<link rel="stylesheet" href="../styles/elements/action-item.css">
+<template id="select-item">
+	<link rel="stylesheet" href="../styles/elements/select-item.css">
 	<div class="container">
-		<div id="name" class="name"></div>
+		<select id="select" part="select" name="item">
+			<slot id="slot"></slot>
+		</select>
 		<button id="button" part="button" type="submit" name="build" value="">
 			<lapine-svg as="arrow-svg"></lapine-svg>
 		</button>
@@ -46,8 +48,10 @@
 <template id="script-item">
 	<link rel="stylesheet" href="../styles/elements/script-item.css">
 	<div class="container">
-		<label id="label" for="input"></label>
-		<input id="input" part="input" type="text" name="start" value="">
+		<label>
+			<span id="label"></span>
+			<input id="input" part="input" type="text" name="start" value="">
+		</label>
 		<button id="button" part="button" type="submit" name="build" value="">
 			<lapine-svg as="arrow-svg"></lapine-svg>
 		</button>
@@ -55,28 +59,107 @@
 </template>
 
 <template id="policy-item">
-	<link rel="stylesheet" href="../styles/common.css">
-	<link rel="stylesheet" href="../styles/forms.css">
+	<link rel="stylesheet" href="../styles/sitemap/policy-item.css">
 	<div class="container">
-		<label id="label" for="input"></label>
-		<input id="input" part="input" type="text" name="">
-	</div>
-</template>
-
-<template id="kit-item">
-	<link rel="stylesheet" href="../styles/common.css">
-	<link rel="stylesheet" href="../styles/forms.css">
-	<div class="container">
-		<div id="name" class="name">Name</div>
-		<button id="button" part="button" type="submit" name="build" value="">
-			<lapine-svg as="arrow-svg"></lapine-svg>
-		</button>
+		<label>
+			<span id="label"></span>
+			<input id="input" part="input" type="text" name="">
+		</label>
 	</div>
 </template>
 
 <template id="tab-textarea">
 	<link rel="stylesheet" href="../styles/elements/tab-textarea.css">
 	<textarea id="input" part="textarea" name="name" spellcheck="false" autocomplete="off"></textarea>
+</template>
+
+<!-- MANIFEST ///////////////////////////////////////////////////////////// -->
+
+<template id="image-upload">
+	<link rel="stylesheet" href="../styles/elements/image-upload.css">
+	<div id="container" class="dropzone" data-state="none" data-over="null">
+		<span part="text">Click here or drop image to upload</span>
+		<canvas id="canvas" width="" height=""></canvas>
+		<img id="preview" src="" alt="Preview">
+		<input id="input" type="file" accept="image/*">
+	</div>
+</template>
+
+<template id="screenshot-item">
+	<link rel="stylesheet" href="../styles/elements/screenshot-item.css">
+	<div id="container" class="container">
+		<div id="grab" class="grab"></div>
+		<image-upload id="image" name="src" width="1920" height="1920" fill="false"></image-upload>
+		<small id="dimensions"></small>
+		<div class="details">
+			<label class="label">
+				<span>Label</span>
+				<textarea id="label" name="label"></textarea>
+			</label>
+			<label class="platform">
+				<span>Platform</span>
+				<select name="platform">
+					<option value="web">Web (default)</option>
+					<option value="android">Android</option>
+					<option value="windows">Windows</option>
+				</select>
+			</label>
+		</div>
+	</div>
+</template>
+
+<template id="screenshot-gallery">
+	<link rel="stylesheet" href="../styles/elements/screenshot-gallery.css">
+	<div class="container">
+		<slot></slot>
+		<div id="dropzone" class="dropzone">
+			<span>Click here or drop image to upload</span>
+			<span>Drop screenshot here to remove it</span>
+			<input id="input" type="file" accept="image/*">
+		</div>
+		<div id="screenshots" class="screenshots"></div>
+	</div>
+</template>
+
+<template id="shortcut-item">
+	<link rel="stylesheet" href="../styles/elements/shortcut-item.css">
+	<div id="container" class="container">
+		<div class="details">
+			<label>
+				<span>Name</span>
+				<input id="name" type="text" name="name">
+			</label>
+			<label>
+				<span>Short name</span>
+				<input id="short_name" type="text" name="short_name">
+			</label>
+			<label>
+				<span>URL</span>
+				<input id="url" type="text" name="url">
+			</label>
+		</div>
+		<div class="icon">
+			<label>
+				<span>Icon</span>
+				<image-upload id="icon" name="icon" width="192" height="192" fill="#ffffff"></image-upload>
+			</label>
+			<div class="button">
+				<button id="remove" type="button" name="remove" value="shortcut">Remove shortcut</button>
+			</div>
+		</div>
+		<div id="grab" class="grab"></div>
+	</div>
+</template>
+
+<template id="shortcut-list">
+	<link rel="stylesheet" href="../styles/elements/shortcut-list.css">
+	<div class="container">
+		<slot></slot>
+		<div class="add">
+			<button id="add" type="button" name="add" value="shortcut">Add new shortcut</button>
+		</div>
+		<div id="shortcuts" class="shortcuts"></div>
+	</div>
 </template>
 
 <!-- SITEMAP ////////////////////////////////////////////////////////////// -->
@@ -94,7 +177,7 @@
 
 <template id="map-node">
 	<link rel="stylesheet" href="../styles/sitemap/map-node.css">
-	<div id="container" class="container" data-type="page" data-children="false" data-selected="false" data-locked="false" data-script="false" data-hidden="false" data-seo="false" data-expanded="true">
+	<div id="container" class="container" data-type="page" data-children="false" data-selected="false" data-required="false" data-script="false" data-hidden="false" data-seo="false" data-expanded="true">
 		<div id="older" class="older sibling"></div>
 		<div id="body" class="body">
 			<div id="arrow" class="arrow">
@@ -136,16 +219,92 @@
 
 <!-- CLOUDFLARE /////////////////////////////////////////////////////////// -->
 
+<template id="environment-item">
+	<link rel="stylesheet" href="../styles/cloudflare/environment-item.css">
+	<div class="container">
+		<div class="header">
+			<div id="name" class="name"></div>
+			<button id="edit" part="button" type="button" name="edit" value="environment">Edit environment</button>
+			<button id="bind" part="button" type="button" name="bind" value="environment">Add binding</button>
+		</div>
+		<slot id="bindings" class="list bindings"></slot>
+	</div>
+</template>
+
+<template id="binding-item">
+	<link rel="stylesheet" href="../styles/cloudflare/binding-item.css">
+	<div class="container">
+		<div class="header">
+			<svg class="icon" width="32px" height="32px">
+				<symbol id="workers" viewBox="0 0 48 49">
+					<path d="m18.63 37.418-9.645-12.9 9.592-12.533-1.852-2.527L5.917 23.595l-.015 1.808 10.86 14.542z"></path>
+					<path d="M21.997 6.503h-3.712l13.387 18.3-13.072 17.7h3.735L35.4 24.81z"></path>
+					<path d="M29.175 6.503h-3.758l13.598 18.082-13.598 17.918h3.765l12.908-17.01v-1.808z"></path>
+				</symbol>
+				<symbol id="ai" viewBox="0 0 20 20">
+					<path d="M10.72 1.5H9.265v3.198l1.455.004zM7.36 3.347l1.516 1.517-1.032 1.025-1.513-1.513 1.03-1.029ZM4.485 6.28h3.202l-.005 1.455H4.485zm1.848 3.36 1.515-1.516 1.026 1.032-1.512 1.512-1.03-1.029Zm2.932 2.875V9.313l1.455.005v3.197zm3.36-1.845-1.517-1.517 1.032-1.026 1.514 1.514zM15.5 7.735h-3.202l.005-1.455H15.5zm-1.847-3.359-1.516 1.516-1.025-1.032 1.513-1.513 1.028 1.03ZM2 1.829v.82h-.822v1.315H2v.821h1.314v-.82h.821V2.65h-.821v-.821zm0 12.842v-1.5H.5v-1.314H2v-1.499h1.314v1.499h1.5v1.314h-1.5v1.5z">
+					</path>
+				</symbol>
+				<symbol id="analytics_engine_datasets" viewBox="0 0 48 48">
+					<path d="M23.25 39a14.245 14.245 0 0 1-3.75-27.99V7.912A17.25 17.25 0 1 0 40.087 28.5H36.99A14.3 14.3 0 0 1 23.25 39">
+					</path>
+					<path d="M24 4.5 22.5 6v18l1.5 1.5h18l1.5-1.5A19.52 19.52 0 0 0 24 4.5m1.5 18V7.567A16.53 16.53 0 0 1 40.432 22.5z">
+					</path>
+				</symbol>
+				<symbol id="d1_databases" viewBox="0 0 65 64">
+					<path d="m23.6 22.2 3.03 1.75v3.5L23.6 29.2l-3.03-1.75v-3.5zM20.06 49l3.54-3.54L27.14 49l-3.54 3.54zm3.54-14.7c.593 0 1.17.176 1.67.506.493.33.878.798 1.1 1.35a3 3 0 0 1-.65 3.27c-.42.42-.954.705-1.54.821a3 3 0 0 1-1.73-.171 3.04 3.04 0 0 1-1.35-1.1 3 3 0 0 1-.506-1.67c0-.796.316-1.56.879-2.12a3 3 0 0 1 2.12-.879zM10.3 11.2l6.42-4.89 1.21-.37h29l1.19.39 6.61 4.89.82 1.61v38L55 52.21l-4.83 5.11-1.46.63h-31.7l-1.37-.54-5.48-5.11-.64-1.47v-38zm3.21 25.4 4.47 4.94h.056v4h-1.83l-2.7-3v7.39l4.26 4h30l3.7-3.91V42.3l-3.67 3.24h-18.6v-4h17.2l5.19-4.61v-7.44l-3.67 3.25h-18.7v-4h17.2l5.19-4.6v-6.92l-3.67 3.26h-31.6l-2.74-2.8v6.12l4.47 4.94h.056v4h-1.83l-2.7-3zm32.7-26.7h-27.6l-4.07 3.11 3.4 3.48h28.4l4-3.56z"></path>
+				</symbol>
+				<symbol id="durable_objects" viewBox="0 0 64 64">
+					<path fill-rule="evenodd" clip-rule="evenodd" d="M32.214 6h-.202a26 26 0 1 0 .327 52q.266 0 .527-.014A26 26 0 0 0 58.012 32 26 26 0 0 0 32.865 6.014a10 10 0 0 0-.65-.013m-9.503 6.063A22 22 0 0 0 10.104 30h7.804q.068-1.79.252-3.51l3.998.24A46 46 0 0 0 21.91 30H30V10.519c-1.784.81-3.475 2.582-4.9 5.41q-.139.278-.274.567l-3.873-1.145q.276-.627.575-1.221c.363-.72.757-1.412 1.182-2.067M30 34h-8.09c.226 5.584 1.392 10.5 3.19 14.071 1.425 2.829 3.116 4.6 4.9 5.41zm-7.29 17.937a22 22 0 0 1-1.182-2.067c-2.131-4.233-3.393-9.795-3.62-15.87h-7.806A22 22 0 0 0 22.71 51.937m19.554-.472A22 22 0 0 0 53.921 34h-7.15a51 51 0 0 1-.26 3.589l-3.998-.24q.185-1.627.255-3.349H34v19.742c2.032-.641 3.973-2.486 5.577-5.671q.129-.255.252-.517l3.874 1.145q-.267.6-.553 1.171a23 23 0 0 1-.885 1.595M42.768 30H34V10.258c2.032.641 3.973 2.486 5.577 5.671 1.799 3.572 2.965 8.487 3.191 14.071m4.003 0c-.227-6.075-1.49-11.637-3.621-15.87a22 22 0 0 0-.885-1.595A22 22 0 0 1 53.921 30z"></path>
+				</symbol>
+				<symbol id="images" viewBox="0 0 48 48">
+					<path d="M42 8.94H6l-1.5 1.5v29.903l1.5 1.5h36l1.5-1.5V10.44zm-1.5 3v14.018l-6-4.913-1.965.06-3.81 3.51-4.073-3-1.852.06-10.5 8.775-4.8-3.3V11.94zm-33 26.903V30.81l3.975 2.775 1.815-.082 10.523-8.753 4.125 3 1.905-.105 3.75-3.472 6.907 5.655v9zm6.81-14.723a3 3 0 1 0 0-6 3 3 0 0 0 0 6"></path>
+				</symbol>
+				<symbol id="kv_namespaces" viewBox="0 0 64 64">
+					<path d="M22 44.95h-7v-4h7zm-7-8h7v-4h-7zm7-8h-7v-4h7zm4 16h23v-4H26zm23-8H26v-4h23zm-23-8h23v-4H26z"></path>
+					<path fill-rule="evenodd" clip-rule="evenodd" d="m6 12 2-2h19l1.675.907 3.408 5.225H56l2 2V52l-2 2H8l-2-2zm4 2v36h44V20.132H31l-1.675-.908L25.917 14z"></path>
+				</symbol>
+				<symbol id="queues" viewBox="0 0 40 40">
+					<path d="M11.154 19.894 5.33 14.21l-1.612 1.65 2.656 2.594H1.942a1.442 1.442 0 1 0 0 2.884h4.433L3.72 23.927l1.61 1.653 5.823-5.685Zm28.352 0-5.823-5.685-1.612 1.65 2.656 2.594h-4.433a1.442 1.442 0 1 0 0 2.884h4.433l-2.655 2.591 1.611 1.651z"></path>
+					<rect width="23.07" height="2.884" x="7.911" y="7" fill="currentColor" rx="1.442"></rect>
+					<rect width="23.07" height="2.884" x="7.911" y="30.07" fill="currentColor" rx="1.442"></rect>
+					<path d="M13.679 14.21c.796 0 1.442.645 1.442 1.441v8.651a1.442 1.442 0 1 1-2.884 0v-8.65c0-.797.646-1.443 1.442-1.443Zm5.767 0c.797 0 1.442.645 1.442 1.441v8.651a1.442 1.442 0 1 1-2.884 0v-8.65c0-.797.646-1.443 1.442-1.443Zm5.768 0c.796 0 1.442.645 1.442 1.441v8.651a1.442 1.442 0 1 1-2.884 0v-8.65c0-.797.645-1.443 1.442-1.443Z"></path>
+				</symbol>
+				<symbol id="r2_buckets" viewBox="0 0 40 40">
+					<path fill-rule="evenodd" clip-rule="evenodd" d="M30.289 6.423c-2.43-.813-5.958-1.362-9.977-1.362-4.018 0-7.545.549-9.976 1.362-1.228.41-2.033.842-2.48 1.195q-.14.111-.204.18c.052.171.196.395.562.67.524.394 1.372.783 2.563 1.119 2.368.666 5.731 1.023 9.536 1.023s7.167-.357 9.535-1.023c1.191-.336 2.04-.725 2.563-1.119.366-.275.51-.499.562-.67a2 2 0 0 0-.204-.18c-.447-.353-1.252-.784-2.48-1.195m-20.24 5.624c-.885-.25-1.71-.552-2.424-.922v4.393c0 .196.097.514.625.941.535.433 1.391.869 2.576 1.252 2.36.764 5.71 1.222 9.486 1.222 3.778 0 7.128-.458 9.487-1.222 1.185-.383 2.041-.82 2.576-1.252.528-.427.625-.745.625-.94v-4.394c-.715.37-1.539.673-2.424.922-2.7.76-6.336 1.124-10.264 1.124s-7.564-.364-10.263-1.124m25.576 3.471V7.622c0-2.829-6.856-5.122-15.313-5.122C11.857 2.5 5 4.793 5 7.622v24.756c0 2.829 6.856 5.122 15.313 5.122 8.456 0 15.312-2.293 15.312-5.122zM33 19.134c-.7.393-1.505.726-2.375 1.008-2.708.877-6.358 1.352-10.313 1.352-3.954 0-7.604-.475-10.312-1.352-.87-.282-1.676-.615-2.375-1.008v4.28c0 .196.097.514.625.942.535.432 1.391.868 2.576 1.252 2.36.763 5.71 1.221 9.486 1.221 3.778 0 7.128-.458 9.487-1.221 1.185-.384 2.041-.82 2.576-1.252.528-.428.625-.746.625-.941v-4.28Zm-23 8.904c-.87-.281-1.676-.615-2.375-1.007v5.143c.044.048.116.117.231.208.447.353 1.252.785 2.48 1.195 2.43.813 5.958 1.362 9.976 1.362s7.546-.549 9.977-1.362c1.228-.41 2.033-.842 2.48-1.195a2 2 0 0 0 .231-.208v-5.143c-.7.392-1.505.726-2.375 1.007-2.708.877-6.358 1.352-10.313 1.352-3.954 0-7.604-.475-10.312-1.352m23.06 4.06-.01.016zm-25.495 0 .01.016zm3.997-15.726c.725 0 1.313-.573 1.313-1.28s-.588-1.281-1.313-1.281c-.724 0-1.312.573-1.312 1.28s.588 1.281 1.313 1.281Zm1.313 6.83c0 .706-.588 1.28-1.313 1.28-.724 0-1.312-.574-1.312-1.28 0-.708.588-1.281 1.313-1.281.724 0 1.312.573 1.312 1.28Zm-1.313 9.176c.725 0 1.313-.573 1.313-1.28s-.588-1.28-1.313-1.28c-.724 0-1.312.572-1.312 1.28 0 .707.588 1.28 1.313 1.28Z"></path>
+				</symbol>
+				<use id="use" href="#queues"></use>
+			</svg>
+			<div id="title" class="binding">env.<span id="binding"></span></div>
+			<div id="type"></div>
+		</div>
+		<div id="data" class="data"></div>
+		<div class="buttons">
+			<button id="run" part="button" type="button" name="open" value="editor">Open editor</button>
+			<button id="edit" part="button" type="button" name="edit" value="binding">Edit binding</button>
+		</div>
+	</div>
+</template>
+
 <template id="d1-item">
 	<link rel="stylesheet" href="../styles/cloudflare/d1-item.css">
 	<div id="container" class="container" data-bound="false" data-info="false">
+		<div class="header">
+			<svg class="icon" width="32px" height="32px" viewBox="0 0 65 64">
+				<path d="m23.6 22.2 3.03 1.75v3.5L23.6 29.2l-3.03-1.75v-3.5zM20.06 49l3.54-3.54L27.14 49l-3.54 3.54zm3.54-14.7c.593 0 1.17.176 1.67.506.493.33.878.798 1.1 1.35a3 3 0 0 1-.65 3.27c-.42.42-.954.705-1.54.821a3 3 0 0 1-1.73-.171 3.04 3.04 0 0 1-1.35-1.1 3 3 0 0 1-.506-1.67c0-.796.316-1.56.879-2.12a3 3 0 0 1 2.12-.879zM10.3 11.2l6.42-4.89 1.21-.37h29l1.19.39 6.61 4.89.82 1.61v38L55 52.21l-4.83 5.11-1.46.63h-31.7l-1.37-.54-5.48-5.11-.64-1.47v-38zm3.21 25.4 4.47 4.94h.056v4h-1.83l-2.7-3v7.39l4.26 4h30l3.7-3.91V42.3l-3.67 3.24h-18.6v-4h17.2l5.19-4.61v-7.44l-3.67 3.25h-18.7v-4h17.2l5.19-4.6v-6.92l-3.67 3.26h-31.6l-2.74-2.8v6.12l4.47 4.94h.056v4h-1.83l-2.7-3zm32.7-26.7h-27.6l-4.07 3.11 3.4 3.48h28.4l4-3.56z"></path>
+			</svg>
+			<div id="name" class="name"></div>
+			<div class="buttons">
+				<button id="info" part="button" type="button" name="d1" value="info">Info</button>
+				<button id="remove" part="button" type="button" name="d1" value="remove">Remove</button>
+			</div>
+		</div>
 		<div class="data">
-			<div><strong>Name:</strong><span id="name"></span></div>
+			<div><strong>Tables:</strong><span id="num_tables"></span></div>
+			<div><strong>File size:</strong><span id="file_size"></span></div>
+			<div><strong>UUID:</strong><span id="uuid"></span></div>
 			<div><strong>Version:</strong><span id="version"></span></div>
 			<div><strong>Created at:</strong><span id="created_at"></span></div>
-			<div><strong>UUID:</strong><span id="uuid"></span></div>
-			<div><strong>File size:</strong><span id="file_size"></span></div>
-			<div><strong>Tables:</strong><span id="num_tables"></span></div>
 		</div>
 		<div class="info">
 			<div><strong>Region:</strong><span id="running_in_region"></span></div>
@@ -154,36 +313,6 @@
 			<div><strong>Write queries 24h:</strong><span id="write_queries_24h"></span></div>
 			<div><strong>Rows read 24h:</strong><span id="rows_read_24h"></span></div>
 			<div><strong>Rows written 24h:</strong><span id="rows_written_24h"></span></div>
-		</div>
-		<div class="buttons">
-			<button id="bind" part="button" type="button" name="d1" value="bind">Bind</button>
-			<button id="info" part="button" type="button" name="d1" value="info">Info</button>
-		</div>
-	</div>
-</template>
-
-<template id="environment-item">
-	<link rel="stylesheet" href="../styles/cloudflare/environment-item.css">
-	<div class="container">
-		<div class="header">
-			<div id="name" class="name"></div>
-			<button id="edit" part="button" type="button" name="environment" value="edit options">Edit</button>
-		</div>
-		<slot id="bindings" class="cards bindings"></slot>
-	</div>
-</template>
-
-<template id="binding-item">
-	<link rel="stylesheet" href="../styles/cloudflare/binding-item.css">
-	<div class="container">
-		<div class="header">
-			<div id="type"></div>
-			<div id="binding" class="binding"></div>
-		</div>
-		<dl id="data" class="data"></dl>
-		<div class="buttons">
-			<button id="run" part="button" type="button" name="" value="">Open editor</button>
-			<button id="edit" part="button" type="button" name="binding" value="remove options">Remove</button>
 		</div>
 	</div>
 </template>

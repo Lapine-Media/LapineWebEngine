@@ -1,0 +1,53 @@
+
+<form id="bindings" action="environments">
+	<fieldset>
+		<legend>R2 bucket</legend>
+		<div>
+			<small>For reference, see <a href="https://developers.cloudflare.com/workers/wrangler/configuration/#r2-buckets" target="_blank">developers.cloudflare.com</a>.</small>
+		</div>
+		<div>
+			<label>
+				<span>Binding</span>
+				<input type="text" name="binding">
+			</label>
+			<small>Name of 'env.' binding property in the User Worker.</small>
+		</div>
+		<div>
+			<label>
+				<span>Bucket name</span>
+				<input type="text" name="bucket_name">
+			</label>
+			<small>The name of this R2 bucket at the edge.</small>
+		</div>
+		<div>
+			<label>
+				<span>Preview bucket name</span>
+				<input type="text" name="preview_bucket_name">
+			</label>
+			<small>The preview name of this R2 bucket at the edge.</small>
+		</div>
+		<div>
+			<label>
+				<span>Jurisdiction</span>
+				<input type="text" name="jurisdiction">
+			</label>
+			<small>The jurisdiction that the bucket exists in.</small>
+		</div>
+		<div>
+			<label>
+				<input type="checkbox" name="remote" value="true">
+				<span>Remote</span>
+			</label>
+			<small>Whether the R2 bucket should be remote or not in local development.</small>
+		</div>
+	</fieldset>
+	<footer>
+		<input type="hidden" name="binding_identity" value="">
+		<input type="hidden" name="binding_environment" value="">
+		<input type="hidden" name="binding_path" value="r2_buckets">
+		<input type="hidden" name="binding_type" value="array">
+		<button class="add" type="submit" name="add" value="binding">Add</button>
+		<button class="remove" type="submit" name="remove" value="binding">Remove</button>
+		<button class="save" type="submit" name="save" value="binding">Save</button>
+	</footer>
+</form>

@@ -1,29 +1,18 @@
 
 import Index from './index.js';
 import IO from './io.js';
+import Settings from './settings.js';
+import { Tools } from './tools.js';
 import Worker from './worker.js';
 import http from 'http';
 import fs from 'fs';
-import path from 'path';
+import { default as Path } from 'path';
 import url from 'url';
 import { WebSocketServer } from 'ws';
 import open from 'open';
 
 const __filename = url.fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const assets = {
-	paths: {
-		'/': 'markup/index.html',
-		'/favicon.ico': 'graphics/bunny.svg'
-	},
-	types: {
-		'.html': 'text/html',
-		'.js': 'application/javascript',
-		'.css': 'text/css',
-		'.svg': 'image/svg+xml'
-	}
-}
+const __dirname = Path.dirname(__filename);
 
 export default class Server {
 	#host;
@@ -56,54 +45,71 @@ export default class Server {
 		this.#wss.on('connection',this.#methods.connection);
 
 	}
-	path(url) {
-		const urlPath = assets.paths[url] || url;
-		return path.join(__dirname,'../frontend/'+urlPath);
-	}
-	fetch(request,response) {
-
-		try {
-
-			const filePath = this.path(request.url);
-			const parsed = path.parse(filePath);
-			const stream = fs.createReadStream(filePath);
-
-			stream.on('error', console.log);
-
-			const stat = fs.statSync(filePath);
-			const options = {
-				'Content-Type': assets.types[parsed.ext],
-				'Content-Length': stat.size
-			}
-
-			response.writeHead(200,options);
-
-			stream.pipe(response);
-
-		} catch (error) {
-			response.writeHead(404, {'Content-Type': 'text/plain'});
-			response.write('Missing: '+request.url);
-			response.end();
+	streamFile(filePath, response) {
+        const ext = Path.extname(filePath).toLowerCase();
+		const contentType = Tools.mimes[ext] || 'application/octet-stream';
+		const stream = fs.createReadStream(filePath);
+		const open = () => {
+			const headers = {'Content-Type': contentType};
+            response.writeHead(200,headers);
+            stream.pipe(response);
+		};
+		const error = e => {
+			if (e.code === 'ENOENT') {
+                response.writeHead(404);
+				response.end('Not Found: '+filePath);
+            } else {
+				IO.console('reject','Stream Error: '+e);
+                response.writeHead(500);
+                response.end('Internal Error');
+            }
 		}
-
-	}
+		stream.on('open', open);
+		stream.on('error',error);
+    }
+	fetch(request, response) {
+        const reqUrl = new URL(request.url, 'http://'+request.headers.host);
+		let filePath;
+		switch (reqUrl.pathname) {
+			case '/':
+				filePath = Path.join(__dirname, '../frontend/markup/index.html');
+				break;
+			case '/favicon.ico':
+				filePath = Path.join(__dirname, '../frontend/graphics/bunny.svg');
+				break;
+			case '/local-image':
+				filePath = reqUrl.searchParams.get('path');
+				if (!filePath) {
+	                response.writeHead(400);
+	                response.end('Missing path');
+	                return;
+	            }
+				filePath = filePath.replace('./graphics',Settings.paths.pwa+'/graphics');
+				break;
+			default:
+				const safePath = Path.normalize(reqUrl.pathname).replace(/^(\.\.[\/\\])+/, '');
+				filePath = Path.join(__dirname, '../frontend', safePath);
+		}
+		this.streamFile(filePath, response);
+    }
 	async start() {
 		const url = 'http://'+this.#host+':'+this.#port;
-		IO.console('log','////////// LAPINE WEB ENGINE //////////',true);
-		IO.console('log','Server started at '+url);
+		IO.console('begin');
+		IO.console('normal','Server started at '+url);
 		await open(url);
 	}
 	stop() {
 		Worker.stop();
-		IO.console('log','Server on port '+this.#port+' closed successfully.');
+		IO.console('normal','Server on port '+this.#port+' closed successfully.');
+		IO.console('end');
 		process.exit();
 	}
 	close() {
-		//IO.console('log','Client disconnected');
+		//IO.console('normal','Client disconnected');
 		if (this.#wss.clients.size == 0) {
 			const timeout = () => {
 				if (this.#wss.clients.size == 0) {
-					IO.console('log','All instances closed, shutting down...');
+					IO.console('normal','All instances closed, shutting down...');
 					this.#server.close(this.#methods.stop);
 				}
 			}
@@ -113,34 +119,19 @@ export default class Server {
 		}
 	}
 	error(error) {
-		IO.console('error',error);
-	}
-	getSignal(context,name,value,data = null) {
-		const response = {context,name,value,data};
-		return JSON.stringify(response);
+		IO.console('reject',error);
 	}
 	connection(ws) {
 
 		IO.clients = this.#wss.clients;
-		//IO.console('log','Client connected');
+		//IO.console('normal','Client connected');
 
 		if (this.#wss.clients.size > 1) {
-			IO.console('log','Multiple clients detected');
+			IO.console('normal','Multiple clients detected');
 			IO.broadcast('index','state','multiple');
 		}
 
-		const message = async json => {
-			try {
-				const {context,name,value,data} = JSON.parse(json);
-				const method = () => Index.runAction(context,name,value,data);
-				const store = {
-					requestId: crypto.randomUUID()
-				};
-				IO.store.run(store,method);
-			} catch (error) {
-				IO.console('error',error);
-			}
-		}
+		const message = json => IO.receiveMessage(json);
 
 		ws.on('message',message);
 		ws.on('close',this.#methods.close);

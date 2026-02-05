@@ -79,7 +79,7 @@
 	font-weight: bold;
     color: var(--color-orange);
 }
-.container[data-default="true"] .text .names .title:before {
+.container[data-required="true"] .text .names .title:before {
 	content: '\01F512';
 }
 .container[data-type="root"] .text .names .uni,

@@ -1,5 +1,5 @@
 
-import { Index,IO } from './frontend.js';
+import { Index,Sound } from './frontend.js';
 
 export const Output = new class {
 	#elements = {};
@@ -15,8 +15,8 @@ export const Output = new class {
 				console.log(event);//log/live/clear
 		}
 	}
-	log(type,data) {
-		
+	async log(type,data,sound = false) {
+
 		let container,element;
 
 		if (data && data.requestId) {
@@ -44,17 +44,25 @@ export const Output = new class {
 		}
 
 		if (container.isConnected == false) {
+			await Index.ready;
 			Index.elements.frame.log.append(container);
 		}
 
+		if (sound) {
+			Sound.play(sound === true ? type : sound);
+		}
+
 	}
-	live(type,text) {
+	live(type,text,sound = false) {
 		if (type == null) {
 			Index.elements.frame.live.dataset.type = 'none';
 			Index.elements.frame.live.textContent = '';
 		} else {
 			Index.elements.frame.live.dataset.type = type;
 			Index.elements.frame.live.textContent = text;
+			if (sound) {
+				Sound.play(type);
+			}
 		}
 	}
 	clear() {

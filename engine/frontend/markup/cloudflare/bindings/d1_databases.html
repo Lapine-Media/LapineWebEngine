@@ -1,0 +1,67 @@
+
+<form id="bindings" action="environments">
+	<fieldset>
+		<legend>D1 database</legend>
+		<div>
+			<small>For reference, see <a href="https://developers.cloudflare.com/workers/wrangler/configuration/#d1-databases" target="_blank">developers.cloudflare.com</a>.</small>
+		</div>
+		<div>
+			<label>
+				<span>Binding</span>
+				<input type="text" name="binding">
+			</label>
+			<small>Name of 'env.' binding property in the User Worker.</small>
+		</div>
+		<div>
+			<label>
+				<span>Database name</span>
+				<input type="text" name="database_name">
+			</label>
+			<small>The name of this D1 database.</small>
+		</div>
+		<div>
+			<label>
+				<span>Database id</span>
+				<input type="text" name="database_id">
+			</label>
+			<small>The UUID of this D1 database (not required).</small>
+		</div>
+		<div>
+			<label>
+				<span>Preview database id</span>
+				<input type="text" name="preview_database_id">
+			</label>
+			<small>The UUID of this D1 database for Wrangler Dev (if specified).</small>
+		</div>
+		<div>
+			<label>
+				<span>Migrations table</span>
+				<input type="text" name="migrations_table" placeholder="d1_migrations">
+			</label>
+			<small>The name of the migrations table for this D1 database (defaults to 'd1_migrations').</small>
+		</div>
+		<div>
+			<label>
+				<span>Migrations directory</span>
+				<input type="text" name="migrations_dir" placeholder="./migrations">
+			</label>
+			<small>The path to the directory of migrations for this D1 database (defaults to './migrations').</small>
+		</div>
+		<div>
+			<label>
+				<input type="checkbox" name="remote" value="true">
+				<span>Remote</span>
+			</label>
+			<small>Whether the D1 database should be remote or not in local development.</small>
+		</div>
+	</fieldset>
+	<footer>
+		<input type="hidden" name="binding_identity" value="">
+		<input type="hidden" name="binding_environment" value="">
+		<input type="hidden" name="binding_path" value="d1_databases">
+		<input type="hidden" name="binding_type" value="array">
+		<button class="add" type="submit" name="add" value="binding">Add</button>
+		<button class="remove" type="submit" name="remove" value="binding">Remove</button>
+		<button class="save" type="submit" name="save" value="binding">Save</button>
+	</footer>
+</form>

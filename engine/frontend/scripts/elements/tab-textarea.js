@@ -1,10 +1,11 @@
 
-import { Index,IO } from '../frontend.js';
+import { Index } from '../frontend.js';
 
 export class TabTextarea extends HTMLElement {
 	#template;
 	#shadowRoot;
 	#internals;
+	#abortController;
 	static formAssociated = true;
 	constructor() {
 
@@ -53,10 +54,21 @@ export class TabTextarea extends HTMLElement {
 		}
 	}
 	connectedCallback() {
+
+		this.#abortController = new AbortController();
+		const options = {signal: this.#abortController.signal};
+
 		this.value = this.innerHTML;
-		this.#template.input.addEventListener('change',this,false);
-		this.#template.input.addEventListener('keydown',this,false);
+		this.#template.input.className = this.className;
+		this.#template.input.addEventListener('change',this,options);
+		this.#template.input.addEventListener('keydown',this,options);
 		this.#shadowRoot.appendChild(this.#template.fragment);
+	}
+	disconnectedCallback() {
+		if (this.#abortController) {
+			this.#abortController.abort();
+			this.#abortController = null;
+        }
 	}
 }
 

@@ -16,7 +16,7 @@ export class ScriptItem extends HTMLElement {
 		template.input.value = this.#data.data;
 		template.button.name = this.#data.name;
 		template.button.value = this.#data.value;
-		template.button.onclick = () => IO.signal(this.#data.context,this.#data.name,template.input.value,this);
+		template.button.onclick = () => IO.sendSignal(true,this.#data.context,this.#data.name,template.input.value,this);
 
 		this.shadowRoot.appendChild(template.fragment);
 

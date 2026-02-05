@@ -1,0 +1,31 @@
+
+<form id="project_settings" action="project">
+	<fieldset>
+		<legend>Wrangler</legend>
+		<div>
+			<label>
+				<span>Name</span>
+				<input type="text" name="name">
+			</label>
+			<small>Alphanumeric + dashes only.</small>
+		</div>
+		<div>
+			<label>
+				<span>Account id</span>
+				<input type="text" name="account_id">
+			</label>
+			<small>Can be located in your Cloudflare dashboard</small>
+		</div>
+		<div>
+			<label>
+				<span>Compatibility date</span>
+				<input type="text" name="compatibility_date">
+			</label>
+			<small>Format: YYYY-MM-DD</small>
+			<small>Determines which version of the Workers runtime is used. More details at <a href="https://developers.cloudflare.com/workers/configuration/compatibility-dates" target="_blank">developers.cloudflare.com</a></small>
+		</div>
+	</fieldset>
+	<footer>
+		<button type="submit" name="wrangler" value="save">Save</button>
+	</footer>
+</form>

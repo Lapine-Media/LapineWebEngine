@@ -1,11 +1,14 @@
 
-<h3>Environments</h3>
-<div id="environment_items" class="list loading">
-	<span>Loading list of environments...</span>
+<div class="container">
+	<form action="environments">
+		<fieldset>
+			<legend>Environments</legend>
+			<div id="environment_items" class="list loading">
+				<span>Loading list of environments...</span>
+			</div>
+		</fieldset>
+		<footer>
+			<button type="submit" name="add" value="environment">Add environment</button>
+		</footer>
+	</form>
 </div>
-
-<form action="cloudflare">
-	<footer>
-		<button type="submit" name="environment" value="add options">Add environment</button>
-	</footer>
-</form>

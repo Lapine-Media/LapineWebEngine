@@ -1,0 +1,53 @@
+
+<form id="bindings" action="environments">
+	<fieldset>
+		<legend>Service</legend>
+		<div>
+			<small>For reference, see <a href="https://developers.cloudflare.com/workers/wrangler/configuration/#service-bindings" target="_blank">developers.cloudflare.com</a>.</small>
+		</div>
+		<div>
+			<label>
+				<span>Binding</span>
+				<input type="text" name="binding">
+			</label>
+			<small>Name of 'env.' binding property in the User Worker.</small>
+		</div>
+		<div>
+			<label>
+				<span>Service</span>
+				<input type="text" name="service">
+			</label>
+			<small>The name of the service. To bind to a worker in a specific environment, you should use the format '[worker_name]-[environment_name]'.</small>
+		</div>
+		<div>
+			<label>
+				<span>Entrypoint</span>
+				<input type="text" name="entrypoint">
+			</label>
+			<small>Optionally, the entrypoint (named export) of the service to bind to.</small>
+		</div>
+		<!--div>
+			<label>
+				<span>Props</span>
+				<textarea name="props" class="lined"></textarea>
+			</label>
+			<small>Optional properties that will be made available to the service via ctx.props.</small>
+		</div-->
+		<div>
+			<label>
+				<input type="checkbox" name="remote" value="true">
+				<span>Remote</span>
+			</label>
+			<small>Whether the service binding should be remote or not in local development.</small>
+		</div>
+	</fieldset>
+	<footer>
+		<input type="hidden" name="binding_identity" value="">
+		<input type="hidden" name="binding_environment" value="">
+		<input type="hidden" name="binding_path" value="services">
+		<input type="hidden" name="binding_type" value="array">
+		<button class="add" type="submit" name="add" value="binding">Add</button>
+		<button class="remove" type="submit" name="remove" value="binding">Remove</button>
+		<button class="save" type="submit" name="save" value="binding">Save</button>
+	</footer>
+</form>

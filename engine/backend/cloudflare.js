@@ -4,199 +4,246 @@ import Settings from './settings.js';
 import Worker from './worker.js';
 
 const methods = {
-	resolveTarget: function(wrangler, environment, type) {
-		let target = wrangler;
-		if (environment != 'top') {
-			wrangler.env ??= {};
-			wrangler.env[environment] ??= {};
-			target = wrangler.env[environment];
-		}
-		switch (true) {
-			case type === 'durable_objects':
-				target.durable_objects ??= {};
-				target.durable_objects.bindings ??= [];
-				return target.durable_objects.bindings;
-			case type === 'queues':
-				target.queues ??= {};
-				target.queues.producers ??= [];
-				return target.queues.producers;
-			case ['assets', 'vars', 'images', 'ai'].includes(type):
-				return target;
-			default:
-				target[type] ??= [];
-				return target[type];
-		}
-	},
-	cleanBindings: function(wrangler, environment, type) {
-		const top = environment == 'top';
-		const isEmpty = obj => (
-			obj &&
-			typeof obj === 'object' &&
-			!Array.isArray(obj) &&
-			Object.keys(obj).length === 0
-		);
-		const envTarget = top ? wrangler : wrangler.env?.[environment];
-		let targetArray = envTarget?.[type];
-		if (type === 'durable_objects') {
-			targetArray = envTarget?.durable_objects?.bindings;
-		} else if (type === 'queues') {
-			targetArray = envTarget?.queues?.producers;
-		}
-		const isZero = Array.isArray(targetArray) && targetArray.length === 0;
-		switch (true) {
-			case type === 'durable_objects':
-				if (isZero) {
-					delete envTarget.durable_objects.bindings;
-				}
-				if (isEmpty(envTarget?.durable_objects)) {
-					delete envTarget.durable_objects;
-				}
-				break;
-			case type === 'queues':
-				if (isZero) {
-					delete envTarget.queues.producers;
-				}
-				if (isEmpty(envTarget?.queues)) {
-					delete envTarget.queues;
-				}
-				break;
-			case ['assets', 'vars', 'images', 'ai'].includes(type):
-			case isZero:
-				delete envTarget[type];
-				break;
-		}
-		if (!top) {
-			if (isEmpty(envTarget)) {
-				delete wrangler.env[environment];
+	resolveScope: function(wrangler, data, create = false) {
+		let container = wrangler;
+		if (data.binding_environment !== 'top') {
+			if (create) {
+				wrangler.env ??= {};
+				wrangler.env[data.binding_environment] ??= {};
 			}
-			if (isEmpty(wrangler.env)) {
-				delete wrangler.env;
+			if (!wrangler.env?.[data.binding_environment] && !create) {
+				return null;
+			}
+			container = wrangler.env[data.binding_environment];
+		}
+		const [parent, child] = data.binding_path.split('.');
+		if (child) {
+			if (create) {
+				container[parent] ??= {};
+			}
+			if (!container[parent] && !create) {
+				return null;
+			}
+			return {
+				targetObject: container[parent],
+				key: child
+			};
+		}
+		return {
+			targetObject: container,
+			key: parent
+		};
+	},
+	pruneEmpty: function(obj) {
+		switch (true) {
+			case !obj || typeof obj !== 'object':
+				return false;
+			case Array.isArray(obj):
+				return obj.length === 0;
+		}
+		for (const key in obj) {
+			const empty = this.pruneEmpty(obj[key]);
+			if (empty) {
+				delete obj[key];
 			}
 		}
+		return Object.keys(obj).length === 0;
 	},
-	updateBindings: async function(data, add = true) {
-		const wrangler = await Settings.loadWrangler();
-		const { type, environment, ...binding } = data;
-		const target = this.resolveTarget(wrangler, environment, type);
-		const isObjectType = ['assets', 'vars', 'images', 'ai'].includes(type);
-
-		if (add) {
-			if (isObjectType) {
-				target[type] = binding;
+	updateBinding: async function(data) {
+		let wrangler = await Settings.loadWrangler();
+		const { binding_identity, binding_environment, binding_path, binding_type, ...binding } = data;
+		const { targetObject, key } = this.resolveScope(wrangler, data, true);
+		if (binding_type === 'array') {
+			targetObject[key] ??= [];
+			const idKey = binding.name ? 'name' : 'binding';
+			const compare = item => item[idKey] === binding[idKey]
+			const index = targetObject[key].findIndex(compare);
+			if (index > -1) {
+				targetObject[key][index] = binding;
 			} else {
-				target.push(binding);
+				targetObject[key].push(binding);
 			}
 		} else {
-			if (isObjectType) {
-				delete target[type];
-			} else if (binding.binding) {
-				const index = target.findIndex(item => item.binding === binding.binding);
-				if (index !== -1) {
-					target.splice(index, 1);
+			targetObject[key] = binding;
+		}
+		return await Settings.saveWrangler(wrangler);
+	},
+	removeBinding: async function(data) {
+		let wrangler = await Settings.loadWrangler();
+		const scope = this.resolveScope(wrangler, data, false);
+		if (!scope) {
+			return wrangler;
+		}
+		const { targetObject, key } = scope;
+		const { name, binding } = data;
+		if (data.binding_type === 'array') {
+			const array = targetObject[key];
+			if (Array.isArray(array)) {
+				const idKey = name ? 'name' : 'binding';
+				const value = name || binding;
+				const index = array.findIndex(item => item[idKey] === value);
+				if (index > -1) {
+					array.splice(index, 1);
 				}
 			}
-			this.cleanBindings(wrangler, environment, type);
+		} else {
+			delete targetObject[key];
 		}
-
-		await Settings.saveWrangler(wrangler);
-
-		return {wrangler,environment,binding: binding.binding};
+		this.pruneEmpty(wrangler);
+		return await Settings.saveWrangler(wrangler);
+	},
+	addEnvironment: async function(name) {
+		const object = {
+			env: {
+				[name]: {}
+			}
+		};
+		return await Settings.saveWrangler(object,true);
+	},
+	renameEnvironment: async function(oldName,newName) {
+		let wrangler = await Settings.loadWrangler();
+		const envs = wrangler.env;
+		const existing = envs && Object.prototype.hasOwnProperty.call(envs,oldName);
+		if (existing) {
+			const newEnvs = {};
+			const keys = Object.keys(envs);
+			for (const key of keys) {
+				if (key === oldName) {
+					newEnvs[newName] = envs[oldName];
+				} else {
+					newEnvs[key] = envs[key];
+				}
+			}
+			wrangler.env = newEnvs;
+		}
+		return await Settings.saveWrangler(wrangler);
+	},
+	removeEnvironment: async function(name) {
+		let wrangler = await Settings.loadWrangler();
+		delete wrangler.env[name];
+		return await Settings.saveWrangler(wrangler);
 	}
 }
 
 export default async function(name,value,data) {
 	try {
+		let editor,wrangler,binding;
 		switch (name+' '+value) {
-			case 'editor start': {
-				if (Worker.instances) {
-					IO.log('danger','Editor is already running.');
-					IO.log('line');
-				} else {
-					const name = data.context.toUpperCase();
-					IO.log('accept','Starting '+name+' editor.');
-					data = await Worker.start(data);
-					IO.signal(data.context,'editor','started',data);
-					IO.log('line');
-				}
-			} break;
-			case 'editor check': {
-				if (Worker.instances) {
-					const name = Worker.data.context.toUpperCase();
-					IO.log('normal',name+' editor is active.');
-					IO.signal(Worker.data.context,'editor','started',Worker.data);
-					IO.log('line');
-				}
-			} break;
-			case 'editor stop': {
-				if (Worker.instances) {
-					const data = Worker.data;
-					const name = data.context.toUpperCase();
-					Worker.stop();
-					IO.log('accept','Exited '+name+' editor.');
-					IO.signal(data.context,'editor','stopped',data);
-					IO.log('line');
-				}
-			} break;
-			case 'environments load':
-				IO.log('accept','Loading wrangler settings...');
-				const wrangler = await Settings.loadWrangler();
-				IO.signal('environments','wrangler','loaded',wrangler);
+			// ACCOUNT ////////////////////////////////////////////////////////
+			case 'account whoami':
+				IO.log('accept','Checking Cloudflare authentication status...');
+				await IO.spawn('npx wrangler whoami --account');
 				IO.log('accept','Done!');
 				IO.log('line');
 				break;
-			/*case 'bindings list': {
-				IO.log('accept','Loading list of bindings...');
-				const wrangler = await Settings.loadWrangler();
-				IO.signal('bindings','list','loaded',wrangler);
+			// EDITOR /////////////////////////////////////////////////////////
+			case 'start editor':
+				if (Object.keys(Worker.instances).length > 0) {
+					IO.log('danger', 'Editor is already running.');
+					IO.log('line');
+				} else {
+					data.editor_context = {
+						d1_databases: 'D1',
+						r2_buckets: 'R2'
+					}[data.binding_path];
+					IO.log('accept', 'Starting '+data.editor_context+' editor for "'+data.binding+'"...');
+					try {
+						const result = await Worker.start(data);
+						const options = {...data, connections: result};
+						const context = {
+							d1_databases: 'd1_editor',
+							r2_buckets: 'r2_editor'
+						}[data.binding_path];
+						IO.signal(context, 'editor', 'started', options);
+					} catch (error) {
+						console.log(error);
+						IO.log('reject', 'Failed to start editor');
+					}
+					IO.log('line');
+				}
+				break;
+			case 'check editor':
+				if (Worker.data && Object.keys(Worker.instances).length > 0) {
+					const context = {
+						d1_databases: 'd1_editor',
+						r2_buckets: 'r2_editor'
+					}[Worker.data.binding_path];
+					IO.log('normal', Worker.data.editor_context+' editor is active.');
+					IO.signal(context, 'editor', 'started', Worker.data);
+					IO.log('line');
+				}
+				break;
+			case 'stop editor':
+				if (Object.keys(Worker.instances).length > 0) {
+					console.log(Worker.data);
+					const context = Worker.data.editor_context;
+					Worker.stop();
+					IO.log('accept', 'Exited '+context+' editor.');
+					IO.signal('environments', 'editor', 'stopped');
+					IO.log('line');
+				}
+				break;
+			// ENVIRONMENT ////////////////////////////////////////////////////
+			case 'add environment':
+				IO.log('accept','Adding environment "'+data.name+'" to wrangler...');
+				wrangler = await methods.addEnvironment(data.name);
+				IO.signal('environments','environment','added',wrangler);
 				IO.log('accept','Done!');
 				IO.log('line');
-			} break;*/
-			case 'bindings add': {
-				IO.log('accept','Adding binding to wrangler...');
-				const result = await methods.updateBindings(data,true);
-				IO.signal('bindings','add','saved',result);
+				break;
+			case 'edit environment':
+				IO.log('accept','Renaming environment from "'+data.environment+'" to "'+data.name+'"...');
+				wrangler = await methods.renameEnvironment(data.environment,data.name);
+				IO.signal('environments','environment','edited',wrangler);
 				IO.log('accept','Done!');
 				IO.log('line');
-			} break;
-			case 'bindings remove': {
-				IO.log('accept','Removing binding from wrangler...');
-				const result = await methods.updateBindings(data,false);
-				IO.signal('bindings','remove','saved',result);
+				break;
+			case 'remove environment':
+				IO.log('accept','Removing environment "'+data.environment+'"...');
+				wrangler = await methods.removeEnvironment(data.environment);
+				IO.signal('environments','environment','removed',wrangler);
 				IO.log('accept','Done!');
 				IO.log('line');
-			} break;
-			case 'account whoami': {
-				IO.log('accept','Checking Cloudflare authentication status...');
-				const response = await IO.execute('npx wrangler whoami --account');
-				IO.signal('cloudflare','account','iam',response);
+				break;
+			// BINDING ////////////////////////////////////////////////////////
+			case 'add binding':
+				binding = data.binding || data.name;
+				IO.log('accept','Adding binding "'+binding+'" to the '+data.binding_environment+' environment...');
+				wrangler = await methods.updateBinding(data);
+				IO.signal('environments','binding','added',wrangler);
 				IO.log('accept','Done!');
 				IO.log('line');
-			} break;
-			case 'account login': {
-				IO.log('accept','Starting Cloudflare authentication process...');
-				const response = await IO.execute('npx wrangler login');
-				IO.signal('cloudflare','account','online',response);
+				break;
+			case 'edit binding':
+				binding = data.binding || data.name;
+				IO.log('accept','Updating binding "'+binding+'" in the '+data.binding_environment+' environment...');
+				wrangler = await methods.updateBinding(data);
+				IO.signal('environments','binding','edited',wrangler);
 				IO.log('accept','Done!');
 				IO.log('line');
-			} break;
-			case 'account logout': {
-				IO.log('accept','Logging out from Cloudflare...');
-				const response = await IO.execute('npx wrangler logout');
-				IO.signal('cloudflare','account','offline',response);
+				break;
+			case 'remove binding':
+				binding = data.binding || data.name;
+				IO.log('accept','Removing binding "'+binding+'" in the '+data.binding_environment+' environment...');
+				wrangler = await methods.removeBinding(data);
+				IO.signal('environments','binding','removed',wrangler);
 				IO.log('accept','Done!');
 				IO.log('line');
-			} break;
-			case 'account api': {
+				break;
+			/*case 'api test': {
 				IO.log('accept','Testing the API...');
 				const request = {
 					href: 'user/tokens/verify',
 					method: 'get'
 				}
-				const response = await IO.api(request);
-				IO.signal('cloudflare','account','api',response);
+				const response = {blergh:'blargh'};//await IO.api(request);
+				//IO.signal('cloudflare','account','api',response);
+				IO.signal('account','settings','loaded',response);
 				IO.log('accept','Done!');
 				IO.log('line');
-			} break;
+			} break;*/
+			default:
+				console.log('???',name,value,data);
 		}
 	} catch (error) {
 		console.log(error);

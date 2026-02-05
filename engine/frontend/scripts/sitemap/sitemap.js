@@ -1,5 +1,5 @@
 
-import { Index,IO,Overlay,Ghost,DepotNode,MapNode,MapData,NodeTree } from '../frontend.js';
+import { Index,IO,Output,Overlay,LapineMessage,Ghost,DepotNode,MapNode,MapData,NodeTree } from '../frontend.js';
 
 export const Sitemap = new class {
 	#initiated = false;
@@ -20,7 +20,7 @@ export const Sitemap = new class {
 				Index.elements.sitemap.dropzone.dataset.over = allowed;
 				break;
 			case 'dragleave':
-				IO.live(null);
+				Output.live(null);
 				Index.elements.sitemap.dropzone.dataset.over = null;
 				break;
 			case 'drop':
@@ -31,7 +31,7 @@ export const Sitemap = new class {
 				Index.elements.sitemap.dropzone.dataset.over = null;
 				break;
 			case 'sitemap':
-				let message;
+				let message,signal;
 				switch (event.detail.name+' '+event.detail.value) {
 					case 'menu visible':
 						if (this.#initiated == false) {
@@ -39,24 +39,26 @@ export const Sitemap = new class {
 						}
 						break;
 					case 'menu load':
-						IO.send('sitemap','load','existing');
-						break;
-					case 'menu new':
-						IO.send('sitemap','load','model');
+						IO.sendSignal(false,'sitemap','load','existing');
 						break;
 					case 'menu save':
 						const map = NodeTree.getMap();
 						const json = JSON.stringify(map);
-						IO.send('sitemap','save','compress',json);
+						IO.sendSignal(false,'sitemap','save','compress',json);
 						break;
-					case 'csp edit':
+					case 'confirm new':
+						message = new LapineMessage('danger','Are you sure?','A new Sitemap will be loaded. Unless you save it, you can restore your current Sitemap by clicking "Load".');
+						signal = IO.getSignal(false,'sitemap','load','template');
+						message.addButton('accept','Proceed',signal);
+						message.addButton('reject','Cancel',null);
+						message.display(false);
+						break;
+					case 'policy edit':
 						if (event.detail.data.csp == '') {
-							message = IO.getMessage('danger','Name missing','Please enter a file name in order to make edits. If the file doesn\'t exist it will be created.');
+							message = new LapineMessage('danger','Name missing','Please enter a file name in order to open a file. If the file doesn\'t exist it will be created.');
 							message.display();
 						} else {
-							const file = event.detail.data.csp.replace('.csp.txt','');
-							const signal = IO.getSignal('policy','dialog','open',file);
-							Overlay.open('Edit content security policy','/markup/policy.html',signal);
+							IO.sendSignal(false,'policy','load',event.detail.data.csp,null);
 						}
 						break;
 					case 'loaded success':
@@ -65,7 +67,7 @@ export const Sitemap = new class {
 						break;
 					case 'saved success':
 						this.setEdited(false);
-						message = IO.getMessage('accept','Success!','The sitemap has been saved.');
+						message = new LapineMessage('accept','Success!','The sitemap has been saved.');
 						message.display(true);
 						break;
 					case 'depot undo':
@@ -81,7 +83,7 @@ export const Sitemap = new class {
 						const saved = this.saveNode(event.detail.data);
 						if (event.detail.name == 'site' && saved) {
 							NodeTree.updateRoot(event.detail.data);
-							IO.live('accept','Settings saved!');
+							Output.live('accept','Settings saved!');
 						}
 						break;
 					default:
@@ -114,7 +116,7 @@ export const Sitemap = new class {
 
 		document.body.append(Ghost);
 
-		IO.send('sitemap','load','existing');
+		IO.sendSignal(false,'sitemap','load','existing');
 
 	}
 	build(data) {
@@ -146,14 +148,14 @@ export const Sitemap = new class {
 
 			switch (element.data.type) {
 				case 'root':
-					IO.live('accept','Editing site settings');
+					Output.live('accept','Editing site settings');
 					break;
 				case 'title':
 				case 'redirect':
-					IO.live('accept','Editing '+element.data.type+' "'+element.data.title+'"');
+					Output.live('accept','Editing '+element.data.type+' "'+element.data.title+'"');
 					break;
 				default:
-					IO.live('accept','Editing '+element.data.type+' "'+element.data.uni+'"');
+					Output.live('accept','Editing '+element.data.type+' "'+element.data.uni+'"');
 			}
 
 			this.loadForm(element);
@@ -177,7 +179,7 @@ export const Sitemap = new class {
 
 		Index.elements.sitemap.forms.dataset.state = 'none';
 
-		IO.live(null);
+		Output.live(null);
 
 		if (this.selected != null) {
 
@@ -237,7 +239,7 @@ export const Sitemap = new class {
 
 		let form;
 		let data = structuredClone(element.data);
-console.log(data);
+
 		if (data.type == 'root') {
 			form = document.forms.site;
 			data = MapData.site;
@@ -249,21 +251,9 @@ console.log(data);
 			data.conditions = data.conditions.replace(';','\n');
 		}
 
-		for (const input of form.elements) {
-			if (input.name) {
-				switch (input.type) {
-					case 'submit':
-						break;
-					case 'checkbox':
-						input.checked = data[input.name] || false;
-						break;
-					default:
-						input.value = data[input.name] || '';
-				}
-			}
-		}
+		Index.fillForm(form,data);
 
-		form.dataset.lock = MapData.isReserved(element.data.uni);
+		form.dataset.lock = MapData.isRequired(element.data.uni);
 
 		if (data.type == 'page' || data.type == 'frame') {
 
@@ -285,30 +275,32 @@ console.log(data);
 	saveNode(input) {
 
 		if (input.uni) {
-			if (input.uni == '') {
-				IO.live('reject','Uni can\'t be empty');
-				return false;
-			}
 			const element = NodeTree.getElement(input.uni);
-			if (element != undefined && element != this.selected) {
-				IO.live('reject','Uni "'+input.uni+'" already exists as '+element.data.type+' "'+element.data.title+'"');
-				return false;
-			}
-			if (input.uni != this.selected.data.uni) {
-				const old = this.selected.data.uni;
-				NodeTree.removeElement(old);
-				NodeTree.addElement(input.uni,this.selected);
-				this.selected.data.uni = input.uni;
-				if (MapData.getSiteValue('index') == old) {
-					MapData.setSiteValue('index',input.uni);
-				}
+			switch (true) {
+				case input.uni == '':
+					Output.live('reject','Uni can\'t be empty',true);
+					return false;
+				case MapData.isReserved(input.uni):
+					Output.live('reject','"'+input.uni+'" is a reserved word and can\'t be used',true);
+					return false;
+				case element != undefined && element != this.selected:
+					Output.live('reject','Uni "'+input.uni+'" already exists as '+element.data.type+' "'+element.data.title+'"',true);
+					return false;
+				case input.uni != this.selected.data.uni:
+					const old = this.selected.data.uni;
+					NodeTree.removeElement(old);
+					NodeTree.addElement(input.uni,this.selected);
+					this.selected.data.uni = input.uni;
+					if (MapData.getSiteValue('index') == old) {
+						MapData.setSiteValue('index',input.uni);
+					}
 			}
 		}
 
 		if (input.path) {
 			for (const child of this.selected.parentNode.children) {
 				if (child.data.path == input.path && child != this.selected) {
-					IO.live('reject','Path "'+input.path+'" already leads to '+child.data.type+' "'+child.data.title+'"');
+					Output.live('reject','Path "'+input.path+'" already leads to '+child.data.type+' "'+child.data.title+'"',true);
 					return false;
 				}
 			}
@@ -336,6 +328,8 @@ console.log(data);
 
 		this.selected.update();
 		this.setEdited(true);
+
+		Output.live('accept','The '+this.selected.data.type+' has been saved!',true);
 
 		return true;
 

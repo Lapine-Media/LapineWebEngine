@@ -24,14 +24,12 @@ const methods = {
 				href: 'accounts/$ACCOUNT_ID/r2/buckets'
 			}
 			const response = await IO.api(request);
-			console.log(response);
 			IO.signal('r2','buckets','loaded',response);
 			IO.log('accept','Done!');
-			IO.log('line');
-		} catch (error) {
-			console.log(error);
-			IO.log('line');
+		} catch {
+			IO.log('reject','R2 connection failed.');
 		}
+		IO.log('line');
 	},
 	create: async function(data) {
 		try {

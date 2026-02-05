@@ -1,0 +1,46 @@
+
+<form id="bindings" action="environments">
+	<fieldset>
+		<legend>Queue Producer</legend>
+		<div>
+			<small>For reference, see <a href="https://developers.cloudflare.com/workers/wrangler/configuration/#queues" target="_blank">developers.cloudflare.com</a>.</small>
+		</div>
+		<div>
+			<label>
+				<span>Binding</span>
+				<input type="text" name="binding">
+			</label>
+			<small>Name of 'env.' binding property in the User Worker.</small>
+		</div>
+		<div>
+			<label>
+				<span>Queue</span>
+				<input type="text" name="queue">
+			</label>
+			<small>The name of this Queue.</small>
+		</div>
+		<div>
+			<label>
+				<span>Delivery Delay</span>
+				<input type="text" name="delivery_delay">
+			</label>
+			<small>The number of seconds to wait before delivering a message.</small>
+		</div>
+		<div>
+			<label>
+				<input type="checkbox" name="remote" value="true">
+				<span>Remote</span>
+			</label>
+			<small>Whether the Queue producer should be remote or not in local development.</small>
+		</div>
+	</fieldset>
+	<footer>
+		<input type="hidden" name="binding_identity" value="">
+		<input type="hidden" name="binding_environment" value="">
+		<input type="hidden" name="binding_path" value="queues.producers">
+		<input type="hidden" name="binding_type" value="array">
+		<button class="add" type="submit" name="add" value="binding">Add</button>
+		<button class="remove" type="submit" name="remove" value="binding">Remove</button>
+		<button class="save" type="submit" name="save" value="binding">Save</button>
+	</footer>
+</form>

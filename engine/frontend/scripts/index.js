@@ -25,7 +25,7 @@ export const Index = new class {
 						const [,context,name,value] = url.pathname.split('/');
 						const search = url.searchParams.entries();
 						const data = Object.fromEntries(search);
-						IO.signal(context,name,value,data);
+						IO.sendSignal(true,context,name,value,data);
 					} else {
 						await this.openLink(event.target.href,event.target.target);
 					}
@@ -34,14 +34,23 @@ export const Index = new class {
 				}
 				break;
 			case 'change':
-				document.body.dataset.awesome = event.target.checked;
-				localStorage.setItem('awesome',event.target.checked);
-				if (event.target.checked == false) {
-					IO.log('danger','Oh, ok... ( •_•)');
+				if (event.target == document.forms.index.elements.awesome) {
+					document.body.dataset.awesome = event.target.checked;
+					localStorage.setItem('awesome',event.target.checked);
+					if (event.target.checked == false) {
+						Output.log('danger','Oh, ok... ( •_•)','reject');
+					} else {
+						Output.log('inform','Heck yeah! °˖✧◝ \\（ ^ ◡ ^ ）/ ◜✧˖° ♥','accept');
+					}
 				} else {
-					IO.log('inform','Heck yeah! °˖✧◝ \\（ ^ ◡ ^ ）/ ◜✧˖° ♥');
+					localStorage.setItem('audio',event.target.checked);
+					if (event.target.checked == false) {
+						Output.log('danger','Got it, no sounds... (>_<)');
+					} else {
+						Output.log('inform','Wohoo! .☆((⸜(⁀ ᗜ ⁀)⸝))☆. ♥','accept');
+					}
 				}
-				IO.log('line');
+				Output.log('line');
 				break;
 			case 'submit':
 				event.preventDefault();
@@ -51,7 +60,7 @@ export const Index = new class {
 					const entries = data.entries();
 					data = Object.fromEntries(entries);
 				}
-				IO.signal(context,event.submitter.name,event.submitter.value,data);
+				IO.sendSignal(true,context,event.submitter.name,event.submitter.value,data);
 				break;
 			default:
 				this.buttonHandler(event.detail);
@@ -71,6 +80,11 @@ export const Index = new class {
 					form.elements.awesome.checked = awesome;
 					form.elements.awesome.addEventListener('change',this);
 
+					const audio = localStorage.getItem('audio') === 'true';
+					document.body.dataset.awesome = audio;
+					form.elements.audio.checked = audio;
+					form.elements.audio.addEventListener('change',this);
+
 					const promises = [
 						this.openLink('/markup/project.html','project'),
 						this.openLink('/markup/sitemap.html','sitemap'),
@@ -80,8 +94,8 @@ export const Index = new class {
 
 					await Promise.all(promises);
 
-					const data = {uni:'project',title:'Project'};
-					IO.signal('index','menu','page',data);
+					const data = {title:'Project'};
+					IO.sendSignal(true,'index','menu','project',data);
 
 					this.#state.resolve(true);
 
@@ -127,62 +141,99 @@ export const Index = new class {
 		return collection;
 	}
 	async loadTemplates() {
-		const promise = async (resolve,reject) => {
-			try {
-				const template = document.createElement('template');
-				template.innerHTML = await IO.loadAsset('markup/templates.html','html');
-				const elements = template.content.querySelectorAll('template');
-				const templates = {};
-				elements.forEach(element => templates[element.id] = element.content);
-				resolve(templates);
-			} catch (error) {
-				reject(error);
+		const rewriteUrls = (cssText, baseUrl) => {
+			baseUrl = baseUrl.replace('../',document.location.origin+'/');
+			const getURL = (match,url) => {
+				switch (true) {
+					case url.startsWith('data:'):
+					case url.startsWith('http'):
+					case url.startsWith('/'):
+						return match;
+				}
+				return new URL(url, baseUrl).href;
 			}
+			const imports = (match, url1, url2) => {
+				const absoluteUrl = getURL(match,url1 || url2);
+				return '@import "'+absoluteUrl+'";';
+			}
+			const datas = (match, url) => {
+				const absoluteUrl = getURL(match,url);
+				return 'url("'+absoluteUrl+'");';
+			}
+			cssText = cssText.replace(/@import\s+(?:url\(['"]?(.+?)['"]?\)|['"](.+?)['"]);?/g, imports);
+			cssText = cssText.replace(/url\(['"]?(.+?)['"]?\)/g, datas);
+			return cssText;
+		};
+		try {
+			const templateContainer = document.createElement('template');
+			templateContainer.innerHTML = await IO.loadAsset('markup/templates.html', 'html');
+			const elements = templateContainer.content.querySelectorAll('template');
+			const templates = {};
+			for (const element of elements) {
+				const links = element.content.querySelectorAll('link[rel="stylesheet"]');
+				for (const link of links) {
+					try {
+						let cssText = await IO.loadAsset(link.href, 'text');
+						cssText = rewriteUrls(cssText, link.href);
+						const style = document.createElement('style');
+						style.textContent = cssText;
+						link.replaceWith(style);
+					} catch (error) {
+						console.log(error);
+						Output.log('danger','Failed to inline CSS for '+link.href);
+					}
+				}
+				templates[element.id] = element.content;
+			}
+			return templates;
+		} catch (error) {
+			throw error;
 		}
-		return new Promise(promise);
 	}
 	getTemplate(id) {
 		const fragment = this.#templates[id].cloneNode(true);
-		const template = {fragment: fragment};
-		const method = element => {
-			template[element.id] = element;
-		}
+		const template = {fragment};
+		const method = element => template[element.id] = element;
 		fragment.querySelectorAll('*[id]').forEach(method);
 		return template;
 	}
-	async openLink(href,target) {
-		if (target == '_blank') {
-			window.open(href,target);
-			return Promise.resolve(true);
-		}
-		const promise = async (resolve,reject) => {
-			try {
-				const template = document.createElement('template');
-				const frame = document.getElementById(target);
-
-				template.innerHTML = await IO.loadAsset(href,'text');
-
-				this.update(frame,template.content);
-
-				this.elements[target] = this.getElements(frame);
-
-				resolve(true);
-			} catch (error) {
-				console.log(error);
-				reject(error);
+	slotChange(slot,element) {
+		const options = {flatten: true};
+		const nodes = slot.assignedNodes(options);
+		const clone = node => {
+			if (node.nodeType === Node.ELEMENT_NODE) {
+				const clone = node.cloneNode(true);
+				element.appendChild(clone);
 			}
 		}
-		return new Promise(promise);
+		nodes.forEach(clone);
+	}
+	async openLink(href,target,signal = false) {
+		if (target == '_blank') {
+			window.open(href,target);
+			return true;
+		}
+		try {
+			const template = document.createElement('template');
+			const frame = document.getElementById(target);
+			template.innerHTML = await IO.loadAsset(href,'text');
+			this.update(frame,template.content);
+			this.elements[target] = this.getElements(frame);
+			IO.receiveSignal(signal,href);
+			return this.elements[target];
+		} catch (error) {
+			throw error;
+		}
 	}
 	buttonHandler(detail) {
 		switch (detail.name+' '+detail.value) {
 			case 'menu about':
-				Overlay.open('Lapine Web Engine','/markup/about.html',null,'Close');
+				Overlay.open('Lapine Web Engine','/markup/about.html',null,null,'Close');
 				break;
-			case 'menu page':
-				document.body.dataset.page = detail.data.uni;
+			case 'menu '+detail.value:
+				document.body.dataset.page = detail.value;
 				Index.elements.frame.title.textContent = detail.data.title;
-				IO.signal(detail.data.uni,'menu','visible',detail.data);
+				IO.sendSignal(true,detail.value,'menu','visible',detail.data);
 				break;
 			case 'dialog cancel':
 				Overlay.close();
@@ -194,7 +245,7 @@ export const Index = new class {
 				if (detail.name == 'state') {
 					this.setState(detail.value);
 				} else {
-					console.log(detail);
+					console.log(detail.name+' '+detail.value);
 				}
 		}
 	}
@@ -206,5 +257,22 @@ export const Index = new class {
 			element.append(fragment);
 		}
 		element.classList.remove('loading');
+	}
+	fillForm(form,data) {
+		for (const input of form.elements) {
+			const value = data[input.name];
+			if (value !== undefined && value !== null) {
+				switch (true) {
+					case input.type == 'checkbox':
+						input.checked = true;
+						break;
+					case Array.isArray(value):
+						input.value = value.join(', ');
+						break;
+					default:
+						input.value = value;
+				}
+			}
+		}
 	}
 }

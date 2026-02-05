@@ -1,0 +1,12 @@
+
+@import '../common.css';
+@import '../forms.css';
+
+:host {
+	display: block;
+}
+.container {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+}

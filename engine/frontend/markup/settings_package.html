@@ -1,0 +1,46 @@
+
+<form id="project_settings" action="project">
+	<fieldset>
+		<legend>Package</legend>
+		<div>
+			<label>
+				<span>Name</span>
+				<input type="text" name="name">
+			</label>
+			<small>Can't contain uppercase or any non-URL-safe characters.</small>
+			<small>More details at <a href="https://docs.npmjs.com/cli/v11/configuring-npm/package-json#name" target="_blank">docs.npmjs.com</a></small>
+		</div>
+		<div>
+			<label>
+				<span>Version number</span>
+				<input type="text" name="version">
+			</label>
+			<small>Format: 1.0.0 (major.minor.patch)</small>
+		</div>
+		<div>
+			<label>
+				<span>Description</span>
+				<input type="text" name="description">
+			</label>
+			<small>This helps people discover your package, as it's listed in npm search.</small>
+		</div>
+		<div>
+			<label>
+				<span>Keywords</span>
+				<input type="text" name="keywords">
+			</label>
+			<small>Comma-separated list.</small>
+			<small>This helps people discover your package, as it's listed in npm search.</small>
+		</div>
+		<div>
+			<label>
+				<span>Project scripts</span>
+				<textarea name="scripts" class="lined"></textarea>
+			</label>
+			<small>One script per line.</small>
+		</div>
+	</fieldset>
+	<footer>
+		<button type="submit" name="package" value="save">Save</button>
+	</footer>
+</form>

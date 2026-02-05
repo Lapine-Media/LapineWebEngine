@@ -2,52 +2,49 @@
 import IO from './io.js';
 import fs from 'fs/promises';
 import { default as Path } from 'path';
-
+import sharp from 'sharp';
 import { minify } from 'terser';
 import autoprefixer from 'autoprefixer';
 import postcss from 'postcss';
-
 import { exec } from 'child_process';
+import { gzip, gunzip } from 'node:zlib';
+import { promisify } from 'node:util';
+
+const gzipAsync = promisify(gzip);
+const gunzipAsync = promisify(gunzip);
 
 export const Cleanup = {
 	plugins: [autoprefixer],
 	options: {from: undefined},
-	css: function(css,minify = true) {
-		const promise = async (resolve,reject) => {
-			try {
-				const result = await postcss(this.plugins).process(css,this.options);
-				result.warnings().forEach(warn => IO.log('reject',warn));
-				css = minify == false ? result.css : result.css
-					.replace(/\/\*[\s\S]*?\*\//g, '') // Remove comments
-					.replace(/\s*([{}:;,])\s*/g, '$1') // Remove spaces around symbols
-					.replace(/\s+/g, ' ') // Replace multiple spaces with single space
-					.replace(/;}/g, '}') // Remove unnecessary semicolons before a closing brace
-					.trim(); // Remove leading/trailing whitespace
-				resolve(css);
-			} catch (error) {
-				reject(error);
-			}
+	css: async function(css,minify = true) {
+		try {
+			const result = await postcss(this.plugins).process(css,this.options);
+			result.warnings().forEach(warn => IO.log('reject',warn));
+			css = minify == false ? result.css : result.css
+				.replace(/\/\*[\s\S]*?\*\//g, '') // Remove comments
+				.replace(/\s*([{}:;,])\s*/g, '$1') // Remove spaces around symbols
+				.replace(/\s+/g, ' ') // Replace multiple spaces with single space
+				.replace(/;}/g, '}') // Remove unnecessary semicolons before a closing brace
+				.trim(); // Remove leading/trailing whitespace
+			return css;
+		} catch (error) {
+			throw error;
 		}
-		return new Promise(promise);
 	},
 	html: function(markup) {
-		markup = markup
+		return markup
 			.replace(/>\s+</g, '><') // Remove whitespace between tags
 			.replace(/\s{2,}/g, ' ') // Replace multiple spaces with a single space
 			.replace(/<!--[\s\S]*?-->/g, '') // Remove comments
 			.trim(); // Remove leading/trailing whitespace
-		return Promise.resolve(markup);
 	},
-	js: function(contents) {
-		const promise = async (resolve,reject) => {
-			try {
-				const minified = await minify(contents,{});
-				resolve(minified.code);
-			} catch (error) {
-				reject(error);
-			}
+	js: async function(contents) {
+		try {
+			const minified = await minify(contents,{});
+			return minified.code;
+		} catch (error) {
+			throw error;
 		}
-		return new Promise(promise);
 	}
 }
 
@@ -58,90 +55,69 @@ export const Tools = {
 		'.js': 'text/javascript',
 		'.css': 'text/css',
 		'.json': 'application/json',
-		'.png': 'image/x-png',
+		'.png': 'image/png',
 		'.jpg': 'image/jpeg',
 		'.jpeg': 'image/jpeg',
 		'.gif': 'image/gif',
+		'.webp': 'image/webp',
 		'.svg': 'image/svg+xml'
 	},
-	asPromise: function(method) {
-		return (...args) => {
-			const promise = async (resolve,reject) => {
-				try {
-					const result = await method(...args);
-					resolve(result);
-				} catch (error) {
-					reject(error);
-				}
-			}
-			return new Promise(promise);
-		};
+	fileData: async function(path) {
+		const name = Path.basename(path);
+        const type = Path.extname(name);
+        const stat = await fs.stat(path);
+		const safeName = Path.parse(path).name;
+        return {
+            path: path,
+            name: safeName,
+            type: type,
+            mime: this.mimes[type] || 'application/octet-stream',
+            size: stat.size
+        };
 	},
-	fileData: function(path) {
-		const promise = async (resolve,reject) => {
-			try {
-				const name = Path.basename(path);
-				const type = Path.extname(name);
-				const stat = await fs.stat(path);
-				const data = {
-					path: path,
-					name: name.replace(type,''),
-					type: type,
-					mime: this.mimes[type],
-					size: stat.size
-				}
-				resolve(data);
-			} catch (error) {
-				reject(error);
+	readFile: async function(path,json = false,decompress = false,missing = null) {
+		//const { json = false, decompress = false, missing = null } = options;
+		try {
+			let content;
+			if (decompress) {
+				const buffer = await fs.readFile(path);
+                content = await this.decompress(buffer);
+			} else {
+				const options = {encoding: 'utf8'};
+				content = await fs.readFile(path,options);
 			}
+			if (json) {
+                content = JSON.parse(content);
+            }
+			IO.log('normal','Reading: '+path,true);
+			return content;
+		} catch (error) {
+			if (missing == null) {
+				throw error;
+			}
+			return missing;
 		}
-		return new Promise(promise);
 	},
-	readFile: function(path,json = false,decompress = false,missing = null) {
-		IO.log('normal','Reading: '+path,true);
-		let content;
-		const promise = async (resolve,reject) => {
-			try {
-				if (decompress) {
-					content = await fs.readFile(path);
-					content = await this.decompress(content);
-				} else {
-					const options = {encoding: 'utf8'};
-					content = await fs.readFile(path,options);
-				}
-				content = json ? JSON.parse(content): content;
-				resolve(content);
-			} catch (error) {
-				if (missing == null) {
-					reject(error);
-				} else {
-					resolve(missing);
-				}
-			}
+	writeFile: async function(path,content,compress = false,append = false) {
+		if (typeof content !== 'string') {
+			content = JSON.stringify(content,null,'\t') ?? '';
 		}
-		return new Promise(promise);
-	},
-	writeFile: function(path,content,compress = false,append = false) {
+		if (compress) {
+			content = await this.compress(content);
+		}
+		if (append) {
+			await fs.appendFile(path,content);
+		} else {
+			await fs.writeFile(path,content);
+		}
+		const stats = await fs.stat(path);
+		const size = this.formatFileSize(stats.size);
 		IO.log('normal','Writing: '+path,true);
-		const promise = async (resolve,reject) => {
-			try {
-				if (compress) {
-					content = await this.compress(content);
-				}
-				if (append) {
-					await fs.appendFile(path,content);
-				} else {
-					await fs.writeFile(path,content);
-				}
-				const stats = await fs.stat(path);
-				const size = this.formatFileSize(stats.size);
-				IO.log('inform','Size: '+size);
-				resolve(stats.size);
-			} catch (error) {
-				reject(error);
-			}
-		}
-		return new Promise(promise);
+		IO.log('inform','Size: '+size);
+		return stats.size;
+	},
+	cloneFile: async function(source,destination) {
+		await fs.copyFile(source,destination);
 	},
 	ensureDirectory: async function(path) {
 		try {
@@ -153,55 +129,40 @@ export const Tools = {
 			throw error;
 		}
 	},
-	readDirectory: function(path,withFileTypes = false,recursive = false) {
+	readDirectory: async function(path,withFileTypes = false,recursive = false,quiet = true) {
 		try {
-			IO.log('normal','Reading directory: '+path,true);
-			const options = {withFileTypes,recursive}
-			return fs.readdir(path,options);
+	        const options = { withFileTypes, recursive };
+	        const files = await fs.readdir(path, options);
+	        IO.log('normal', 'Reading directory: ' + path, true);
+	        return files;
+	    } catch (error) {
+	        if (quiet) return [];
+	        throw error;
+	    }
+	},
+	cloneDirectory: async function(source,destination) {
+		IO.log('normal','Cloning directory: '+source,true);
+		const options = {
+			recursive: true,
+			force: false
+		};
+		await fs.cp(source,destination,options);
+	},
+	removeFile: async function(path,quiet = true) {
+		try {
+			IO.log('normal', 'Removing: ' + path, true);
+			return await fs.unlink(path);
 		} catch (error) {
+			if (quiet && error.code === 'ENOENT') return;
 			throw error;
 		}
 	},
-	removeFile: function(path) {
-		try {
-			IO.log('normal','Removing: '+path,true);
-			return fs.unlink(path);
-		} catch (error) {
-			throw error;
-		}
+	compress: async function(string) {
+		return await gzipAsync(string);
 	},
-	compress: function(string) {
-		const promise = async (resolve,reject) => {
-			try {
-				const byteArray = new TextEncoder().encode(string);
-				const cs = new CompressionStream('gzip');
-				const writer = cs.writable.getWriter();
-				writer.write(byteArray);
-				writer.close();
-				const arrayBuffer = await new Response(cs.readable).arrayBuffer();
-				const data = Buffer.from(arrayBuffer);
-				resolve(data);
-			} catch (error) {
-				reject(error);
-			}
-		}
-		return new Promise(promise);
-	},
-	decompress: function(data) {
-		const promise = async (resolve,reject) => {
-			try {
-				const ds = new DecompressionStream('gzip');
-				const writer = ds.writable.getWriter();
-				writer.write(data);
-				writer.close();
-				const arrayBuffer = await new Response(ds.readable).arrayBuffer();
-				const string = new TextDecoder().decode(arrayBuffer);
-				resolve(string);
-			} catch (error) {
-				reject(error);
-			}
-		}
-		return new Promise(promise);
+	decompress: async function(data) {
+		const buffer = await gunzipAsync(data);
+		return buffer.toString('utf8');
 	},
 	formatFileSize: function(sizeInBytes) {
 		const units = ['B','KB','MB','GB'];
@@ -218,16 +179,13 @@ export const Tools = {
 		const percent = (reduction*100)+Number.EPSILON;
 		return Math.round(percent*100)/100;
 	},
-	fileExist: function(path) {
-		const promise = async (resolve,reject) => {
-			try {
-				await fs.access(path, fs.constants.R_OK | fs.constants.W_OK);
-				resolve(true);
-			} catch {
-				resolve(false);
-			}
+	fileExist: async function(path) {
+		try {
+			await fs.access(path, fs.constants.R_OK | fs.constants.W_OK);
+			return true;
+		} catch {
+			return false;
 		}
-		return new Promise(promise);
 	},
 	getTimestamp: function(date = true,time = true,seconds = true,timeZone = 'Europe/Paris') {
 		const now = new Date();
@@ -242,6 +200,58 @@ export const Tools = {
 			hour12: false
 		}
 		return new Intl.DateTimeFormat('en-CA',timeOptions).format(now).replace(',','');
+	},
+	loadImage: async function(path) {
+		const content = await fs.readFile(path);
+		const filename = Path.basename(path);
+		const extension = Path.extname(filename).toLowerCase();
+		const type = this.mimes[extension] || 'application/octet-stream';
+		const b64 = content.toString('base64');
+		IO.log('normal', 'Reading: ' + path, true);
+		return {
+			type: type,
+			src: 'data:'+type+';base64,'+b64,
+			name: filename,
+			path: path
+		};
+	},
+	saveImage: async function(buffer, path, type, width, height, background = false) {
+		try {
+			let options = {
+				width: width,
+				height: height,
+				fit: 'contain',
+				background: background || { r: 0, g: 0, b: 0, alpha: 0 }
+			};
+
+			let pipeline = sharp(buffer).resize(options);
+
+			if (background) {
+				options = { background: background };
+				pipeline = pipeline.flatten(options);
+			}
+
+			if (type === 'image/webp') {
+				options = { lossless: true };
+				pipeline = pipeline.webp(options);
+			} else {
+				pipeline = pipeline.png();
+			}
+
+			await pipeline.toFile(path);
+
+			const stats = await fs.stat(path);
+			const size = this.formatFileSize(stats.size);
+
+			IO.log('normal', 'Writing: ' + path, true);
+			IO.log('inform', 'Size: ' + size);
+
+			return stats.size;
+
+		} catch (error) {
+			IO.log('reject', 'Failed to save image: ' + path);
+			throw error;
+		}
 	}
 }
 
@@ -336,36 +346,29 @@ export const Scripts = {
 		Object.entries(this.files).forEach(this.combine,this);
 		return this.imports;
 	},
-	mergeScripts: function(files) {
-		const promise = async (resolve,reject) => {
-			try {
-				const importRegex = /^(?:import\s.+?;|const\s.+?=\srequire\(.+?\);)$/gm;
-				let dependencies = [];
-				const scripts = [];
-				const elements = [];
-				for (const file of files) {
-					let content = await Tools.readFile(file,false,false);
-					const imports = content.match(importRegex) || [];
-					content = content.replace(importRegex, '').trim();
-					content = content.replace(/export\s+default\s+class/,'export class');// remove default keyword
-					dependencies.push(...imports);
-					scripts.push(content);
-					if (file.includes('-') == true) {
-						const name = file.match(/(?:\/|^)([\w-]+)\./)[1];
-						const construct = content.match(/export\s+class\s+(\w+)\s+extends\s+HTMLElement/)[1];
-						elements.push("Site.define('"+name+"',"+construct+");");
-					}
-				}
-				const merged = [
-					...this.consolidateImports(dependencies),
-					...scripts,
-					...elements
-				].join('\n');
-				resolve(merged);
-			} catch (error) {
-				reject(error);
+	mergeScripts: async function(files) {
+		const importRegex = /^(?:import\s.+?;|const\s.+?=\srequire\(.+?\);)$/gm;
+		let dependencies = [];
+		const scripts = [];
+		const elements = [];
+		for (const file of files) {
+			let content = await Tools.readFile(file,false,false);
+			const imports = content.match(importRegex) || [];
+			content = content.replace(importRegex, '').trim();
+			content = content.replace(/export\s+default\s+class/,'export class');// remove default keyword
+			dependencies.push(...imports);
+			scripts.push(content);
+			if (file.includes('-') == true) {
+				const name = file.match(/(?:\/|^)([\w-]+)\./)[1];
+				const construct = content.match(/export\s+class\s+(\w+)\s+extends\s+HTMLElement/)[1];
+				elements.push("Site.define('"+name+"',"+construct+");");
 			}
 		}
-		return new Promise(promise);
+		const merged = [
+			...this.consolidateImports(dependencies),
+			...scripts,
+			...elements
+		].join('\n');
+		return merged;
 	}
 }

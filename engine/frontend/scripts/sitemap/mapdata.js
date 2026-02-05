@@ -4,6 +4,7 @@ export const MapData = new class {
 	constructor() {}
 	setup(data) {
 		this.#data = data;
+		console.log(data);
 	}
 	get length() {
 		return this.#data.nodes.length;
@@ -27,7 +28,7 @@ export const MapData = new class {
 		return this.#data.unis[index];
 	}
 	isRequired(uni) {
-		return this.#data.keys.required[uni] !== undefined;
+		return this.#data.keys.required.includes(uni);
 	}
 	isReserved(uni) {
 		return this.#data.keys.reserved.includes(uni);

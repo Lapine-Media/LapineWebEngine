@@ -7,13 +7,22 @@ article.project .page {
 	margin: auto;
 	padding: 16px;
 	width: 100%;
+	height: 100%;
 	max-width: 1024px;
 	column-gap: 16px;
 
-	& .left {
-		display: grid;
-		grid-template-rows: auto 1fr;
+	& > div {
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
 
+		& .settings {
+			justify-content: center;
+			gap: 16px;
+		}
+	}
+
+	& .left {
 		& .details {
 			display: flex;
 			column-gap: 8px;
@@ -51,24 +60,25 @@ article.project .page {
 				}
 			}
 		}
-
 		& form {
-			display: grid;
-			grid-template-rows: 1fr auto;
+			flex: 1;
 
-			& fieldset {
-				height: 100%;
+			& fieldset.notes {
+				flex: 1;
 
 				& label {
-					display: grid;
-					grid-template-rows: auto 1fr;
+					flex-direction: column;
+					align-items: flex-start;
 
 					& tab-textarea {
-						height: 100%;
+						flex: 1;
 					}
 				}
 			}
 		}
+	}
+	& .right {
+
 	}
 }
 
@@ -79,16 +89,15 @@ article.manifest {
 
 	& .page {
 		display: grid;
-		grid-template-rows: 40px 1fr;
+		grid-template-columns: auto 1fr;
 		height: 100%;
-		overflow: hidden;
 
 		& .header {
 			display: flex;
-            justify-content: center;
-			align-items: center;
+			flex-direction: column;
+			padding: 24px 16px;
             gap: 32px;
-			border-bottom: 1px solid var(--color-borders);
+			border-right: 1px solid var(--color-borders);
 			background-color: var(--color-borders-dark);
 		}
 
@@ -97,38 +106,125 @@ article.manifest {
 			overflow: auto;
 
 			& form {
-				display: grid;
-		        align-items: start;
-		        gap: 16px;
-				max-width: 800px;
-				margin: auto;
+				display: none;
+				width: 640px;
+				margin: 0 auto;
 
-				& fieldset {
-					display: none;
+				&.icons fieldset {
+					& .icon {
+						background-color: var(--color-borders-lighter);
+						padding: 8px;
+						border-radius: 4px;
+					}
+					& image-upload {
+						width: 512px;
+						height: 512px;
+						border-radius: 22.5%;
+						overflow: hidden;
+						transition: border-radius 1s linear;
+						margin: auto;
+
+						&[data-round="true"] {
+							border-radius: 100%;
+						}
+					}
+				}
+				&.screenshots fieldset,
+				&.shortcuts fieldset {
+					display: flex;
+					flex-direction: column;
+					flex: 1;
+					overflow: hidden;
+					padding: 16px 8px 8px 8px;
+
+					& screenshot-gallery,
+					& shortcut-list {
+						flex: 1;
+						overflow: hidden;
+					}
+				}
+				&.shortcuts {
+					height: 100%;
 				}
 			}
 		}
 
-		&[data-state="information"] fieldset.information,
-		&[data-state="appearance"] fieldset.appearance,
-		&[data-state="urls"] fieldset.urls,
-		&[data-state="shortcuts"] fieldset.shortcuts,
-		&[data-state="icons"] fieldset.icons,
-		&[data-state="screenshots"] fieldset.screenshots {
-			display: grid;
+		&[data-state="information"] form.information,
+		&[data-state="appearance"] form.appearance,
+		&[data-state="urls"] form.urls,
+		&[data-state="protocols"] form.protocols,
+		&[data-state="shortcuts"] form.shortcuts,
+		&[data-state="icons"] form.icons,
+		&[data-state="screenshots"] form.screenshots {
+			display: flex;
 		}
 	}
 }
 
-/* POLICY ////////////////////////////////////////////////////////////////// */
+/* OVERLAY ///////////////////////////////////////////////////////////////// */
 
-.overlay .nonce {
-	flex: 1;
-}
-.overlay .policy_items {
-	display: grid;
-	grid-template-columns: auto auto;
-	gap: 8px 8px;
+dialog.overlay {
+	&[data-page="policy"] {
+		& .container {
+			width: 800px;
+		}
+		& .nonce {
+			flex: 1;
+		}
+		& .policy_items {
+			display: grid;
+			grid-template-columns: 50% 50%;
+			gap: 8px 8px;
+			padding-right: 8px;
+		}
+	}
+	&[data-page="environments_edit"] {
+		&.add {
+			.remove {
+				display: none;
+			}
+		}
+	}
+	&[data-page="bindings"] {
+		& fieldset {
+			gap: 12px;
+			& > div {
+				border-bottom: 1px dashed var(--color-borders);
+	            padding-bottom: 12px;
+				&:last-of-type {
+					border-bottom: 0;
+					padding-bottom: 0;
+				}
+			}
+		}
+	}
+	&[data-page="bindings_add"] {
+		.bindings {
+			display: flex;
+		    flex-direction: column;
+		    align-items: center;
+		    gap: 16px;
+		}
+	}
+	&[data-page="vars"] {
+		& tab-textarea {
+			width: 640px;
+			height: 480px;
+		}
+	}
+	&.bindings {
+		&.add {
+			& .remove,
+			& .save {
+				display: none;
+			}
+		}
+		&.edit {
+			& .add {
+				display: none;
+			}
+		}
+	}
 }
 
 /* CLOUDFLARE ////////////////////////////////////////////////////////////// */
@@ -138,24 +234,34 @@ article.cloudflare {
 
 	& .page {
 		display: grid;
-		grid-template-rows: 40px 1fr;
+		grid-template-columns: auto 1fr;
 		height: 100%;
-		overflow: hidden;
 
 		& .header {
 			display: flex;
-            justify-content: center;
-			align-items: center;
-            gap: 32px;
-			border-bottom: 1px solid var(--color-borders);
+			flex-direction: column;
+			padding: 24px 16px;
+			border-right: 1px solid var(--color-borders);
 			background-color: var(--color-borders-dark);
+
+			& .menu {
+				flex: 1;
+				display: flex;
+				flex-direction: column;
+	            gap: 32px;
+			}
 		}
 		& .content {
-			display: grid;
-			align-content: start;
-            gap: 16px;
-			padding: 16px;
 			overflow: auto;
+
+			& .container {
+				padding: 16px;
+				width: 640px;
+				margin: 0 auto;
+				display: flex;
+				flex-direction: column;
+				gap: 16px;
+			}
 		}
 	}
 }

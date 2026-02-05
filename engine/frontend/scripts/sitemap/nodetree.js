@@ -1,5 +1,5 @@
 
-import { Index,MapData,MapNode } from '../frontend.js';
+import { MapData,MapNode } from '../frontend.js';
 
 export const NodeTree = new class {
 	#elements;

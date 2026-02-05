@@ -1,0 +1,1 @@
+default-src 'self';form-action 'none';object-src 'none';script-src 'strict-dynamic' 'nonce';script-src-elem 'strict-dynamic' 'nonce';style-src 'strict-dynamic' 'nonce';style-src-elem 'self' 'strict-dynamic' 'nonce';

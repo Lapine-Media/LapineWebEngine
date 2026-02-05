@@ -1,0 +1,21 @@
+
+<template id="accordion-menu">
+	<style media="screen">
+		.container {
+			display: none;
+		}
+		:host([data-active="true"]) .container {
+			display: flex;
+		}
+	</style>
+	<div id="container" class="container" part="container">
+		<slot></slot>
+	</div>
+</template>
+
+<template id="horizontal-menu" uni="frame">
+	<link rel="stylesheet" href="../styles/menus.css">
+	<div id="container" class="container" part="container">
+		<slot></slot>
+	</div>
+</template>

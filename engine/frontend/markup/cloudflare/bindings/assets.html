@@ -1,0 +1,64 @@
+
+<form id="bindings" action="environments">
+	<fieldset>
+		<legend>Static Assets</legend>
+		<div>
+			<small>For reference, see <a href="https://developers.cloudflare.com/workers/wrangler/configuration/#assets" target="_blank">developers.cloudflare.com</a>.</small>
+		</div>
+		<div>
+			<label>
+				<span>Binding</span>
+				<input type="text" name="binding">
+			</label>
+			<small>Name of 'env.' binding property in the User Worker.</small>
+		</div>
+		<div>
+			<label>
+				<span>Directory</span>
+				<input type="text" name="directory" placeholder="./frontend">
+			</label>
+			<small>Absolute path to assets directory.</small>
+		</div>
+		<div>
+			<label>
+				<span>HTML handling</span>
+				<select name="html_handling">
+					<option value="none">none</option>
+					<option value="auto-trailing-slash">auto-trailing-slash</option>
+					<option value="force-trailing-slash">force-trailing-slash</option>
+					<option value="drop-trailing-slash">drop-trailing-slash</option>
+				</select>
+			</label>
+			<small>How to handle HTML requests.</small>
+		</div>
+		<div>
+			<label>
+				<span>Not-found Handling</span>
+				<select name="not_found_handling">
+					<option value="none">none</option>
+					<option value="single-page-application">single-page-application</option>
+					<option value="404-page">404-page</option>
+				</select>
+			</label>
+			<small>How to handle requests that do not match an asset.</small>
+		</div>
+		<div>
+			<label>
+				<span>Run Worker First</span>
+				<input type="text" name="run_worker_first">
+			</label>
+			<small>Space-separated list of paths. <strong>Examples:</strong> /api/* !/api/docs/*</small>
+			<small>Matches will be routed to the User Worker, and matches to negative rules will go to the Asset Worker.</small>
+			<small>Can also be 'true', indicating that every request should be routed to the User Worker.</small>
+		</div>
+	</fieldset>
+	<footer>
+		<input type="hidden" name="binding_identity" value="">
+		<input type="hidden" name="binding_environment" value="">
+		<input type="hidden" name="binding_path" value="assets">
+		<input type="hidden" name="binding_type" value="object">
+		<button class="add" type="submit" name="add" value="binding">Add</button>
+		<button class="remove" type="submit" name="remove" value="binding">Remove</button>
+		<button class="save" type="submit" name="save" value="binding">Save</button>
+	</footer>
+</form>

@@ -1,0 +1,82 @@
+{
+	"background_color": "#000000",
+	"description": "Simple PWA",
+	"display": "standalone",
+	"orientation": "any",
+	"icons": [
+		{
+			"sizes": "180x180",
+			"src": "./graphics/favicon.svg",
+			"type": "image/svg+xml"
+		}, {
+			"sizes": "3512x512",
+			"src": "./graphics/worker.png",
+			"type": "image/png"
+		}, {
+			"sizes": "any",
+			"src": "./graphics/favicon.svg",
+			"type": "image/svg+xml"
+		}
+	],
+	"id": "/",
+	"name": "Simple PWA",
+	"scope": "../",
+	"short_name": "Simple PWA",
+	"start_url": "./",
+	"theme_color": "#000000",
+	"shortcuts": [
+		{
+			"name": "Send Notification",
+			"url": "https://progressier.com/dashboard/push-campaigns?composer=new",
+			"icons": [
+				{
+					"src": "https://progressier.com/assets/img/icons/bell.png",
+					"sizes": "192x192"
+				}
+			]
+		},{
+			"name": "New Review",
+			"url": "https://progressier.com/dashboard/reviews?openreviewimport=true",
+			"icons": [
+				{
+					"src": "https://progressier.com/assets/img/icons/award.png",
+					"sizes": "192x192"
+				}
+			]
+		},{
+			"name": "Analytics",
+			"url": "https://progressier.com/dashboard/analytics",
+			"icons": [
+				{
+					"src": "https://progressier.com/assets/img/icons/activity.png",
+					"sizes": "192x192"
+				}
+			]
+		},{
+			"name": "Settings",
+			"url": "https://progressier.com/dashboard/name-domain",
+			"icons": [
+				{
+					"src": "https://progressier.com/assets/img/icons/clipboard.png",
+					"sizes": "192x192"
+				}
+			]
+		}
+	],
+	"screenshots": [
+		{
+			"src": "./graphics/pwa/screenshot-1.jpg",
+			"sizes": "1280x720",
+			"type": "image/jpg",
+			"form_factor": "wide",
+			"label": "Home screen showing main navigation and featured content"
+		},
+		{
+			"src": "./graphics/pwa/screenshot-2.jpg",
+			"sizes": "1280x720",
+			"type": "image/jpg",
+			"platform": "ios",
+			"label": "Dashboard view displaying key metrics"
+		}
+	]
+}

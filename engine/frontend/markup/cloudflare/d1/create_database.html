@@ -1,0 +1,40 @@
+
+<form action="d1">
+	<fieldset>
+		<legend>New D1 database</legend>
+		<div>
+			<label>
+				<span>Database name</span>
+				<input type="text" name="name">
+			</label>
+			<small>Only use letters, numbers, and hyphens.</small>
+		</div>
+		<div>
+			<label>
+				<span>Jurisdiction</span>
+				<select name="jurisdiction">
+					<option value="eu">EU</option>
+					<option value="fedramp">FedRAMP (USA)</option>
+				</select>
+			</label>
+			<small>Specify the location to restrict the D1 database to run and store data. If this option is present, the location hint is ignored.</small>
+		</div>
+		<div>
+			<label>
+				<span>Location</span>
+				<select name="primary_location_hint">
+					<option value="weur">Western Europe</option>
+					<option value="eeur">Eastern Europe</option>
+					<option value="apac">Asia Pacific</option>
+					<option value="oc">Oceania</option>
+					<option value="wnam">Western North America</option>
+					<option value="enam">Eastern North America</option>
+				</select>
+			</label>
+			<small>Specify the region to create the D1 primary, if available. If this option is omitted, the D1 will be created as close as possible to the current user.</small>
+		</div>
+	</fieldset>
+	<footer>
+		<button type="submit" name="confirm" value="create">Create</button>
+	</footer>
+</form>

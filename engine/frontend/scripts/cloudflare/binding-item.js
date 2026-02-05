@@ -2,62 +2,90 @@
 import { Index,IO } from '../frontend.js';
 
 export class BindingItem extends HTMLElement {
-	data;
-	constructor(environment,type,data) {
+	#template;
+	#abortController;
+	#data;
+	constructor(binding_environment,binding_path,binding_type,data) {
 		super();
-		this.data = {environment,type,...data};
+		this.#data = {binding_environment,binding_path,binding_type,...data};
+		this.#template = Index.getTemplate('binding-item');
+
 		this.attachShadow({mode: 'open'});
 	}
-	update(data) {
-		console.log(data);
+	get data() {
+		return this.#data;
 	}
 	connectedCallback() {
 
-		const template = Index.getTemplate('binding-item');
-		const {binding,type,environment,...rest} = this.data;
-		const entries = Object.entries(rest);
+		this.#abortController = new AbortController();
+		const options = {signal: this.#abortController.signal};
+		const {binding_path,binding,name,...rest} = this.#data;
+		let entries = Object.entries(rest);
 
-		template.binding.textContent = binding;
-		template.type.textContent = type;
+		this.#template.binding.textContent = binding || name;
+		this.#template.type.textContent = binding_path;
+		this.#template.edit.addEventListener('click',this,options);
 
-		template.edit.onclick = () => IO.signal('bindings','remove','options',this);
-
-		switch (type) {
+		switch (binding_path) {
 			case 'd1_databases':
-				template.run.onclick = () => IO.signal('d1','editor','start options',this.data);
-				break;
 			case 'r2_buckets':
-				template.run.onclick = () => IO.signal('r2','editor','start options',this.data);
+				this.#template.run.addEventListener('click',this,options);
 				break;
 			default:
-				template.run.remove();
+				this.#template.run.remove();
+		}
+
+		switch (binding_path) {
+			case 'vars':
+				this.#template.binding.textContent = ' ...';
+			case 'assets':
+			case 'services':
+				this.#template.use.setAttribute('href','#workers');
+				break;
+			case 'durable_objects.bindings':
+				this.#template.type.textContent = 'durable_objects';
+				this.#template.use.setAttribute('href','#durable_objects');
+				break;
+			case 'queues.consumers':
+				this.#template.title.textContent = 'Consumer';
+			case 'queues.producers':
+				this.#template.type.textContent = 'queues';
+				this.#template.use.setAttribute('href','#queues');
+				break;
+			default:
+				this.#template.use.setAttribute('href','#'+binding_path);
 		}
 
 		for (const [key,value] of entries) {
-			const dt = document.createElement('dt');
-			const dd = document.createElement('dd');
-			dt.textContent = key.replaceAll('_',' ');
-			dd.textContent = value;
-			template.data.append(dt,dd);
+			const skip = ['binding_environment','binding_type'].includes(key);
+			if (skip) continue;
+			const span = document.createElement('span');
+			const strong = document.createElement('strong');
+			const text = document.createTextNode(value == '[object Object]' ? '{...}' : value);
+			strong.textContent = key;
+			span.append(strong);
+			span.append(text);
+			this.#template.data.append(span);
 		}
 
-		this.data.item = {
-			d1_databases: 'database_name',
-			r2_buckets: 'bucket_name',
-			kv_namespaces: 'id',
-			services: 'services',
-			analytics_engine_datasets: 'dataset',
-			workflows: this.data.name,
-			durable_objects: this.data.name,
-			queues: this.data.queue,
-			assets: this.data.directory,
-			//vars: this.data.join(':'),
-			images: 'images',
-			ai: 'ai'
-		}[type];
+		this.shadowRoot.appendChild(this.#template.fragment);
 
-		this.shadowRoot.appendChild(template.fragment);
-
+	}
+	handleEvent(event) {
+		switch (event.target) {
+			case this.#template.edit:
+				IO.sendSignal(true,'environments','edit','binding',this);
+				break;
+			case this.#template.run:
+				IO.sendSignal(true,'environments','open','editor',this);
+				break;
+		}
+	}
+	disconnectedCallback() {
+		if (this.#abortController) {
+			this.#abortController.abort();
+			this.#abortController = null;
+        }
 	}
 }
 

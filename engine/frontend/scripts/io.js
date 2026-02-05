@@ -3,6 +3,7 @@ import { Index,Output,LapineMessage } from './frontend.js';
 
 export const IO = new class {
 	server;
+	#signalBuffer = {};
 	constructor() {
 		window.addEventListener('error',this,false);
 		window.addEventListener('unhandledrejection',this,false);
@@ -25,7 +26,7 @@ export const IO = new class {
 				break;
 			case 'open':
 				console.log('Server connected');
-				this.signal('index','state','ready');
+				this.sendSignal(true,'index','state','ready');
 				await Index.ready;
 				Output.log('accept','Welcome!');
 				Output.log('normal','Lapine Web Engine is connected and ready.');
@@ -33,13 +34,19 @@ export const IO = new class {
 				break;
 			case 'message':
 				const {context,name,value,data} = JSON.parse(event.data);
-				this.signal(context,name,value,data);
+				if (context.startsWith('signal_') && this.#signalBuffer[context] != undefined) {
+					const response = {name,value,data};
+					this.receiveSignal(this.#signalBuffer[context],response);
+					delete this.#signalBuffer[context];
+				} else {
+					this.sendSignal(true,context,name,value,data);
+				}
 				break;
 			case 'close':
-				this.signal('index','state','disconnected');
+				this.sendSignal(true,'index','state','disconnected');
 				break;
 			case 'error':
-				message = IO.getMessage('reject','Internal error',event.error.message);
+				message = new LapineMessage('reject','Internal error',event.error.message);
 				message.display();
 
 				Output.log('reject',event.error.name);
@@ -54,7 +61,7 @@ export const IO = new class {
 				console.log('%c '+end+' ',style+'border-radius:0 0 0 8px;');
 				break;
 			case 'unhandledrejection':
-				message = IO.getMessage('reject','Internal error',event.error.message);
+				message = new LapineMessage('reject','Internal error',event.error.message);
 				message.display();
 
 				Output.log('reject',event.type);
@@ -66,6 +73,45 @@ export const IO = new class {
 				console.log('%c '+event.reason.stack,background);
 				console.log('%c '+end+' ',style+'border-radius:0 0 0 8px;');
 				break;
+		}
+	}
+	getSignal(front,context,name,value,data = null,signal = null) {
+		return {front,context,name,value,data,signal};
+	}
+	sendSignal(front,context,name,value,data = null,signal = null) {
+		const id = 'signal_'+crypto.randomUUID();
+		if (signal) {
+			this.#signalBuffer[id] = signal;
+		}
+		if (front) {
+			const options = {
+				detail: {name,value,data,id}
+			};
+			const event = new CustomEvent(context,options);
+			window.dispatchEvent(event);
+		} else {
+			const signal = {context,name,value,data,id};
+			const json = JSON.stringify(signal);
+			this.server.send(json);
+		}
+	}
+	request(context, name, value, data) {
+		const promise = resolve => {
+			const signal = response => resolve(response);
+			this.sendSignal(false, context, name, value, data, signal);
+		}
+		return new Promise(promise);
+	}
+	receiveSignal(signal,argument = null) {
+		switch (true) {
+			case !signal:
+				break;
+			case signal instanceof Function:
+				signal(argument);
+				break;
+			default:
+				const {front,context,name,value,data} = signal;
+				this.sendSignal(front,context,name,value,data);
 		}
 	}
 	async loadAsset(href,type,decompress = false) {
@@ -98,30 +144,6 @@ export const IO = new class {
 			}
 		}
 		return new Promise(promise);
-	}
-	log(type,message) {
-		Output.log(type,message);
-	}
-	live(type,message) {
-		Output.live(type,message);
-	}
-	send(context,name,value,data = null) {
-		const signal = {context,name,value,data};
-		const json = JSON.stringify(signal);
-		this.server.send(json);
-	}
-	signal(context,name,value,data = null) {
-		const options = {
-			detail: {name,value,data}
-		};
-		const event = new CustomEvent(context,options);
-		window.dispatchEvent(event);
-	}
-	getSignal(context,name,value,data = null) {
-		return {context,name,value,data};
-	}
-	getMessage(type,title,text,timeout = 0) {
-		return new LapineMessage(type,title,text,timeout);
 	}
 	async worker(href,formData = null,attempt = 3) {
 		const url = new URL(href,'http://127.0.0.1:3002/');

@@ -1,5 +1,5 @@
 
-import { Index,IO,Sitemap,NodeTree,MapData } from '../frontend.js';
+import { Index,Output,Sitemap,NodeTree,MapData } from '../frontend.js';
 
 class GhostNode extends HTMLElement {
 	#shadow;
@@ -36,8 +36,10 @@ class GhostNode extends HTMLElement {
 			case element == this.dragged:
 			case this.dragged.contains(element):
 				return null;
-			case MapData.isRequired(this.dragged.data.uni):
-				IO.live('reject','This item can not be moved.');
+			case area == 'dropzone' && MapData.isRequired(this.dragged.data.uni):
+				Output.live('reject','This '+this.dragged.data.type+' can not be removed.');
+				return false;
+			case area == 'dropzone' && this.dragged.data.uni == 'new':
 				return false;
 		}
 
@@ -133,7 +135,7 @@ class GhostNode extends HTMLElement {
 				}
 		}
 
-		IO.live(allowed ? 'accept' : 'reject',message);
+		Output.live(allowed ? 'accept' : 'reject',message);
 
 		return allowed;
 
@@ -175,7 +177,7 @@ class GhostNode extends HTMLElement {
 
 	}
 	end() {
-		IO.live(null);
+		Output.live(null);
 	}
 }
 

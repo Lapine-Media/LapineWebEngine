@@ -1,0 +1,48 @@
+
+@import '../common.css';
+@import '../forms.css';
+
+:host {
+	overflow: hidden;
+
+	& .container {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+		height: 100%;
+
+		& .dropzone {
+			flex-direction: column;
+			padding: 16px;
+			gap: 16px;
+
+			& span {
+				margin: 0;
+			}
+
+			& input {
+				display: none;
+			}
+		}
+
+		& .screenshots {
+			flex: 1;
+			overflow-y: auto;
+			display: flex;
+			flex-direction: column;
+			flex-wrap: wrap;
+			align-content: start;
+			gap: 8px;
+			padding: 8px;
+			border: 1px solid var(--color-borders);
+			border-radius: 4px;
+			background-color: var(--color-background-2);
+
+			& screenshot-item {
+				width: max-content;
+                height: 100%;
+			}
+		}
+	}
+
+}

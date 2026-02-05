@@ -27,6 +27,7 @@
 	--color-borders-dark: #220033;
 	--color-borders-darker: #220022;
 	--color-highligh: #FF00CC;
+	--color-disabled: #553377;
 
 	--color-idle-1: #77CC99;
 	--color-idle-2: #004444;
@@ -127,11 +128,15 @@ lapine-svg::part(arrow) {
 
 .list {
 	display: grid;
-	row-gap: 8px;
+	row-gap: 24px;
 }
 .cards {
 	display: flex;
-	flex-wrap: wrap;
+	flex-direction: column;
+    flex-wrap: nowrap;
 	gap: 8px;
-	border-radius: 4px;
+	padding: 8px;
+	background-color: var(--color-background-2);
+    border: 1px solid var(--color-borders);
+    border-radius: 4px;
 }

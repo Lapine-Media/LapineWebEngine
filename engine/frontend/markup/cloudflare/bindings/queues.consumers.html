@@ -1,0 +1,74 @@
+
+<form id="bindings" action="environments">
+	<fieldset>
+		<legend>Queue Consumer</legend>
+		<div>
+			<small>For reference, see <a href="https://developers.cloudflare.com/workers/wrangler/configuration/#queues" target="_blank">developers.cloudflare.com</a>.</small>
+		</div>
+		<div>
+			<label>
+				<span>Queue</span>
+				<input type="text" name="queue">
+			</label>
+			<small>The name of the queue from which this consumer should consume.</small>
+		</div>
+		<div>
+			<label>
+				<span>Type</span>
+				<input type="text" name="type" placeholder="worker">
+			</label>
+			<small>The consumer type, e.g., worker, http-pull, r2-bucket, etc. Default is worker.</small>
+		</div>
+		<div>
+			<label>
+				<span>Max Batch Size</span>
+				<input type="text" name="max_batch_size">
+			</label>
+			<small>The maximum number of messages per batch.</small>
+		</div>
+		<div>
+			<label>
+				<span>Max Batch Timeout</span>
+				<input type="text" name="max_batch_timeout">
+			</label>
+			<small>The maximum number of seconds to wait to fill a batch with messages.</small>
+		</div>
+		<div>
+			<label>
+				<span>Max Retries</span>
+				<input type="text" name="max_retries">
+			</label>
+			<small>The maximum number of retries for each message.</small>
+		</div>
+		<div>
+			<label>
+				<span>Retry Delay</span>
+				<input type="text" name="retry_delay">
+			</label>
+			<small>The number of seconds to wait before retrying a message.</small>
+		</div>
+		<div>
+			<label>
+				<span>Dead Letter Queue</span>
+				<input type="text" name="dead_letter_queue">
+			</label>
+			<small>The queue to send messages that failed to be consumed.</small>
+		</div>
+		<div>
+			<label>
+				<span>Max Concurrency</span>
+				<input type="text" name="max_concurrency" placeholder="null">
+			</label>
+			<small>The maximum number of concurrent consumer Worker invocations. Leaving this unset will allow your consumer to scale to the maximum concurrency needed to keep up with the message backlog.</small>
+		</div>
+	</fieldset>
+	<footer>
+		<input type="hidden" name="binding_identity" value="">
+		<input type="hidden" name="binding_environment" value="">
+		<input type="hidden" name="binding_path" value="queues.consumers">
+		<input type="hidden" name="binding_type" value="array">
+		<button class="add" type="submit" name="add" value="binding">Add</button>
+		<button class="remove" type="submit" name="remove" value="binding">Remove</button>
+		<button class="save" type="submit" name="save" value="binding">Save</button>
+	</footer>
+</form>

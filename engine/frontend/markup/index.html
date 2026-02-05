@@ -22,22 +22,28 @@
 				<img src="graphics/bunny.svg" alt="Logo">
 				<h1>Lapine Web Engine</h1>
 			</div>
-			<label>
-				<input form="index" type="checkbox" name="awesome" value="true" checked>
-				<span>Awesome</span>
-			</label>
+			<div class="options">
+				<div>
+					<input id="awesome" form="index" type="checkbox" name="awesome" value="true" checked>
+					<label for="awesome">Awesome</label>
+				</div>
+				<div>
+					<input id="audio" form="index" type="checkbox" name="audio" value="true" checked>
+					<label for="audio">Audio</label>
+				</div>
+			</div>
 		</header>
 		<nav>
-			<a class="project" href="index/menu/page?uni=project&title=Project">
+			<a class="project" href="index/menu/project?title=Project">
 				<span>Project</span>
 			</a>
-			<a class="manifest" href="index/menu/page?uni=manifest&title=PWA+Manifest">
+			<a class="manifest" href="index/menu/manifest?title=PWA+Manifest">
 				<span>PWA Manifest</span>
 			</a>
-			<a class="sitemap" href="index/menu/page?uni=sitemap&title=Sitemap">
+			<a class="sitemap" href="index/menu/sitemap?title=Sitemap">
 				<span>Sitemap</span>
 			</a>
-			<a class="cloudflare" href="index/menu/page?uni=cloudflare&title=Cloudflare">
+			<a class="cloudflare" href="index/menu/cloudflare?title=Cloudflare">
 				<span>Cloudflare</span>
 			</a>
 		</nav>

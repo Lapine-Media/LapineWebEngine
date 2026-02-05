@@ -1,0 +1,25 @@
+
+<form id="bindings" action="environments">
+	<fieldset>
+		<legend>Environment variables</legend>
+		<div>
+			<small>For reference, see <a href="https://developers.cloudflare.com/workers/wrangler/configuration/#environment-variables" target="_blank">developers.cloudflare.com</a>.</small>
+		</div>
+		<div>
+			<label>
+				<span>Variables</span>
+				<tab-textarea name="variables" class="lined vars"></tab-textarea>
+			</label>
+			<small></small>
+		</div>
+	</fieldset>
+	<footer>
+		<input type="hidden" name="binding_identity" value="">
+		<input type="hidden" name="binding_environment" value="">
+		<input type="hidden" name="binding_path" value="vars">
+		<input type="hidden" name="binding_type" value="object">
+		<button class="add" type="submit" name="add" value="binding">Add</button>
+		<button class="remove" type="submit" name="remove" value="binding">Remove</button>
+		<button class="save" type="submit" name="save" value="binding">Save</button>
+	</footer>
+</form>

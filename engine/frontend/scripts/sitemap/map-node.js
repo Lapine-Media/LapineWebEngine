@@ -51,7 +51,7 @@ export class MapNode extends HTMLElement {
 			listen(this.#template.container,'click');
 
 			const required = MapData.isRequired(this.data.uni);
-			this.setState('default',required);
+			this.setState('required',required);
 			this.setState('expanded',this.data.expanded);
 
 			this.update();
