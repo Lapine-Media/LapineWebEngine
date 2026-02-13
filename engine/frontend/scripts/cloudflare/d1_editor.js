@@ -15,16 +15,13 @@ export const D1Editor = new class {
 			let signal,message;
 			switch (event.detail.name+' '+event.detail.value) {
 				case 'editor started':
+				case 'editor reloaded':
 					this.#data = event.detail.data;
 					signal = () => {
 						document.body.dataset.editor = true;
 						IO.sendSignal(false,'d1','editor','setup');
 					}
 					Index.openLink('/markup/cloudflare/d1/d1_editor.html','editor',signal);
-					break;
-				case 'editor reloaded':
-					this.#data = event.detail.data;
-					IO.sendSignal(false,'d1','editor','setup');
 					break;
 				case 'close editor':
 					IO.sendSignal(false,'cloudflare','stop','editor',this.#data);
@@ -35,6 +32,16 @@ export const D1Editor = new class {
 				case 'editor stopped':
 					console.log('editor stopped');
 					document.body.dataset.editor = false;
+					break;
+				case 'ui size':
+					Index.elements.editor.center.dataset.size = {
+						same: 'results',
+						results: 'query',
+						query: 'same'
+					}[Index.elements.editor.center.dataset.size];
+					break;
+				case 'ui reload':
+					IO.sendSignal(false,'d1','editor','setup');
 					break;
 				/*case 'migration list':
 
@@ -47,7 +54,26 @@ export const D1Editor = new class {
 			console.log(error);
 		}
 	}
-	#listDatabase(data) {
+	#listDatabase(schema) {
+
+		const fragment = document.createDocumentFragment();
+
+		if (Object.keys(schema.tables).length === 0) {
+
+			const div = document.createElement('div');
+			const small = document.createElement('small');
+			small.textContent = 'This database is empty.';
+			div.className = 'empty';
+			div.append(small);
+			fragment.append(div);
+
+		} else {
+
+			console.log(schema);
+
+		}
+
+		Index.update(Index.elements.editor.database,fragment);
 
 		/*this.#tables = [];
 
@@ -88,9 +114,10 @@ console.log(data);
 
 		Index.update(Index.elements.editor.database,dl);*/
 
-		const schema = data;
 
-		const container = Index.elements.editor.database; // Your target container
+
+
+		/*const container = Index.elements.editor.database; // Your target container
     container.innerHTML = ''; // Clear "Loading..."
 
     const list = document.createElement('ul');
@@ -127,7 +154,7 @@ console.log(data);
 		list.append(tableItem);
     }
 
-	container.append(list);
+	container.append(list);*/
 
 	}
 }

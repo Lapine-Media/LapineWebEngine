@@ -4,7 +4,7 @@ article.editor {
 	border: 0;
     background: none;
 
-	.border {
+	& .border {
 		background: repeating-linear-gradient( -45deg, transparent, transparent 8px, var(--color-borders) 8px, var(--color-borders) 16px );
 	    background-size: 45px;
 		height: 100%;
@@ -33,14 +33,23 @@ article.editor {
 			height: 100%;
 			overflow: hidden;
 
-			section {
+			& section {
 				display: flex;
 				flex-direction: column;
 				gap: 8px;
 				position: relative;
 				overflow: hidden;
+
+				& div.empty {
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					width: 100%;
+					height: 100%;
+					color: var(--color-pink);
+				}
 			}
-			.content {
+			& .content {
 				background-color: var(--color-background-2);
 				border: 1px solid var(--color-borders);
 				border-radius: 4px;
@@ -62,7 +71,7 @@ article.editor {
 					}
 				}
 			}
-			.corner {
+			& .corner {
 				position: absolute;
 				right: 0;
 				bottom: 0;
@@ -86,14 +95,14 @@ article.editor {
 				& section {
 					padding: 8px 16px 48px 16px;
 				}
-				dl {
+				& dl {
 					display: grid;
 					gap: 4px;
 					margin: 0;
 					padding: 0 0 16px 0;
 					border-bottom: 1px solid var(--color-borders);
 				}
-				dt {
+				& dt {
 					color: var(--color-orange);
 					font-weight: 700;
 					text-transform: capitalize;
@@ -101,27 +110,27 @@ article.editor {
 					padding-top: 16px;
 					margin-top: 12px;
 				}
-				dd {
+				& dd {
 					cursor: pointer;
 					border-radius: 4px;
 					padding: 2px 4px;
 					margin: 0 0 0 32px;
 					transition: background-color .3s;
 				}
-				dd:hover {
+				& dd:hover {
 					background-color: var(--color-borders);
 				}
-				dd.selected,
-				dd.selected:hover {
+				& dd.selected,
+				& dd.selected:hover {
 					background-color: var(--color-highligh);
 				}
-				dd::before {
+				& dd::before {
 					content: '\25CF\2002';
 					color: var(--color-orange);
 					transition: color .3s;
 				}
-				dd:hover::before,
-				dd.selected::before {
+				& dd:hover::before,
+				& dd.selected::before {
 					color: var(--color-white);
 				}
 			}
@@ -235,6 +244,7 @@ article.editor {
 				grid-area: 1 / 3 / 2 / 4;
 
 				& form {
+					height: 100%;
 					& fieldset {
 						& legend {
 							text-transform: capitalize;
@@ -253,31 +263,34 @@ article.editor {
 							margin-bottom: 6px;
 							text-align: center;
 						}
+					}
+					& footer {
+						flex: 1;
+						width: 100%;
+						display: flex;
+						flex-direction: column;
+						justify-content: center;
+						gap: 8px;
 						& button {
 							display: none;
 						}
-						& footer {
-							display: grid;
-							gap: 8px;
-							justify-content: center;
-							width: 100%;
-						}
 					}
-					&[data-selected="database"] button.database,
-					&[data-selected="table"] button.table,
-					&[data-selected="row"] button.row,
-					&[data-selected="trigger"] button.trigger,
-					&[data-selected="migration"] button.migration {
-						display: block;
+					&[data-selected="none"] fieldset {
+						display: none;
 					}
-					&[data-selected="row"] output {
+					&[data-selected="row"] fieldset output {
 						white-space: break-spaces;
 						text-align: left;
 						tab-size: 2;
 						font-size: 9px;
 					}
-					&[data-selected="none"] {
-						display: none;
+					&[data-empty="true"] footer button.empty,
+					&[data-selected="database"] footer button.database,
+					&[data-selected="table"] footer button.table,
+					&[data-selected="row"] footer button.row,
+					&[data-selected="trigger"] footer button.trigger,
+					&[data-selected="migration"] footer button.migration {
+						display: block;
 					}
 				}
 			}

@@ -118,6 +118,9 @@ export default {
 
         const port = this.ports[location][0];
 		const url = new URL(href, 'http://127.0.0.1:'+port+'/');
+		if (attempt === 1) {
+			IO.log('normal','Requesting '+url);
+		}
 
         const options = {
             method: 'POST',
@@ -148,7 +151,10 @@ export default {
 
         } catch (error) {
             if (error.cause?.code === 'ECONNREFUSED' && attempt <= 5) {
-				if (attempt === 1) IO.log('normal', 'Waiting for '+location+' worker...');
+				if (attempt === 1) {
+					IO.log('normal', 'Waiting for '+location+' worker...');
+				}
+				IO.log('normal','Attempt '+attempt);
 				const promise = resolve => setTimeout(resolve, 1000);
 				await new Promise(promise);
                 return this.request(location, href, body, attempt + 1);

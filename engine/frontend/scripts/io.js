@@ -115,35 +115,32 @@ export const IO = new class {
 		}
 	}
 	async loadAsset(href,type,decompress = false) {
-		const promise = async (resolve,reject) => {
-			try {
-				const mime = {
-					text: 'text/plain',
-					html: 'text/html',
-					json: 'application/json'
-				}[type];
-				const url = new URL(href,document.location.href);
-				const options = {
-					method: 'GET',
-					headers: {
-						'Document-Type': mime
-					}
+		try {
+			const mime = {
+				text: 'text/plain',
+				html: 'text/html',
+				json: 'application/json'
+			}[type];
+			const url = new URL(href,document.location.href);
+			const options = {
+				method: 'GET',
+				headers: {
+					'Document-Type': mime
 				}
-				const response = await fetch(url,options);
-				let content;
-				switch (type) {
-					case 'json':
-						content = await response.json();
-					default:
-						content = await response.text();
-				}
-				resolve(content);
-			} catch(error) {
-				console.log(error);
-				reject(null);
 			}
+			const response = await fetch(url,options);
+			let content;
+			switch (type) {
+				case 'json':
+					content = await response.json();
+				default:
+					content = await response.text();
+			}
+			return content;
+		} catch(error) {
+			console.error(error);
+			return null;
 		}
-		return new Promise(promise);
 	}
 	async worker(href,formData = null,attempt = 3) {
 		const url = new URL(href,'http://127.0.0.1:3002/');
