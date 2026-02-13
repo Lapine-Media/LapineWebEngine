@@ -53,9 +53,9 @@ export default async function(name,value,data,id) {
 				break;
 			case 'load template':
 				IO.log('accept','Loading query template...');
-				const file = Settings.paths.lapine+'/src/data/queries/'+data+'.sql';
+				const file = Settings.paths.lapine+'/engine/frontend/data/queries/'+data+'.sql';
 				result = await Tools.readFile(file,false,false);
-				IO.signal('d1_editor','template','help',result);
+				IO.signal(id,'template',data,result);
 				IO.log('accept','Done!');
 				IO.log('line');
 				break;

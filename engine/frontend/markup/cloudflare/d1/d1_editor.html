@@ -28,7 +28,7 @@
 		<section class="options">
 			<h3>Options</h3>
 			<div class="content">
-				<form id="d1_form" action="d1_editor" data-selected="none" data-empty="true">
+				<form id="d1_form" action="d1_editor" data-selected="none" data-empty="false">
 					<fieldset>
 						<legend id="selected">Selected</legend>
 						<div class="selected">
@@ -38,28 +38,28 @@
 						</div>
 					</fieldset>
 					<footer>
-						<button class="database empty" type="submit" name="help" value="create_table">Create table</button>
-						<button class="database" type="submit" name="help" value="create_view">Create view</button>
-						<button class="database" type="submit" name="io" value="export options">Export to file</button>
+						<button class="database empty" type="submit" name="template" value="create_table">Create table</button>
+						<button class="database" type="submit" name="template" value="create_view">Create view</button>
+						<button class="database" type="submit" name="io" value="export">Export to file</button>
 						<button class="database empty" type="submit" name="io" value="import">Import from file</button>
 
-						<button class="table" type="submit" name="help" value="select_from">Select from</button>
-						<button class="table" type="submit" name="help" value="view_columns">View columns</button>
-						<button class="table" type="submit" name="help" value="alter_table">Alter table</button>
-						<button class="table" type="submit" name="help" value="delete_from">Delete from</button>
-						<button class="table" type="submit" name="help" value="drop_table">Drop table</button>
+						<button class="table" type="submit" name="template" value="select_from">Select from</button>
+						<button class="table" type="submit" name="template" value="view_columns">View columns</button>
+						<button class="table" type="submit" name="template" value="alter_table">Alter table</button>
+						<button class="table" type="submit" name="template" value="delete_from">Delete from</button>
+						<button class="table" type="submit" name="template" value="drop_table">Drop table</button>
 
-						<button class="table row" type="submit" name="help" value="insert_into">Insert into</button>
-						<button class="row" type="submit" name="help" value="edit_row">Edit row</button>
-						<button class="row" type="submit" name="help" value="remove_row">Remove row</button>
+						<button class="table row" type="submit" name="template" value="insert_into">Insert into</button>
+						<button class="row" type="submit" name="template" value="edit_row">Edit row</button>
+						<button class="row" type="submit" name="template" value="remove_row">Remove row</button>
 
-						<button class="table index" type="submit" name="help" value="create_index">Create index</button>
-						<button class="index" type="submit" name="help" value="edit_index">Edit index</button>
-						<button class="index" type="submit" name="help" value="remove_index">Remove index</button>
+						<button class="table index" type="submit" name="template" value="create_index">Create index</button>
+						<button class="index" type="submit" name="template" value="edit_index">Edit index</button>
+						<button class="index" type="submit" name="template" value="remove_index">Remove index</button>
 
-						<button class="table trigger" type="submit" name="help" value="create_trigger">Create trigger</button>
-						<button class="trigger" type="submit" name="help" value="edit_trigger">Edit trigger</button>
-						<button class="trigger" type="submit" name="help" value="remove_trigger">Remove trigger</button>
+						<button class="table trigger" type="submit" name="template" value="create_trigger">Create trigger</button>
+						<button class="trigger" type="submit" name="template" value="edit_trigger">Edit trigger</button>
+						<button class="trigger" type="submit" name="template" value="remove_trigger">Remove trigger</button>
 
 						<button class="migration" type="submit" name="migration" value="load">Load SQL</button>
 						<button class="migration" type="submit" name="migration" value="remove options">Remove</button>

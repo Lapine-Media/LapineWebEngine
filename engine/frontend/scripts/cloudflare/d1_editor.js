@@ -1,5 +1,5 @@
 
-import { Index,Settings,IO,LapineMessage } from '../frontend.js';
+import { Index,Settings,IO,Output,LapineMessage } from '../frontend.js';
 
 export const D1Editor = new class {
 	#selected = null;
@@ -46,6 +46,13 @@ export const D1Editor = new class {
 				/*case 'migration list':
 
 					break;*/
+				case 'template '+event.detail.value:
+					signal = object => this.#appendQueryField(object.value,object.data);
+					IO.sendSignal(false,'d1','load','template',event.detail.value,signal);
+					break;
+				case 'io import':
+					this.#importFile();
+					break;
 				default:
 					console.log(event.detail.name+' '+event.detail.value, event.detail.data);
 			}
@@ -66,6 +73,8 @@ export const D1Editor = new class {
 			div.className = 'empty';
 			div.append(small);
 			fragment.append(div);
+
+			document.forms.d1_form.dataset.empty = true;
 
 		} else {
 
@@ -156,5 +165,57 @@ console.log(data);
 
 	container.append(list);*/
 
+	}
+	#appendQueryField(value,data) {
+		/*const form = document.forms.d1_form;
+		switch (value) {
+			case 'table':
+				data = data.replaceAll('?table_name',form.elements.name.value);
+				break;
+			case 'row':
+				const quote = value => {
+					if (typeof value === 'string') {
+						value = value.replace(/'/g,'\'\'');
+						return '\''+value +'\'';
+					}
+					return value;
+				};
+				const columns = JSON.parse(form.elements.name.value);
+				const keys = Object.keys(columns).join(', ');
+				const values = Object.values(columns).map(quote).join(', ');
+				detail.data = detail.data.replaceAll('?table_columns',keys);
+				detail.data = detail.data.replaceAll('?column_values',values);
+		}*/
+		const element = Index.elements.editor.query;
+		const comment = value.replace('_',' ');
+		element.value = [element.value,'','-- '+comment+' --','',data].join('\n');
+	}
+	#importFile() {
+		const form = document.forms.d1_form;
+		const event = new MouseEvent('click');
+		const options = {once: true};
+		const change = event => {
+			const formData = new FormData(form);
+			const file = formData.get('import');
+			const reader = new FileReader();
+			reader.onload = () => {
+				this.#appendQueryField('imported query',reader.result);
+				Output.log('accept','Imported file');
+				Output.log('normal',file.name);
+				Output.log('line');
+			};
+			reader.onerror = () => {
+				Output.log('reject','Error reading the file');
+				Output.log('line');
+			};
+			reader.readAsText(file);
+		};
+		const cancel = event => {
+			event.target.removeEventListener('change',change,options);
+			event.target.removeEventListener('cancel',cancel,options);
+		};
+		form.elements.import.addEventListener('change',change,options);
+		form.elements.import.addEventListener('cancel',cancel,options);
+		form.elements.import.dispatchEvent(event);
 	}
 }
