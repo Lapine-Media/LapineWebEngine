@@ -4,6 +4,13 @@
 	<div id="d1_editor" class="d1_editor">
 		<section class="overview">
 			<h3>Database</h3>
+			<div id="binding" class="binding">
+				<div><strong>Name:</strong> <span id="database_name"></span></div>
+				<div><strong>UUID:</strong> <span id="database_uuid"></span></div>
+				<div><strong>Preview:</strong> <span id="database_preview"></span></div>
+				<div><strong>Binding:</strong> <span id="binding_name"></span></div>
+				<div><strong>Environment:</strong> <span id="binding_environment"></span></div>
+			</div>
 			<div id="database" class="content loading"></div>
 			<div class="corner">
 				<button form="d1_form" type="submit" name="ui" value="reload">Reload</button>
@@ -30,9 +37,12 @@
 			<div class="content">
 				<form id="d1_form" action="d1_editor" data-selected="none" data-empty="false">
 					<fieldset>
-						<legend id="selected">Selected</legend>
+						<legend>Selected</legend>
 						<div class="selected">
-							<output name="name">Name</output>
+							<label>
+								<span id="selected">None</span>
+								<input type="text" name="name" value="" readOnly>
+							</label>
 							<input type="hidden" name="type" value="">
 							<input type="file" name="import" accept="application/sql" hidden>
 						</div>
@@ -40,8 +50,8 @@
 					<footer>
 						<button class="database empty" type="submit" name="template" value="create_table">Create table</button>
 						<button class="database" type="submit" name="template" value="create_view">Create view</button>
-						<button class="database" type="submit" name="io" value="export">Export to file</button>
-						<button class="database empty" type="submit" name="io" value="import">Import from file</button>
+						<button class="database" type="submit" name="file" value="export">Export to file</button>
+						<button class="database empty" type="submit" name="file" value="import">Import from file</button>
 
 						<button class="table" type="submit" name="template" value="select_from">Select from</button>
 						<button class="table" type="submit" name="template" value="view_columns">View columns</button>

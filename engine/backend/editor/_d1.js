@@ -14,7 +14,9 @@ export default new class {
 
         if (!schemaRes.success) throw new Error(schemaRes.error || 'Failed to fetch schema');
 
-        const overview = {
+		return schemaRes;
+
+		/*const overview = {
             tables: {},
             views: {}
         };
@@ -59,15 +61,15 @@ export default new class {
             }
         }
 
-        return overview;
+		return overview;*/
     }
-	async #getColumns(d1, tableName, targetObj) {
+	/*async #getColumns(d1, tableName, targetObj) {
         // PRAGMA table_info returns: cid, name, type, notnull, dflt_value, pk
         const res = await d1.prepare(`PRAGMA table_info("${tableName}")`).all();
         if (res.success) {
             targetObj.columns = res.results;
         }
-    }
+	}*/
 
     async query(d1, data) {
         const sql = data.query || data.get('query');

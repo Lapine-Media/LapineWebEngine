@@ -6,12 +6,9 @@ export default {
 	async fetch(request,env) {
 		try {
 
-			const url = new URL(request.url);
+			/*const url = new URL(request.url);
             const method = url.pathname.split('/')[1];
-
-            // --- DEBUGGING BLOCK ---
-            // This will print to your Lapine Output panel
-            if (method === 'debug' || method === 'list') {
+			if (method === 'debug' || method === 'list') {
                 console.log(`[Proxy] Context: ${env.context}`);
 				try {
 					console.log(`[Proxy] Target Binding Name: "${BINDING}"`);
@@ -20,12 +17,13 @@ export default {
 				}
 
                 console.log(`[Proxy] Available Env Keys: ${Object.keys(env).join(', ')}`);
-            }
-            // -----------------------
+			}
+            */
 
             const binding = env[BINDING];
             if (!binding) {
-                throw new Error(`Binding "${BINDING}" not found in environment. Available: ${Object.keys(env).join(', ')}`);
+				const bindings = Object.keys(env).join(', ');
+				throw new Error('Binding "'+BINDING+'" not found in environment. Available: '+bindings);
             }
 
 			const type = request.headers.get('Content-Type');
@@ -43,8 +41,7 @@ export default {
 
 			let result = null;
 
-            // Ensure data.type from frontend matches these cases exactly
-            switch (env.context) {
+			switch (env.context) {
                 case 'd1_databases':
                     result = await D1Editor[method](binding, data);
                     break;

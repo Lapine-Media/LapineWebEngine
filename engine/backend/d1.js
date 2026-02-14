@@ -59,9 +59,9 @@ export default async function(name,value,data,id) {
 				IO.log('accept','Done!');
 				IO.log('line');
 				break;
-			case 'run query':
+			case 'execute query':
 				IO.log('accept','Executing query...');
-				await runQuery(data);
+				await runQuery(id,data);
 				IO.log('accept','Done!');
 				IO.log('line');
 				break;
@@ -171,11 +171,11 @@ async function removeDatabase(data) {
 
 // EDITOR /////////////////////////////////////////////////////////////////////
 
-async function runQuery(query) {
+async function runQuery(id,query) {
 	const data = new FormData();
 	data.append('query',query);
 	const response = await Worker.request('local','query',data);
-	IO.signal('d1_editor','result','query',response);
+	IO.signal(id,'result','query',response);
 	if (response?.meta?.changed_db) {
 		IO.log('normal','Adding migration...');
 		result = await addMigration(query);
@@ -286,9 +286,12 @@ async function addMigration(query) {
 		Worker.data.database_name,
 		name,
 		'--env',
-		Worker.data.environment,
+		Worker.data.binding_environment,
 		...predefined.paths
 	].join(' ');
+
+	console.log('xxx',command);
+	console.log('yyy',Worker.data);
 
 	await IO.spawn(command);
 

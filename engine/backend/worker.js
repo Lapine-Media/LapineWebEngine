@@ -16,7 +16,7 @@ export default {
         try {
 			const convert = new Convert();
             const ports = this.ports[location];
-			const editorPath = path.join(Settings.paths.lapine, 'engine', 'backend', 'editor', 'index.js');
+			const editorPath = path.join(Settings.paths.lapine, 'engine', 'backend', 'editor', data.binding_path+'.js');
             const projectPath = Settings.paths.project;
             const configPath = path.join(projectPath, 'wrangler.json');
 			const binding = data.binding || data.name;
@@ -52,7 +52,7 @@ export default {
 			const stdout = chunk => {
                 const string = chunk.toString();
 				IO.log('normal',string);
-				console.log(`[${location} STDOUT]`, chunk.toString());
+				//console.log(`[${location} STDOUT]`, chunk.toString());
 			};
 			const stderr = chunk => {
 				const string = chunk.toString();
@@ -138,17 +138,15 @@ export default {
 
         try {
             const response = await fetch(url, options);
-			const contentType = response.headers.get('content-type');
-            if (contentType && contentType.includes('application/json')) {
-                const json = await response.json();
-                if (!response.ok) throw new Error(json.error || 'Worker Error');
-                return json;
-            } else {
-                const text = await response.text();
-                if (!response.ok) throw new Error(text);
-                return { result: text };
-            }
-
+			if (response.ok) {
+				return await response.json();
+			}
+			const text = await response.text();
+			if (response.statusText == 'Editor error') {
+				IO.log('reject',text);
+				return {};
+			}
+			throw new Error(text);
         } catch (error) {
             if (error.cause?.code === 'ECONNREFUSED' && attempt <= 5) {
 				if (attempt === 1) {
@@ -158,8 +156,7 @@ export default {
 				const promise = resolve => setTimeout(resolve, 1000);
 				await new Promise(promise);
                 return this.request(location, href, body, attempt + 1);
-            }
-
+			}
             throw error;
         }
     }
