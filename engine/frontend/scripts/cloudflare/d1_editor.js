@@ -1,5 +1,5 @@
 
-import { Index,Settings,IO,Output,LapineMessage } from '../frontend.js';
+import { Index,Settings,IO,Output,LapineMessage,D1Migration } from '../frontend.js';
 
 export const D1Editor = new class {
 	#selected = null;
@@ -17,18 +17,28 @@ export const D1Editor = new class {
 				case 'editor started':
 				case 'editor reloaded':
 					this.#data = event.detail.data;
-					signal = () => this.#setup();
+					signal = () => {
+						const event = event => this.#select('database',this.#data.database_name,event.target);
+						document.body.dataset.editor = true;
+						Index.elements.editor.binding.addEventListener('click',event,false);
+						Index.elements.editor.database_name.textContent = this.#data.database_name;
+						Index.elements.editor.database_uuid.textContent = this.#data.database_id;
+						Index.elements.editor.database_preview.textContent = this.#data.preview_database_id;
+						Index.elements.editor.binding_name.textContent = this.#data.binding;
+						Index.elements.editor.binding_environment.textContent = this.#data.binding_environment;
+						IO.sendSignal(false,'d1','load','schema');
+					};
 					Index.openLink('/markup/cloudflare/d1/d1_editor.html','editor',signal);
 					break;
 				case 'close editor':
-					IO.sendSignal(false,'cloudflare','stop','editor',this.#data);
+					signal = () => document.body.dataset.editor = false;
+					IO.sendSignal(false,'cloudflare','stop','editor',this.#data,signal);
 					break;
 				case 'database list':
 					this.#listDatabase(event.detail.data);
 					break;
-				case 'editor stopped':
-					console.log('editor stopped');
-					document.body.dataset.editor = false;
+				case 'migration list':
+					this.#listMigrations(event.detail);
 					break;
 				case 'ui size':
 					Index.elements.editor.center.dataset.size = {
@@ -38,15 +48,12 @@ export const D1Editor = new class {
 					}[Index.elements.editor.center.dataset.size];
 					break;
 				case 'ui reload':
-					IO.sendSignal(false,'d1','editor','setup');
+					IO.sendSignal(false,'d1','load','schema');
 					break;
 				case 'ui execute':
 					signal = object => this.#queryResult(object.value,object.data);
 					IO.sendSignal(false,'d1','execute','query',event.detail.data.query,signal);
 					break;
-				/*case 'migration list':
-
-					break;*/
 				case 'template '+event.detail.value:
 					signal = object => this.#appendQueryField(object.value,object.data);
 					IO.sendSignal(false,'d1','load','template',event.detail.value,signal);
@@ -61,17 +68,6 @@ export const D1Editor = new class {
 			console.log(event.detail);
 			console.log(error);
 		}
-	}
-	#setup() {
-		const event = event => this.#select('database',this.#data.database_name,event.target);
-		document.body.dataset.editor = true;
-		Index.elements.editor.binding.addEventListener('click',event,false);
-		Index.elements.editor.database_name.textContent = this.#data.database_name;
-		Index.elements.editor.database_uuid.textContent = this.#data.database_id;
-		Index.elements.editor.database_preview.textContent = this.#data.database_preview_id;
-		Index.elements.editor.binding_name.textContent = this.#data.binding;
-		Index.elements.editor.binding_environment.textContent = this.#data.binding_environment;
-		IO.sendSignal(false,'d1','editor','setup');
 	}
 	#listDatabase(data) {
 
@@ -90,9 +86,13 @@ export const D1Editor = new class {
 			div.append(small);
 			fragment.append(div);
 
+			//Index.update(Index.elements.editor.migrations,fragment);
+
 		} else {
 
 			document.forms.d1_form.dataset.empty = false;
+
+			IO.sendSignal(false,'d1','list','migrations');
 
 			this.#tables = [];
 
@@ -130,6 +130,37 @@ export const D1Editor = new class {
 
 		Index.update(Index.elements.editor.database,fragment);
 
+	}
+	#listMigrations(detail) {
+		const fragment = document.createDocumentFragment();
+		const addMigration = name => {
+			const element = new D1Migration(name);
+			fragment.append(element);
+			this.#migrations[name] = element;
+		}
+		const tagMigration = (name,location) => this.#migrations[name].markApplied(location);
+		const tagAll = (detail,location) => {
+			const data = detail.data[location];
+			if (typeof data == 'string') {
+				IO.log('danger','Migration list unavailable: '+location);
+				IO.log('normal',data);
+				IO.log('line');
+			} else {
+				const method = name => tagMigration(name,location);
+				data.map(method);
+			}
+		}
+		if (detail.value == 'added') {
+			addMigration(detail.data);
+			Index.elements.editor.migrations.append(fragment);
+			tagMigration(detail.data,'local');
+		} else {
+			detail.data.files.map(methods.add);
+			Index.update(Index.elements.editor.migrations,fragment);
+			tagAll(detail,'local');
+			tagAll(detail,'remote');
+			tagAll(detail,'preview');
+		}
 	}
 	#select(type,name,element) {
 		if (this.#selected != null) {

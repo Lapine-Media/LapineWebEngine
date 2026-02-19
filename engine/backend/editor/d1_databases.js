@@ -17,8 +17,6 @@ export default new class extends Editor {
 		return await this.query(binding,data);
 	}
 	async query(binding, data) {
-		console.log(data);
-		console.log(data instanceof FormData);
 		const query = data.get('query');
         const response = await binding.prepare(query).all();
         return response;

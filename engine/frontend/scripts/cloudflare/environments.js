@@ -11,6 +11,7 @@ export const Environments = new class {
 		switch (event.detail.name+' '+event.detail.value) {
 			case 'menu visible':
 				this.#listEnvironments();
+				IO.sendSignal(false,'cloudflare','check','editor',null,this.#openEditor);
 				break;
 			case 'add environment':
 				signal = () => {
@@ -111,7 +112,7 @@ export const Environments = new class {
 				break;
 			case 'open editor':
 				console.log(event.detail.data.data);
-				IO.sendSignal(false,'cloudflare','start','editor',event.detail.data.data);
+				IO.sendSignal(false,'cloudflare','start','editor',event.detail.data.data,this.#openEditor);
 				break;
 			case 'editor closed':
 				document.body.dataset.editor = false;
@@ -121,6 +122,14 @@ export const Environments = new class {
 			default:
 				console.log(event.detail);
 		}
+	}
+
+	#openEditor(detail) {
+		const context = {
+			d1_databases: 'd1_editor',
+			r2_buckets: 'r2_editor'
+		}[detail.data.binding_path];
+		IO.sendSignal(true,context,'editor','reloaded',detail.data);
 	}
 
 	// ENVIRONMENTS ///////////////////////////////////////////////////////////

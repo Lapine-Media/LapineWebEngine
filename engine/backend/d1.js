@@ -41,13 +41,10 @@ export default async function(name,value,data,id) {
 				IO.log('line');
 				break;
 			// EDITOR /////////////////////////////////////////////////////////
-			case 'editor setup':
-				IO.log('accept','Loading database...');
+			case 'load schema':
+				IO.log('accept','Loading database schema...');
 				result = await Worker.request('local','list');
 				IO.signal('d1_editor','database','list',result);
-				IO.log('accept','Getting list of migrations...');
-				//result = await listMigrations();
-				//IO.signal('d1_editor','migration','list',result);
 				IO.log('accept','Done!');
 				IO.log('line');
 				break;
@@ -105,6 +102,22 @@ const predefined = {
 		'--config',
 		Settings.paths.project+'/wrangler.json'
 	]
+}
+
+function makeQuery(query) {
+	query = query.replace(/'/g, "''");
+	return [
+		'npx wrangler d1 execute',
+		Worker.data.binding,
+		'--command',
+		"'"+query+"'",
+		Worker.data.remote ? '--remote' : '--local',
+		Worker.data.preview ? '--preview' : '',
+		'--env',
+		Worker.data.binding_environment,
+		'--json',
+		...predefined.paths
+	].filter(Boolean).join(' ');
 }
 
 // DATABASE ///////////////////////////////////////////////////////////////////
@@ -218,55 +231,59 @@ async function exportDatabase(data) {
 	}
 }
 
+// MIGRATIONS /////////////////////////////////////////////////////////////////
+
+function getMigrationsdirectory() {
+	const directory = Worker.data.migrations_dir || 'migrations';
+	return Settings.paths.project+'/'+directory+'/';
+}
+function getMigrationsTable() {
+	return Worker.data.migrations_table || 'd1_migrations';
+}
+
 async function listMigrations() {
 	const query = async location => {
-		const {promise,resolve,reject} = Promise.withResolvers();
+		const table = getMigrationsTable();
 		const command = [
 			'npx wrangler d1 execute',
 			Worker.data.binding,
 			'--command',
-			'"SELECT name FROM d1_migrations;"',
+			'"SELECT name FROM '+table+';"',
 			location,
 			'--env',
-			Worker.data.environment,
+			Worker.data.binding_environment,
 			'--json',
 			...predefined.paths
 		].join(' ');
-		let result = [];
 		try {
-			result = await IO.spawn(command);
+			let result = await IO.spawn(command);
 			result = JSON.parse(result);
-			if (result.error) {
-				resolve(result.error.text);
-			} else {
-				const list = result[0].results.map(entry => entry.name);
-				resolve(list);
-			}
+			return result;//result[0].results.map(entry => entry.name);
 		} catch (error) {
-			IO.log('reject',error);
-			reject(error);
+			error = JSON.parse(error);
+			IO.log('reject','D1 error: '+error.error.text);
+			return [];
 		}
-		return promise;
 	}
+	const directory = getMigrationsdirectory();
 	const promises = [
 		query('--local'),
 		query('--remote'),
 		query('--remote --preview'),
-		getMigrationFiles()
+		getMigrationFiles(directory)
 	];
 	const [local,remote,preview,files] = await Promise.all(promises);
 	return {local,remote,preview,files};
 }
 
-async function getMigrationFiles() {
+async function getMigrationFiles(directory) {
 	try {
 		const files = await Tools.readDirectory(directory,false,false);
 		const filter = name => name.endsWith('.sql');
-		const sorted = files.filter(filter).sort();
-		return sorted;
+		return files.filter(filter).sort();
 	} catch (error) {
 		IO.log('reject',error);
-		return false;
+		return [];
 	}
 }
 
@@ -290,20 +307,18 @@ async function addMigration(query) {
 		...predefined.paths
 	].join(' ');
 
-	console.log('xxx',command);
-	console.log('yyy',Worker.data);
-
 	await IO.spawn(command);
 
 	// load migration file and append query
-	const files = await getMigrationFiles();
+	const directory = getMigrationsdirectory();
+	const table = getMigrationsTable();
+	const files = await getMigrationFiles(directory);
 	const file_name = files.at(-1);
 
 	await Tools.writeFile(directory+file_name,query,false,true);
 
 	// apply migration
-	query = 'INSERT INTO d1_migrations (name,applied_at) VALUES (\''+file_name+'\',CURRENT_TIMESTAMP)';
-	command = commands.getQuery(query);
+	command = makeQuery('INSERT INTO '+table+' (name,applied_at) VALUES (\''+file_name+'\',CURRENT_TIMESTAMP)');
 
 	await IO.spawn(command);
 

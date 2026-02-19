@@ -4,7 +4,7 @@ import { Tools } from './tools.js';
 import Settings from './settings.js';
 import { exec,spawn } from 'child_process';
 import { AsyncLocalStorage } from 'node:async_hooks';
-import Convert from 'ansi-to-html';
+//import Convert from 'ansi-to-html';
 
 export default new class {
 	#clients;
@@ -152,7 +152,7 @@ export default new class {
 					data = await response.text();
 					if (response.ok) {
 						this.log('accept', 'Request successful'); // Log success, maybe not whole HTML body
-						return null;
+						return data;
 					} else {
 						this.log('reject', data);
 						throw new Error(data);
@@ -165,34 +165,7 @@ export default new class {
 			throw error; // Propagate error to caller
 		}
 	}
-	/*async execute(command) {
-		const convert = new Convert();
-		const { promise, resolve, reject } = Promise.withResolvers();
-		const output = string => {
-			const html = convert.toHtml(string);
-			console.log(string);
-			this.log('normal',html);
-		}
-		const callback = (error,stdout,stderr) => {
-			if (stdout != '') {
-				output(stdout);
-				resolve(true);
-			} else if (stderr != '') {
-				output(stderr);
-				resolve(false);
-			} else {
-				reject(error);
-			}
-		}
-		try {
-			exec(command,callback);
-			return promise;
-		} catch (error) {
-			throw error;
-		}
-	}*/
 	async spawn(command) {
-		const convert = new Convert();
 		const { promise, resolve, reject } = Promise.withResolvers();
 		const options = {
 			shell: true, // so we can pass a single string command just like exec
@@ -204,23 +177,23 @@ export default new class {
 		};
 		let response = '';
 		const child = spawn(command,options);
-		const output = chunk => {
+		this.log('normal','Starting process: '+child.pid);
+		this.log('inform',command);
+		const output = chunk => response += chunk.toString();
+		const error = chunk => {
 			const string = chunk.toString();
-			const html = convert.toHtml(string);
-			response += string;
-			this.log('normal',html);
+			reject(string);
 		}
 		const close = code => {
 			if (code > 0) {
-				const error = new Error('Process exited with code '+code);
-				reject(error);
-			} else {
-				resolve(response);
+				this.log('normal','Process '+child.pid+' exited with errors:');
+				reject(response);
 			}
+			this.log('normal','Process '+child.pid+' exited.');
+			resolve(response);
 		}
-		const error = error => reject(error);
 		child.stdout.on('data',output);
-		child.stderr.on('data',output);
+		child.stderr.on('data',error);
 		child.on('close',close);
 		child.on('error',error);
 		return promise;

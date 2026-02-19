@@ -21,6 +21,7 @@ export const IO = new class {
 				const port = 1+parseInt(url.port,10);
 				this.server = new WebSocket('ws://127.0.0.1:'+port);
 				this.server.addEventListener('open',this,false);
+				this.server.addEventListener('error',this,false);
 				this.server.addEventListener('message',this,false);
 				this.server.addEventListener('close',this,false);
 				break;

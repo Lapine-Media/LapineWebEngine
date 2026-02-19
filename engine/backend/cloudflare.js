@@ -79,12 +79,11 @@ export default async function(name,value,data,id) {
 					IO.log('danger', 'Editor is already running.');
 					IO.log('line');
 				} else {
-					const context = getContext(data);
-					IO.log('accept', 'Starting '+context.editor+' editor for "'+data.binding+'"...');
+					IO.log('accept', 'Starting editor for "'+data.binding+'"...');
 					try {
 						const result = await Worker.start(data);
 						const options = {...data, connections: result};
-						IO.signal(context.signal, 'editor', 'started', options);
+						IO.signal(id, 'editor', 'started', options);
 					} catch (error) {
 						console.log(error);
 						IO.log('reject', 'Failed to start editor');
@@ -94,18 +93,16 @@ export default async function(name,value,data,id) {
 				break;
 			case 'check editor':
 				if (Worker.data && Object.keys(Worker.instances).length > 0) {
-					const context = getContext(Worker.data);
-					IO.log('normal', context.editor+' editor is active.');
-					IO.signal(context.signal, 'editor', 'reloaded', Worker.data);
+					IO.log('normal', 'Editor is active.');
+					IO.signal(id, 'editor', 'checked', Worker.data);
 					IO.log('line');
 				}
 				break;
 			case 'stop editor':
 				if (Object.keys(Worker.instances).length > 0) {
-					const context = getContext(Worker.data);
 					Worker.stop();
-					IO.log('accept', 'Exited '+context.editor+' editor.');
-					IO.signal(context.signal, 'editor', 'stopped');
+					IO.log('accept', 'Exited editor.');
+					IO.signal(id, 'editor', 'stopped');
 					IO.log('line');
 				}
 				break;
@@ -116,21 +113,6 @@ export default async function(name,value,data,id) {
 		console.log(error);
 		IO.log('reject','Error: '+error.message);
 		IO.log('line');
-	}
-}
-
-function getContext(data) {
-	switch (data.binding_path) {
-		case 'd1_databases':
-			return {
-				editor: 'D1',
-				signal: 'd1_editor'
-			}
-		case 'r2_buckets':
-			return {
-				editor: 'R2',
-				signal: 'r2_editor'
-			}
 	}
 }
 

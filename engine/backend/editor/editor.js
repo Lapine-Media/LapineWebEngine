@@ -1,17 +1,25 @@
 
 export default class Editor {
     constructor() {}
+	respond(body = null,status = 200,statusText = 'OK',json = true) {
+		const options = {status,statusText};
+		if (json) {
+			return Response.json(body,options);
+		}
+		return new Response(body,options);
+	}
 	async fetch(request,env) {
 		try {
 			const url = new URL(request.url);
             const method = url.pathname.split('/')[1];
 			const type = request.headers.get('Content-Type');
-            const binding = env[BINDING];
 			let data = new FormData();
 			switch (true) {
-				case !binding:
+				case !env.binding:
+					throw new Error('The env.binding variable is not defined.');
+				case !env[env.binding]:
 					const bindings = Object.keys(env).join(', ');
-					throw new Error('Binding "'+BINDING+'" not found in environment. Available: '+bindings);
+					throw new Error('Binding "'+env.binding+'" not found in environment. Available: '+bindings);
 				case type == null:
 					break;
 				case type.includes('multipart/form-data'):
@@ -21,18 +29,13 @@ export default class Editor {
 					data = await request.json();
 					break;
 			}
+			const binding = env[env.binding];
 			const result = await this[method](binding, data);
-			const options = {
-                status: 200,
-				statusText: 'Editor ok'
-            };
-            return Response.json(result, options);
+			return this.respond(result,200,'Editor ok',true);
 		} catch (error) {
-			const options = {
-				status: 500,
-				statusText: 'Editor error'
-			};
-			return new Response(error.message,options);
+			console.log(env);
+			console.error(error);
+			return this.respond(error.message,500,'Editor error',false);
 		}
 	}
 }

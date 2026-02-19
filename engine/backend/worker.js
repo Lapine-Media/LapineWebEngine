@@ -12,7 +12,7 @@ export default {
         local: [3002, 3003],  // [HTTP, Inspector]
         remote: [3004, 3005]
     },
-    spawn: async function(location, data) {
+	spawn: async function(location, data) {
         try {
 			const convert = new Convert();
             const ports = this.ports[location];
@@ -20,8 +20,8 @@ export default {
             const projectPath = Settings.paths.project;
             const configPath = path.join(projectPath, 'wrangler.json');
 			const binding = data.binding || data.name;
-			const args = [
-                'wrangler', 'dev',
+			const command = [
+                'npx', 'wrangler', 'dev',
                 editorPath,
                 '--ip', '127.0.0.1',
                 '--port', String(ports[0]),
@@ -29,40 +29,31 @@ export default {
                 '--cwd', projectPath,
                 '--config', configPath,
 				'--var', 'context:'+data.binding_path,
-				'--define', 'BINDING:"'+binding+'"',
+				'--var', 'binding:'+binding,
 				...(data.binding_environment !== 'top' ? ['--env',data.binding_environment] : []),
                 ...(location === 'remote' ? ['--remote'] : []),
                 ...(data.preview ? ['--preview'] : [])
-            ];
-            const env = {
-                ...process.env,
-                CLOUDFLARE_API_TOKEN: await Settings.getAPIToken(),
-                CI: 'true'
-            };
-			const command = args.join(' ');
-
-			IO.log('normal', 'Starting '+location+' worker...');
-			IO.log('inform', command);
-
-            const spawnOptions = {
-                env,
-                stdio: ['ignore', 'pipe', 'pipe']
+			].join(' ');
+			const options = {
+				shell: true,
+				stdio: ['ignore', 'pipe', 'pipe'],
+				env: {
+					...process.env,
+					CLOUDFLARE_API_TOKEN: await Settings.getAPIToken(),
+					CI: 'true'
+				}
 			};
-            const instance = spawn('npx', args, spawnOptions);
 			const stdout = chunk => {
                 const string = chunk.toString();
 				IO.log('normal',string);
-				//console.log(`[${location} STDOUT]`, chunk.toString());
 			};
 			const stderr = chunk => {
 				const string = chunk.toString();
-				//if (string.includes('Error') || string.includes('error')) {
-					const html = convert.toHtml(string);
-					IO.log('danger',html);
-				//}
+				const html = convert.toHtml(string);
+				IO.log('reject',html);
 			};
 			const close = code => {
-				IO.log('normal', location+' worker stopped (Code '+code+')');
+				IO.log('normal',location+' worker stopped (Code '+code+')');
 				if (this.instances && this.instances[location] === instance) {
 					delete this.instances[location];
                     if (Object.keys(this.instances).length === 0) {
@@ -71,9 +62,14 @@ export default {
                 }
             }
 
+			IO.log('normal','Starting '+location+' worker...');
+			IO.log('inform',command);
+
+			const instance = spawn(command,options);
+
             instance.stdout.on('data',stdout);
             instance.stderr.on('data', stderr);
-            instance.on('close', close);
+			instance.on('close', close);
             this.instances[location] = instance;
 
             return {
@@ -82,7 +78,7 @@ export default {
             };
 
         } catch (error) {
-			IO.log('reject', 'Failed to spawn '+location+' editor: '+error.message);
+			IO.log('reject','Failed to spawn '+location+' editor: '+error.message);
             return null;
         }
     },
@@ -103,13 +99,13 @@ export default {
     },
     stop: function() {
         if (!this.instances) return;
-		const method = ([location, instance]) => {
+		const entries = Object.entries(this.instances);
+		for (const [location, instance] of entries) {
             if (instance && !instance.killed) {
-				IO.log('normal', 'Stopping '+location+' worker...');
+				IO.log('normal','Stopping '+location+' worker...');
 				instance.kill('SIGTERM');
             }
         }
-        Object.entries(this.instances).forEach(method);
         this.instances = {};
         this.data = null;
     },
@@ -143,21 +139,25 @@ export default {
 			}
 			const text = await response.text();
 			if (response.statusText == 'Editor error') {
-				IO.log('reject',text);
-				return {};
+				throw new class EditorError extends Error {
+					constructor() {
+						super(text);
+						this.name = 'EditorError';
+					}
+				}
 			}
 			throw new Error(text);
         } catch (error) {
             if (error.cause?.code === 'ECONNREFUSED' && attempt <= 5) {
 				if (attempt === 1) {
-					IO.log('normal', 'Waiting for '+location+' worker...');
+					IO.log('normal','Waiting for '+location+' worker...');
 				}
 				IO.log('normal','Attempt '+attempt);
 				const promise = resolve => setTimeout(resolve, 1000);
 				await new Promise(promise);
-                return this.request(location, href, body, attempt + 1);
+				return this.request(location, href, body, attempt + 1);
 			}
-            throw error;
+			throw error;
         }
     }
 }

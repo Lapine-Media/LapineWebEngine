@@ -11,9 +11,8 @@ export const Cloudflare = new class {
 			case 'menu visible':
 				if (this.#initiated == false) {
 					this.#initiated = true;
-					IO.sendSignal(false,'cloudflare','check','editor');
-					const signal = IO.getSignal(true,'environments','menu','visible');
-					await Index.openLink('/markup/cloudflare/environments.html','subpage',signal);
+					const a = () => IO.sendSignal(true,'environments','menu','visible');
+					await Index.openLink('/markup/cloudflare/environments.html','subpage',a);
 				}
 				break;
 			case 'menu '+event.detail.value:
