@@ -1,0 +1,12 @@
+
+:host {
+	width: 640px;
+}
+.nonce {
+	flex: 1;
+}
+.policy_items {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 8px;
+}

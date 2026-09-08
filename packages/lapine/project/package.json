@@ -1,0 +1,10 @@
+{
+	"name": "my-app",
+	"version": "1.0.0",
+	"type": "module",
+	"scripts": {
+		"start": "wrangler dev",
+		"test": "vitest",
+		"deploy": "wrangler deploy"
+	}
+}

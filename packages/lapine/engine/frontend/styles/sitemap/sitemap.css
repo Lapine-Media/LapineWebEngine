@@ -1,0 +1,129 @@
+
+article {
+	display: flex;
+	overflow: hidden;
+	section.left {
+		display: flex;
+		flex-direction: column;
+		width: 320px;
+		border-right: 1px solid var(--color-borders);
+		overflow: hidden;
+		.menu {
+			display: flex;
+			justify-content: space-evenly;
+			align-items: center;
+			padding: 8px;
+			background-color: var(--color-borders-dark);
+			border-bottom: 1px solid var(--color-borders);
+			&[data-edited="true"] .save_map {
+				background-image: var(--gradient-edited);
+				background-size: var(--stripe-size);
+				animation: var(--animation-accept);
+				border-radius: 16px;
+				padding: 2px;
+				button {
+					padding: 6px 14px;
+				}
+			}
+		}
+		.forms {
+			flex: 1;
+			overflow: auto;
+			padding: 16px 16px 64px 16px;
+			form {
+				display: none;
+				flex-direction: column;
+				gap: 16px;
+				fieldset {
+					width: 100%;
+				}
+				&.depot {
+					.dropzone {
+						height: 128px;
+						margin-bottom: 0;
+						cursor: default;
+					}
+					.undoable {
+						display: none;
+						color: var(--color-orange);
+						margin-top: 8px;
+
+						& div {
+							flex: 1;
+						}
+						& span {
+							color: var(--color-white);
+							display: block;
+						}
+					}
+					&[data-undoable="true"] .undoable {
+						display: flex;
+					}
+				}
+				&.frame {
+					.csp_file {
+						display: flex;
+						width: 100%;
+						input {
+							border-radius: 4px 0 0 4px;
+						}
+						button {
+							border-radius: 0 16px 16px 0;
+							padding: 0 16px 0 12px;
+						}
+					}
+				}
+				&.element {
+					&[data-type="button"] {
+						small.contextual::before,
+						span.contextual::before {
+							content: attr(data-button);
+						}
+					}
+					&[data-type="element"] {
+						small.contextual::before,
+						span.contextual::before {
+							content: attr(data-element);
+						}
+						label.contextual {
+							display: none;
+						}
+					}
+				}
+				&[data-lock="true"] .lock {
+					label:before {
+						content: '\01F512';
+						margin-bottom: -21px;
+						text-shadow: none;
+					}
+					label {
+						span {
+							margin-left: 16px;
+						}
+						input {
+							pointer-events: none;
+							user-select: none;
+							color: var(--color-disabled);
+						}
+					}
+				}
+			}
+			&[data-state="none"] form.depot,
+			&[data-state="none"] form.files,
+			&[data-state="root"] form.site,
+			&[data-state="frame"] form.frame,
+			&[data-state="page"] form.page,
+			&[data-state="title"] form.title,
+			&[data-state="redirect"] form.redirect,
+			&[data-state="condition"] form.condition,
+			&[data-state="element"] form.element {
+				display: flex;
+			}
+		}
+	}
+	section.right {
+		flex: 1;
+		overflow: auto;
+		padding: 16px 16px 64px 16px;
+	}
+}

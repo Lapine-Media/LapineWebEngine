@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+	<head>
+		<meta charset="utf-8">
+		<title>Lapine App Studio</title>
+		<link rel="icon" type="image/svg+xml" href="graphics/bunny.svg">
+		<link rel="stylesheet" href="styles/index.css">
+		<script type="module" src="scripts/index.js" charset="utf-8"></script>
+	</head>
+	<body data-page="project" data-awesome="true">
+		<form id="index" action="index" hidden></form>
+		<header>
+			<div class="about">
+				<button class="link" type="submit" form="index" name="overlay" value="about">About</button>
+			</div>
+			<div class="logo">
+				<img src="graphics/bunny.svg" alt="Logo">
+				<h1>Lapine App Studio</h1>
+			</div>
+			<fieldset form="index" name="settings">
+				<label>
+					<input type="checkbox" name="awesome" value="true" checked>
+					<span>Awesome</span>
+				</label>
+				<label>
+					<input type="checkbox" name="audio" value="true" checked>
+					<span>Audio</span>
+				</label>
+			</fieldset>
+		</header>
+		<nav>
+			<button type="submit" form="index" name="menu" value="project">
+				<span>Project</span>
+			</button>
+			<button type="submit" form="index" name="menu" value="manifest">
+				<span>PWA Manifest</span>
+			</button>
+			<button type="submit" form="index" name="menu" value="sitemap">
+				<span>Sitemap</span>
+			</button>
+			<button type="submit" form="index" name="menu" value="cloudflare">
+				<span>Cloudflare</span>
+			</button>
+		</nav>
+		<main>
+			<page-context class="project" name="project" page="markup/project/project.html"></page-context>
+			<page-context class="manifest" name="manifest" page="markup/manifest.html"></page-context>
+			<page-context class="sitemap" name="sitemap" page="markup/sitemap.html"></page-context>
+			<page-context class="cloudflare" name="cloudflare" page="markup/cloudflare/cloudflare.html"></page-context>
+			<page-context id="editor" class="editor" name="editor" page=""></page-context>
+		</main>
+		<aside>
+			<h2>Output</h2>
+			<div id="live" class="log live"></div>
+			<div id="log" class="log terminal"></div>
+			<div class="footer">
+				<button form="index" type="submit" name="clear" value="log">Clear</button>
+			</div>
+		</aside>
+		<dialog id="overlay_dialog" class="overlay">
+			<header>
+				<h2 id="overlay_title">Title</h2>
+				<button id="overlay_button" form="index" type="submit" name="overlay" value="cancel">Cancel</button>
+			</header>
+			<page-context id="overlay" name="overlay" page=""></page-context>
+		</dialog>
+		<dialog id="messages" class="messages"></dialog>
+	</body>
+</html>

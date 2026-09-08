@@ -1,0 +1,33 @@
+
+<link rel="stylesheet" href="styles/cloudflare/r2_buckets.css">
+
+<h3>R2 buckets</h3>
+
+<form class="r2_buckets" action="r2_buckets">
+	<fieldset>
+		<legend>R2 buckets</legend>
+		<div>
+			<small><strong class="caution">Caution:</strong> This is a list of ALL R2 buckets connected to your Cloudflare account, not just the current project. Any changes made here will affect every other project as well.</small>
+		</div>
+		<div id="r2_buckets" class="buckets loading" data-loading="Loading list of R2 buckets..."></div>
+	</fieldset>
+	<footer>
+		<button type="submit" name="reload" value="cache">Reload cache</button>
+		<button type="submit" name="create" value="bucket">Create bucket</button>
+	</footer>
+</form>
+
+<script type="module" data-import="Site,R2Buckets,R2Item">
+	const fragment = document.createDocumentFragment();
+	const setup = async () => {
+		const list = await R2Buckets.getList();
+		const bindings = R2Buckets.getBindings();
+		for (const item of list) {
+			const bound = bindings.includes(item.name);
+			const element = new R2Item(item,bound);
+			fragment.append(element);
+		}
+		Site.elements[ViewContext.name].r2_buckets.append(fragment);
+	}
+	setup();
+</script>

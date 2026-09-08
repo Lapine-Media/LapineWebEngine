@@ -1,0 +1,136 @@
+
+<link rel="stylesheet" href="styles/cloudflare/d1_editor.css">
+<form id="d1_form" action="d1_editor" data-selected="none"></form>
+
+<h2>D1 editor</h2>
+
+<article class="editor">
+	<div class="border">
+		<div id="d1_editor" class="d1_editor" data-columns="same" data-rows="same">
+			<div class="header">
+				<div><strong>Name:</strong> <span id="database_name"></span></div>
+				<div><strong>Binding:</strong> <span id="binding_name"></span></div>
+				<div><strong>Environment:</strong> <span id="binding_environment"></span></div>
+				<div><strong>UUID:</strong> <span id="database_uuid"></span></div>
+				<div><strong>Preview:</strong> <span id="database_preview"></span></div>
+			</div>
+			<div class="menu">
+				<div class="options">
+					<button form="d1_form" type="submit" name="menu" value="migrations">Migrations</button>
+				</div>
+				<div class="io">
+					<button form="d1_form" type="submit" name="menu" value="import">Import</button>
+					<button form="d1_form" type="submit" name="menu" value="export">Export</button>
+				</div>
+				<div class="views">
+					<span>Views:</span>
+					<button form="d1_form" type="submit" name="menu" value="columns">Queries</button>
+					<button form="d1_form" type="submit" name="menu" value="rows">Results</button>
+				</div>
+				<div class="exit">
+					<button form="d1_form" type="submit" name="close" value="editor">Exit editor</button>
+				</div>
+			</div>
+			<section class="database">
+				<div id="database" class="list"></div>
+				<footer>
+					<button form="d1_form" type="submit" name="menu" value="reload">Reload</button>
+				</footer>
+			</section>
+			<section class="editor">
+				<div class="query">
+					<textarea id="query" form="d1_form" name="query"></textarea>
+					<footer>
+						<div>
+							<span>History:</span>
+							<select form="d1_form" id="history" name="history"></select>
+							<button form="d1_form" type="submit" name="menu" value="history">Load</button>
+						</div>
+						<button form="d1_form" type="submit" name="execute" value="query">Execute query</button>
+					</footer>
+				</div>
+				<div class="inspector">
+					<textarea id="selected" form="d1_form" name="selected"></textarea>
+					<footer>
+						<div>
+							<span>Templates:</span>
+							<select form="d1_form" name="template">
+								<optgroup label="Entries">
+									<option value="select">Select</option>
+									<option value="insert">Insert</option>
+									<option value="update">Update</option>
+									<option value="delete">Delete</option>
+								</optgroup>
+								<optgroup label="Table">
+									<option value="create_table">Create table</option>
+									<option value="create_virtual_table">Create virtual table</option>
+									<option value="alter_table">Alter table</option>
+									<option value="drop_table">Drop table</option>
+								</optgroup>
+								<optgroup label="Index">
+									<option value="create_index">Create index</option>
+									<option value="drop_index">Drop index</option>
+								</optgroup>
+								<optgroup label="View">
+									<option value="create_view">Create view</option>
+									<option value="drop_view">Drop view</option>
+								</optgroup>
+								<optgroup label="Trigger">
+									<option value="create_trigger">Create trigger</option>
+									<option value="drop_trigger">Drop trigger</option>
+								</optgroup>
+								<optgroup label="Transaction">
+									<option value="begin_transaction">Begin transaction</option>
+									<option value="end_transaction">End transaction</option>
+									<option value="commit_transaction">Commit transaction</option>
+									<option value="rollback_transaction">Rollback transaction</option>
+								</optgroup>
+							</select>
+							<button form="d1_form" type="submit" name="sql" value="template">Load</button>
+						</div>
+					</footer>
+				</div>
+			</section>
+			<section class="results">
+				<div id="table" class="table"></div>
+				<footer class="options">
+					<div class="details">
+						<button form="d1_form" type="submit" name="menu" value="entries"><span id="entries" class="icon entries" data-count="0">Entries</span></button>
+						<button form="d1_form" type="submit" name="menu" value="indices"><span id="indices" class="icon indices" data-count="0">Indices</span></button>
+						<button form="d1_form" type="submit" name="menu" value="triggers"><span id="triggers" class="icon triggers" data-count="0">Triggers</span></button>
+					</div>
+					<div class="rows">
+						Showing rows <span id="from">0</span> to <span id="to">0</span> of <span id="total">0</span>
+					</div>
+					<div class="pagination">
+						<select form="d1_form" id="pages" name="pages"></select>
+					</div>
+				</footer>
+			</section>
+			<dialog id="migrations">
+				<header>
+					<span>Migration status</span>
+					<button form="d1_form" type="submit" name="close" value="migrations">Cancel</button>
+				</header>
+				<section class="migrations">
+					<table>
+						<thead>
+							<tr>
+								<th>Name</th>
+								<th>Local</th>
+								<th>Preview</th>
+								<th>Remote</th>
+							</tr>
+						</thead>
+						<tbody id="list"></tbody>
+					</table>
+				</section>
+				<footer>
+					<button form="d1_form" type="submit" name="apply" value="local">Apply local</button>
+					<button form="d1_form" type="submit" name="apply" value="preview">Apply preview</button>
+					<button form="d1_form" type="submit" name="apply" value="remote">Apply remote</button>
+				</footer>
+			</dialog>
+		</div>
+	</div>
+</article>

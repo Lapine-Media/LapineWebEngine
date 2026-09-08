@@ -1,0 +1,42 @@
+
+<form action="d1_editor">
+	<fieldset>
+		<legend>Export database</legend>
+		<label>
+			<span>Database</span>
+			<select name="content">
+				<option value="local">Local</option>
+				<option value="preview">Preview</option>
+				<option value="remote">Remote</option>
+			</select>
+		</label>
+		<label>
+			<span>Content</span>
+			<select name="content">
+				<option value="schema">Schema</option>
+				<option value="data">Data</option>
+				<option value="both">Both</option>
+			</select>
+		</label>
+		<label>
+			<span>Tables</span>
+			<input type="text" name="tables">
+			<small>Leave empty to export every table.</small>
+		</label>
+		<label>
+			<span>File name</span>
+			<input type="text" name="file" value="exported.sql">
+		</label>
+	</fieldset>
+	<footer>
+		<button type="submit" name="io" value="export">Export</button>
+	</footer>
+</form>
+
+<h3>Limitations</h3>
+
+<ol>
+	<li>Export is not supported for virtual tables, including databases with virtual tables. As a workaround, delete any virtual tables, export, and then recreate virtual tables.</li>
+	<li>A running export will block other database requests.</li>
+	<li>Any numeric value in a column is affected by JavaScript's 52-bit precision for numbers. If you store a very large number (in int64) and then retrieve the same value, the returned value may be less precise than your original number.</li>
+</ol>

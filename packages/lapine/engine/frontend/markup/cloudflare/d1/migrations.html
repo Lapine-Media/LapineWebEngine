@@ -1,0 +1,67 @@
+<style media="screen">
+	table {
+		border-collapse: collapse;
+		thead {
+			color: var(--color-orange);
+			font-family: 'Asap Black';
+			text-align: left;
+		}
+		tbody {
+			font-size: 10px;
+			text-align: center;
+			border: 1px solid var(--color-borders);
+			border-radius: 4px;
+			background-color: var(--color-borders-darker);
+			tr td {
+				padding: 4px;
+				&:first-child {
+					text-align: left;
+				}
+				&.active {
+					color: var(--color-accept);
+				}
+				&.missing {
+					color: var(--color-reject);
+				}
+			}
+		}
+	}
+</style>
+
+<form action="d1_editor">
+	<fieldset>
+		<legend>Migrations</legend>
+		<section class="migrations">
+			<table>
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Local</th>
+						<th>Preview</th>
+						<th>Remote</th>
+					</tr>
+				</thead>
+				<tbody id="list"></tbody>
+			</table>
+		</section>
+		<!--label>
+			<span>Create migration</span>
+			<textarea name="migration"></textarea>
+		</label-->
+		<label>
+			<span>Options</span>
+			<select name="option">
+				<option value="local">Apply to local</option>
+				<option value="preview">Apply to preview</option>
+				<option value="remote">Apply to remote</option>
+
+				<option value="local">Remove all local</option>
+				<option value="preview">Remove all preview</option>
+				<option value="remote">Remove all remote</option>
+			</select>
+		</label>
+	</fieldset>
+	<footer>
+		<button type="submit" name="menu" value="migrate">Confirm</button>
+	</footer>
+</form>

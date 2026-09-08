@@ -1,0 +1,24 @@
+
+<link rel="stylesheet" href="styles/cloudflare/database_edit.css">
+
+<form action="d1_databases">
+	<fieldset>
+		<legend>Info</legend>
+		<ul>
+			<li><strong>UUID:</strong><span id="uuid"></span></li>
+			<li><strong>Version:</strong><span id="version"></span></li>
+			<li><strong>Jurisdiction:</strong><span id="jurisdiction"></span></li>
+			<li><strong>Region:</strong><span id="running_in_region"></span></li>
+			<li><strong>Read replication:</strong><span id="read_replication"></span></li>
+			<li><strong>Read queries 24h:</strong><span id="read_queries_24h"></span></li>
+			<li><strong>Write queries 24h:</strong><span id="write_queries_24h"></span></li>
+			<li><strong>Rows read 24h:</strong><span id="rows_read_24h"></span></li>
+			<li><strong>Rows written 24h:</strong><span id="rows_written_24h"></span></li>
+		</ul>
+	</fieldset>
+	<footer>
+		<button type="submit" name="delete" value="database">Delete</button>
+		<button type="submit" name="export" value="database">Export</button>
+		<button type="submit" name="timetravel" value="database">Time-travel</button>
+	</footer>
+</form>

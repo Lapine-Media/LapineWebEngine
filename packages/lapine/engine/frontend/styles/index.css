@@ -1,0 +1,301 @@
+
+@import 'common.css';
+@import 'output.css';
+
+html {
+	background: var(--gradient-background);
+	background-size: 100vw 100vh;
+	body {
+		display: grid;
+		grid-template-columns: 1fr 320px;
+		grid-template-rows: auto auto 1fr;
+		grid-column-gap: 0px;
+		grid-row-gap: 0px;
+		margin: 0;
+		padding: 4px 0;
+		height: 100vh;
+		background: var(--gradient-stripe);
+		color: var(--color-white);
+		font-family: 'Asap Medium', sans-serif;
+		font-optical-sizing: auto;
+		font-size: 14px;
+		font-weight: 600;
+		font-style: normal;
+		overflow: hidden;
+
+		& > header {
+			grid-area: 1 / 1 / 2 / 3;
+			display: grid;
+			grid-template-columns: 320px 1fr 320px;
+			grid-template-rows: 1fr;
+			background: var(--gradient-background);
+			background-size: 100vw 100vw;
+			background-position: top;
+			background-attachment: fixed;
+			.about {
+				display: flex;
+				align-items: center;
+				padding: 0 16px;
+				font-weight: 700;
+			}
+			.logo {
+				display: grid;
+				grid-template-columns: 32px auto;
+				gap: 4px;
+				justify-content: center;
+				align-items: center;
+				padding: 8px;
+
+				img {
+					width: 32px;
+					height: 32px;
+				}
+				h1 {
+					font-family: 'Asap Black', sans-serif;
+					font-weight: 900;
+					margin: 0;
+				}
+			}
+			fieldset {
+				display: flex;
+				justify-content: end;
+				gap: 16px;
+				padding: 0 16px;
+				border: 0;
+				background-color: transparent;
+				label {
+					flex: 0;
+					flex-wrap: nowrap !important;
+				}
+			}
+		}
+		& > nav {
+			grid-area: 2 / 1 / 3 / 3;
+			display: flex;
+			justify-content: space-evenly;
+			background-color: var(--color-borders);
+			overflow: hidden;
+
+			button {
+				flex: 1;
+				position: relative;
+				display: grid;
+				font-family: 'Asap Black', sans-serif;
+				font-size: 22px;
+				font-weight: 400;
+				text-transform: none;
+				border: 0;
+				border-radius: 0;
+				padding: 8px;
+				color: var(--color-white);
+				transform: skewX(-35deg);
+				transition: background-color .3s;
+				span {
+					transform: skewX(35deg);
+				}
+				&:nth-child(odd) {
+					background-color: transparent;
+				}
+				&:nth-child(even) {
+					background-color: var(--color-borders-light);
+				}
+				&:hover {
+					background-color: var(--color-highlight);
+				}
+			}
+		}
+		& > main {
+			grid-area: 3 / 1 / 4 / 2;
+			background: var(--gradient-background);
+			background-size: 100vw 100vw;
+			background-position: top;
+			background-attachment: fixed;
+			padding: 16px 8px 16px 16px;
+			overflow: hidden;
+			page-context {
+				display: none;
+				height: 100%;
+			}
+		}
+		& > aside {
+			grid-area: 3 / 2 / 4 / 3;
+			background: var(--gradient-background);
+			background-size: 100vw 100vw;
+			background-position: top;
+			background-attachment: fixed;
+			padding: 16px 16px 16px 8px;
+		}
+	}
+}
+
+/* PAGES /////////////////////////////////////////////////////////////////// */
+
+body[data-page="project"] main page-context.project,
+body[data-page="manifest"] main page-context.manifest,
+body[data-page="sitemap"] main page-context.sitemap,
+body[data-page="cloudflare"] main page-context.cloudflare,
+body[data-page="editor"] main page-context.editor {
+	display: flex;
+}
+
+/* OVERLAY ///////////////////////////////////////////////////////////////// */
+
+dialog[open] {
+	display: flex;
+	&.messages::backdrop {
+		pointer-events: none;
+	}
+}
+
+dialog.overlay {
+	position: absolute;
+	z-index: 100;
+	max-width: 640px;
+	padding: 0;
+	border: 0;
+	overflow: hidden;
+	flex-direction: column;
+	background-color: transparent;
+	color: var(--color-white);
+	header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		gap: 16px;
+		border-width: 1px 1px 0 1px;
+		border-style: solid;
+		border-radius: 8px 8px 0 0;
+		border-color: var(--color-borders);
+		padding: 8px 8px 8px 16px;
+		background-color: var(--color-borders-dark);
+	}
+	page-context {
+		overflow: auto;
+		flex: 1;
+		padding: 16px;
+		background-color: var(--color-background-2);
+		border: 1px solid var(--color-borders);
+		border-radius: 0 0 8px 8px;
+		display: flex;
+		flex-direction: column;
+		row-gap: 16px;
+	}
+	&::backdrop {
+		background-color: var(--color-background-4);
+		backdrop-filter: blur(4px);
+	}
+	&.blocked {
+		header {
+			display: none;
+		}
+		page-context {
+			border-radius: 8px;
+		}
+	}
+}
+
+dialog.messages {
+	z-index: 100;
+	min-width: 320px;
+	border: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+	row-gap: 4px;
+	background-color: transparent;
+	outline: none;
+
+	& lapine-message:first-of-type {
+		margin-top: 4px;
+	}
+}
+
+/*dialog[open] {
+	display: flex;
+}
+
+dialog.overlay {
+	position: absolute;
+    top: 0;
+    left: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    z-index: 100;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    background: transparent;
+
+	.backdrop {
+		background-color: #110011;
+	    opacity: 0.9;
+	    position: absolute;
+	    width: 100%;
+	    height: 100%;
+	}
+	.container {
+		position: absolute;
+	    display: flex;
+	    color: var(--color-white);
+	    flex-direction: column;
+		max-height: 100%;
+		min-width: 480px;
+		max-width: 800px;
+		padding: 64px 0;
+
+		.header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			gap: 16px;
+			border-width: 1px 1px 0 1px;
+			border-style: solid;
+			border-radius: 8px 8px 0 0;
+			border-color: var(--color-borders);
+			padding: 8px 8px 8px 16px;
+			background-color: var(--color-borders-dark);
+		}
+		page-context {
+			overflow: auto;
+		    flex: 1;
+		    padding: 16px;
+		    background-color: var(--color-background-2);
+		    border: 1px solid var(--color-borders);
+		    border-radius: 0 0 8px 8px;
+		    display: flex;
+		    flex-direction: column;
+		    row-gap: 16px;
+		}
+	}
+	&[data-max="true"] .container {
+		width: 100%;
+	}
+}
+
+dialog.messages {
+	z-index: 100;
+	min-width: 320px;
+	border: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+	row-gap: 4px;
+	background-color: transparent;
+	outline: none;
+
+	& lapine-message:first-of-type {
+		margin-top: 4px;
+	}
+}
+
+body[data-state="blocked"] dialog.overlay .container {
+	width: auto;
+	height: auto;
+}
+body[data-state="blocked"] dialog.overlay .container .content {
+	border-radius: 8px;
+}
+*/

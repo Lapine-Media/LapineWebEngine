@@ -1,0 +1,31 @@
+
+<link rel="stylesheet" href="styles/cloudflare/durable_objects.css">
+
+<h3>Durable objects</h3>
+
+<form action="durable_objects" class="durable_objects">
+	<fieldset>
+		<legend>Namespaces</legend>
+		<div id="do_items" class="namespaces loading" data-loading="Loading list of Durable Objects namespaces..."></div>
+	</fieldset>
+	<footer>
+		<button type="submit" name="migration" value="settings">Migration settings</button>
+		<button type="submit" name="reload" value="cache">Reload cache</button>
+		<button type="submit" name="create" value="namespace">Create namespace</button>
+	</footer>
+</form>
+
+<script type="module" data-import="Site,DurableObjects,DOItem">
+	const fragment = document.createDocumentFragment();
+	const setup = async () => {
+		const list = await DurableObjects.getList();
+		const bindings = DurableObjects.getBindings();
+		for (const item of list) {
+			const bound = bindings.includes(item.name);
+			const element = new DOItem(item,bound);
+			fragment.append(element);
+		}
+		Site.elements[ViewContext.name].do_items.append(fragment);
+	}
+	setup();
+</script>

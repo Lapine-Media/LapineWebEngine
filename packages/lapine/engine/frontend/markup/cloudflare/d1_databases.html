@@ -1,0 +1,33 @@
+
+<link rel="stylesheet" href="styles/cloudflare/d1_databases.css">
+
+<h3>D1 databases</h3>
+
+<form action="d1_databases" class="d1_databases">
+	<fieldset>
+		<legend>D1 databases</legend>
+		<div>
+			<small><strong class="caution">Caution:</strong> This is a list of ALL D1 databases connected to your Cloudflare account, not just the current project. Any changes made here will affect every other project as well.</small>
+		</div>
+		<div id="d1_items" class="databases loading" data-loading="Loading list of D1 databases..."></div>
+	</fieldset>
+	<footer>
+		<button type="submit" name="reload" value="cache">Reload cache</button>
+		<button type="submit" name="create" value="database">Create database</button>
+	</footer>
+</form>
+
+<script type="module" data-import="Site,D1Databases,D1Item">
+	const fragment = document.createDocumentFragment();
+	const setup = async () => {
+		const list = await D1Databases.getList();
+		const bindings = D1Databases.getBindings();
+		for (const item of list) {
+			const bound = bindings.includes(item.uuid);
+			const element = new D1Item(item,bound);
+			fragment.append(element);
+		}
+		Site.elements[ViewContext.name].d1_items.append(fragment);
+	}
+	setup();
+</script>

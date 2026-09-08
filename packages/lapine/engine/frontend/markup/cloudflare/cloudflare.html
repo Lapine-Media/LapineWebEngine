@@ -1,0 +1,22 @@
+
+<link rel="stylesheet" href="styles/cloudflare/cloudflare.css">
+<form id="cloudflare" action="cloudflare" hidden></form>
+
+<h2>Cloudflare</h2>
+
+<article class="cloudflare">
+	<section>
+		<nav>
+			<button class="link" type="submit" form="cloudflare" name="menu" value="environments">Environments</button>
+			<button class="link" type="submit" form="cloudflare" name="menu" value="d1_databases">D1 databases</button>
+			<button class="link" type="submit" form="cloudflare" name="menu" value="r2_buckets">R2 buckets</button>
+			<button class="link" type="submit" form="cloudflare" name="menu" value="durable_objects">Durable objects</button>
+			<button class="link" type="submit" form="cloudflare" name="menu" value="kv_namespaces">KV namespaces</button>
+			<button class="link" type="submit" form="cloudflare" name="menu" value="queues">Queues</button>
+		</nav>
+		<footer>
+			<button type="submit" form="cloudflare" name="account" value="whoami">Who am I?</button>
+		</footer>
+	</section>
+	<page-context id="subpage" name="subpage" page="markup/cloudflare/environments.html"></page-context>
+</article>

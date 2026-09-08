@@ -1,0 +1,33 @@
+
+article.cloudflare {
+	display: flex;
+	overflow: hidden;
+	section {
+		display: flex;
+		flex-direction: column;
+		nav {
+			flex: 1;
+			display: flex;
+			flex-direction: column;
+			align-items: start;
+			gap: 32px;
+			padding: 24px 16px;
+			background-color: var(--color-borders-dark);
+			border-right: 1px solid var(--color-borders);
+		}
+		footer {
+			padding: 16px;
+			text-align: center;
+			background-color: var(--color-borders-dark);
+			border-right: 1px solid var(--color-borders);
+		}
+	}
+	page-context {
+		flex: 1;
+		padding: 16px;
+		overflow: auto;
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+	}
+}

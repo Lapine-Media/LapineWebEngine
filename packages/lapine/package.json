@@ -1,0 +1,37 @@
+{
+  "name": "lapine",
+  "version": "1.0.1",
+  "description": "A PWA framework based on Web Components and Cloudflare",
+  "keywords": [
+    "PWA",
+    "Cloudflare"
+  ],
+  "homepage": "https://github.com/Lapine-Media/LapineWebEngine#readme",
+  "bugs": {
+    "url": "https://github.com/Lapine-Media/LapineWebEngine/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lapine-Media/LapineWebEngine.git"
+  },
+  "license": "MIT",
+  "author": "frankichiro",
+  "type": "module",
+  "main": "engine/frontend/index.js",
+  "bin": "engine/backend/index.js",
+  "scripts": {
+    "start": "node engine/backend/index.js"
+  },
+  "dependencies": {
+    "acorn": "^8.16.0",
+    "ansi-to-html": "^0.7.2",
+    "autoprefixer": "^10.4.21",
+    "jsonc-simple-parser": "^3.0.0",
+    "magic-string": "^0.30.21",
+    "open": "^10.1.1",
+    "postcss": "^8.5.3",
+    "sharp": "^0.34.5",
+    "terser": "^5.46.1",
+    "ws": "^8.18.1"
+  }
+}

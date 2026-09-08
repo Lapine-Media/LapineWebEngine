@@ -1,0 +1,6 @@
+
+:host([data-context="add"]) {
+	.remove {
+		display: none;
+	}
+}

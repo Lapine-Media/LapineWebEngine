@@ -1,0 +1,238 @@
+
+<link rel="stylesheet" href="styles/pages/manifest.css">
+<form id="manifest" action="manifest" hidden></form>
+
+<h2>PWA Manifest</h2>
+
+<article id="container" data-page="information">
+	<nav>
+		<button class="link" type="submit" form="manifest" name="menu" value="information">Information</button>
+		<button class="link" type="submit" form="manifest" name="menu" value="appearance">Appearance</button>
+		<button class="link" type="submit" form="manifest" name="menu" value="urls">URLs</button>
+		<button class="link" type="submit" form="manifest" name="menu" value="protocols">Protocols</button>
+		<button class="link" type="submit" form="manifest" name="menu" value="shortcuts">Shortcuts</button>
+		<button class="link" type="submit" form="manifest" name="menu" value="icons">Icons</button>
+		<button class="link" type="submit" form="manifest" name="menu" value="screenshots">Screenshots</button>
+	</nav>
+	<section class="pages">
+		<form id="manifest_information" class="information" action="manifest">
+			<fieldset>
+				<legend>Information</legend>
+				<label>
+					<span>ID</span>
+					<input type="text" name="id">
+					<small>Used to specify a unique identifier for your web application.</small>
+				</label>
+				<label>
+					<span>Full name</span>
+					<input type="text" name="name">
+					<small>The full name of your web application.</small>
+				</label>
+				<label>
+					<span>Short name</span>
+					<input type="text" name="short_name">
+					<small>May be used when the full name is too long for the available space.</small>
+				</label>
+				<label>
+					<span>Description</span>
+					<input type="text" name="description">
+					<small>This text helps users understand your app's purpose when viewing it in an app store.</small>
+				</label>
+				<label>
+					<span>Categories</span>
+					<input type="text" name="categories">
+					<small>These categories help users discover your app in app stores.</small>
+				</label>
+				<label>
+					<span>International Age Rating Coalition ID</span>
+					<input type="text" name="iarc_rating_id">
+					<small>If you use <a href="https://developer.chrome.com/docs/android/trusted-web-activity/" target="_blank">Bubblewrap/TWA</a> to publish to Google Play, you need an age rating.</small>
+				</label>
+				<label>
+					<span>Language</span>
+					<input type="text" name="lang">
+					<small>Tells the browser what language the name and description are in.</small>
+				</label>
+				<label>
+					<span>Text direction</span>
+					<select name="dir">
+						<option value="ltr">Left-to-Right</option>
+						<option value="rtl">Right-to-Left</option>
+					</select>
+					<small>Adds support for specific languages.</small>
+				</label>
+			</fieldset>
+			<footer>
+				<button type="submit" name="save" value="information">Save information</button>
+			</footer>
+		</form>
+		<form id="manifest_appearance" class="appearance" action="manifest">
+			<fieldset>
+				<legend>Appearance</legend>
+				<label>
+					<span>Background color</span>
+					<input type="text" name="background_color">
+					<small>This color appears in the application window before your application's stylesheets have loaded.</small>
+				</label>
+				<label>
+					<span>Theme color</span>
+					<input type="text" name="theme_color">
+					<small>This color may be applied to various browser UI elements, such as the toolbar, address bar, and status bar.</small>
+				</label>
+				<label>
+					<span>Display</span>
+					<select id="manifest_display" name="display">
+						<option value="fullscreen">fullscreen</option>
+						<option value="standalone">standalone</option>
+						<option value="minimal-ui">minimal-ui</option>
+						<option value="browser">browser</option>
+					</select>
+					<small>Determines how much of the browser UI is shown to the user when the app is launched within the context of an operating system.</small>
+				</label>
+				<label>
+					<span>Display override</span>
+					<input type="text" name="display_override">
+					<small>The browser reads this from left to right until it finds a supported property, or it falls back to Display as the final option.</small>
+				</label>
+				<label>
+					<span>Orientation</span>
+					<select id="manifest_orientation" name="orientation">
+						<option value="any">any</option>
+						<option value="natural">natural</option>
+						<option value="portrait">portrait</option>
+						<option value="portrait-primary">portrait-primary</option>
+						<option value="portrait-secondary">portrait-secondary</option>
+						<option value="landscape">landscape</option>
+						<option value="landscape-primary">landscape-primary</option>
+						<option value="landscape-secondary">landscape-secondary</option>
+					</select>
+					<small>How the app should be displayed when launched and during use, in relation to the device's screen orientation.</small>
+				</label>
+			</fieldset>
+			<footer>
+				<button type="submit" name="save" value="appearance">Save appearance</button>
+			</footer>
+		</form>
+		<form id="manifest_urls" class="urls" action="manifest">
+			<fieldset>
+				<legend>URLs</legend>
+				<label>
+					<span>Start url</span>
+					<input type="text" name="start_url">
+					<small>The URL that should be opened when a user launches your web application.</small>
+				</label>
+				<label>
+					<span>Scope</span>
+					<input type="text" name="scope">
+					<small>The top-level URL path that contains your web application's pages and subdirectories.</small>
+				</label>
+			</fieldset>
+			<footer>
+				<button type="submit" name="save" value="urls">Save urls</button>
+			</footer>
+		</form>
+		<form id="manifest_protocols" class="protocols" action="manifest">
+			<fieldset>
+				<legend>Share target</legend>
+				<div>
+					<small>This makes your PWA appear in the system "Share" menu (e.g., sharing a photo from the Gallery to your PWA).</small>
+				</div>
+				<label>
+					<span>Action</span>
+					<input type="text" name="action">
+					<small>Share action</small>
+				</label>
+				<label>
+					<span>Method</span>
+					<select name="method">
+						<option value="post">POST</option>
+						<option value="get">GET</option>
+					</select>
+					<small>How to receive data.</small>
+				</label>
+				<label>
+					<span>Encryption type</span>
+					<select name="enctype">
+						<option value="application/x-www-form-urlencoded">application/x-www-form-urlencoded</option>
+						<option value="multipart/form-data">multipart/form-data</option>
+					</select>
+					<small>How to encode the data. Select multipart/form-data for handling files.</small>
+				</label>
+				<label>
+					<span>Title</span>
+					<input type="text" name="title">
+					<small>Share title</small>
+				</label>
+				<label>
+					<span>Text</span>
+					<input type="text" name="text">
+					<small>Share body</small>
+				</label>
+				<label>
+					<span>URL</span>
+					<input type="text" name="url">
+					<small>Share link</small>
+				</label>
+				<label>
+					<span>Files</span>
+					<textarea class="lined" name="files"></textarea>
+					<small>One entry per line, as "name: space-separated list of types".<br><strong>Examples:</strong> documents: .pdf .doc .docx application/pdf | media: image/* video/*</small>
+				</label>
+			</fieldset>
+			<fieldset>
+				<legend>Protocols</legend>
+				<div>
+					<small>Allows your PWA to handle links like mailto: or bitcoin: or web+myapp:.</small>
+				</div>
+				<label>
+					<span>Protocol handlers</span>
+					<textarea class="lined" name="handlers"></textarea>
+					<small>One handler per line, as "protocol: url". <strong>Examples:</strong> web+lapine: /?handler=%s | mailto: /compose?to=%s</small>
+				</label>
+			</fieldset>
+			<footer>
+				<button type="submit" name="save" value="protocols">Save protocols</button>
+			</footer>
+		</form>
+		<form id="manifest_shortcuts" class="shortcuts" action="manifest">
+			<fieldset>
+				<legend>Shortcuts</legend>
+				<shortcut-list id="shortcuts" name="shortcuts">
+					<small>Links to key tasks or pages within your web application, typically displayed when a user interacts with the web app's icon.</small>
+				</shortcut-list>
+			</fieldset>
+			<footer>
+				<button type="submit" name="save" value="shortcuts">Save shortcuts</button>
+			</footer>
+		</form>
+		<form id="manifest_icons" class="icons" action="manifest">
+			<fieldset>
+				<legend>Icons</legend>
+				<div>
+					<small>An image for the icons that represent your web application.</small>
+				</div>
+				<div class="icon">
+					<image-upload id="icons" name="icons" width="512" height="512" fill="#ffffff" data-round="false"></image-upload>
+				</div>
+				<label>
+					<input type="checkbox" id="manifest_round">
+					<span>Round preview</span>
+				</label>
+			</fieldset>
+			<footer>
+				<button type="submit" name="save" value="icons">Save icons</button>
+			</footer>
+		</form>
+		<form id="manifest_screenshots" class="screenshots" action="manifest">
+			<fieldset>
+				<legend>Screenshots</legend>
+				<screenshot-gallery id="screenshots" name="screenshots">
+					<small>These images help users preview your web app's interface and features in app stores.<br><strong>Note:</strong> Screenshots are uploaded manually on the Apple App Store, so IOS is not a platform option here.</small>
+				</screenshot-gallery>
+			</fieldset>
+			<footer>
+				<button type="submit" name="save" value="screenshots">Save screenshots</button>
+			</footer>
+		</form>
+	</section>
+</article>

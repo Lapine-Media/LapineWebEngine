@@ -1,0 +1,51 @@
+
+<link rel="stylesheet" href="styles/cloudflare/inspect_namespace.css">
+
+<form action="durable_objects">
+	<fieldset>
+		<legend>Info</legend>
+		<ul>
+			<li><strong>Name:</strong><span id="name"></span></li>
+			<li><strong>Id:</strong><span id="id"></span></li>
+			<li><strong>Class:</strong><span id="class"></span></li>
+			<li><strong>Script:</strong><span id="script"></span></li>
+			<li><strong>SQLite:</strong><span id="use_sqlite"></span></li>
+		</ul>
+	</fieldset>
+	<fieldset>
+		<legend>Objects</legend>
+		<div id="objects" class="objects loading" data-loading="Loading namespace objects..."></div>
+	</fieldset>
+	<footer>
+		<!--button type="submit" name="delete" value="object">Delete</button-->
+	</footer>
+</form>
+
+<template id="namespace-object">
+	<div class="container">
+		<div><strong>Id:</strong><span id="id"></span></div>
+		<div><strong>Data:</strong><span id="hasStoredData"></span></div>
+	</div>
+</template>
+
+<script type="module" data-import="Site,Overlay,DurableObjects">
+	const context = Site.elements[ViewContext.name];
+	const data = Overlay.getData('namespace');
+	const fragment = document.createDocumentFragment();
+	const setup = async () => {
+		const objects = await DurableObjects.getObjects(data);
+		for (const object of objects) {
+			const template = await Site.getTemplate('namespace-object');
+			template.id.textContent = object.id;
+			template.hasStoredData.textContent = object.hasStoredData ? 'true' : 'false';
+			fragment.append(template.fragment);
+		}
+		context.objects.append(fragment);
+	}
+	context.name.textContent = data.name;
+	context.id.textContent = data.id;
+	context.class.textContent = data.class;
+	context.script.textContent = data.script;
+	context.use_sqlite.textContent = data.use_sqlite ? 'true' : 'false';
+	setup();
+</script>

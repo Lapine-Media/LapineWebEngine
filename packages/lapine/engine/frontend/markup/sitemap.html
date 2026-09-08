@@ -1,0 +1,416 @@
+
+<link rel="stylesheet" href="styles/sitemap/sitemap.css">
+<form id="sitemap" action="sitemap" hidden></form>
+
+<h2>Sitemap</h2>
+
+<article>
+	<section class="left">
+		<div id="menu" class="menu">
+			<button type="submit" form="sitemap" name="load" value="map">Load</button>
+			<button type="submit" form="sitemap" name="load" value="new">New</button>
+			<div class="save_map">
+				<button type="submit" form="sitemap" name="save" value="map">Save</button>
+			</div>
+		</div>
+		<div id="forms" class="forms" data-state="none">
+			<form action="sitemap" id="depot" class="depot">
+				<fieldset>
+					<legend>Add / Remove</legend>
+					<div>
+						<small>Drag and drop to insert new nodes.</small>
+					</div>
+					<div id="nodes" class="nodes"></div>
+					<div id="dropzone" class="dropzone">
+						<span>Drop here to delete</span>
+					</div>
+					<div class="undoable">
+						<div>Undoable: <span id="undoable"></span></div>
+						<button type="submit" name="undo" value="depot">Undo</button>
+					</div>
+				</fieldset>
+			</form>
+			<form action="sitemap" id="site" class="site">
+				<fieldset>
+					<legend>Site</legend>
+					<label>
+						<span>Site name</span>
+						<input type="text" name="site_name">
+						<small>A descriptive name</small>
+					</label>
+					<label>
+						<span>Location</span>
+						<input type="text" name="location">
+						<small>The site's domain name</small>
+					</label>
+					<label>
+						<span>Base url</span>
+						<input type="text" name="base_url">
+						<small>Can be changed for testing purposes</small>
+					</label>
+				</fieldset>
+				<fieldset>
+					<legend>Mail</legend>
+					<label>
+						<span>Mail name</span>
+						<input type="text" name="mail_name">
+						<small>Name for sending e-mails</small>
+					</label>
+					<label>
+						<span>Support mail address</span>
+						<input type="text" name="mail_address1">
+						<small>Address for sending e-mails, expecting replies</small>
+					</label>
+					<label>
+						<span>Transactional mail address</span>
+						<input type="text" name="mail_address2">
+						<small>Address for sending e-mails, with no replies</small>
+					</label>
+				</fieldset>
+				<fieldset>
+					<legend>Session</legend>
+					<label>
+						<span>Session timeout</span>
+						<input type="text" name="session_timeout">
+						<small>Length of a session, in minutes</small>
+					</label>
+					<label>
+						<span>Session warning</span>
+						<input type="text" name="session_warning">
+						<small>Time before timeout alert, in minutes</small>
+					</label>
+				</fieldset>
+				<fieldset>
+					<legend>SEO</legend>
+					<label>
+						<span>Title</span>
+						<input type="text" name="seo_title">
+						<small>Default page title</small>
+					</label>
+					<label>
+						<span>Description</span>
+						<textarea id="site_description" name="seo_description"></textarea>
+						<small>Site description</small>
+					</label>
+					<label>
+						<span>Keywords</span>
+						<input type="text" name="seo_keywords">
+						<small>At least three words</small>
+					</label>
+					<label>
+						<span>Image URL</span>
+						<input type="text" name="seo_image_url" placeholder="frontend/graphics/seo.png">
+						<small>Shows up when you post a link to the site</small>
+					</label>
+					<label>
+						<span>Image width</span>
+						<input type="text" name="seo_image_width" placeholder="1200">
+					</label>
+					<label>
+						<span>Image height</span>
+						<input type="text" name="seo_image_height" placeholder="800">
+					</label>
+				</fieldset>
+				<fieldset>
+					<legend>Other</legend>
+					<label>
+						<span>Facebook app id</span>
+						<input type="text" name="app_id">
+						<small>More information at <a href="https://developers.facebook.com/apps" target="_blank">Meta for developers</a></small>
+					</label>
+				</fieldset>
+				<footer>
+					<button type="submit" name="save" value="site">Save</button>
+				</footer>
+			</form>
+			<form action="sitemap" id="frame" class="frame">
+				<fieldset>
+					<legend>Local preview link</legend>
+					<div class="link">
+						<a id="frame_link" href="" target="_blank"></a>
+					</div>
+				</fieldset>
+				<fieldset>
+					<legend>Frame</legend>
+					<label class="lock">
+						<span>Uni</span>
+						<input type="text" name="uni">
+						<small>For reference in site menus</small>
+					</label>
+					<label>
+						<span>Title</span>
+						<input type="text" name="title">
+						<small>Only used in the sitemap</small>
+					</label>
+					<label class="lock">
+						<span>Path</span>
+						<input type="text" name="path">
+						<small>URL path for the frame</small>
+					</label>
+					<label class="lock">
+						<span>Frame file</span>
+						<input type="text" name="file">
+						<small>Frame markup file <span class="path">frontend/markup/frames/</span></small>
+					</label>
+					<label>
+						<span>Missing file</span>
+						<input type="text" name="missing" placeholder="404">
+						<small>Used for missing pages <span class="path">frontend/markup/pages/</span></small>
+					</label>
+					<div>
+						<label for="frame_csp">
+							<span>Content security policy file</span>
+						</label>
+						<div class="csp_file">
+							<input type="text" id="frame_csp" name="csp">
+							<button type="submit" name="edit" value="policy">Edit</button>
+						</div>
+						<small>Policy file <span class="path">frontend/data/</span></small>
+					</div>
+				</fieldset>
+				<fieldset>
+					<legend>Menu</legend>
+					<label>
+						<span>Target</span>
+						<input type="text" name="target" placeholder="main">
+						<small>Default content frame to load pages into</small>
+					</label>
+					<label>
+						<span>Icon</span>
+						<input type="text" name="icon">
+						<small>Icon to display next to link in menus</small>
+					</label>
+				</fieldset>
+				<fieldset>
+					<legend>SEO</legend>
+					<label>
+						<span>Title</span>
+						<input type="text" name="seo_title">
+						<small>Default page title</small>
+					</label>
+					<label>
+						<span>Description</span>
+						<textarea name="seo_description"></textarea>
+						<small>Default page description</small>
+					</label>
+					<label>
+						<span>Keywords</span>
+						<input type="text" name="seo_keywords">
+						<small>Default page keywords</small>
+					</label>
+					<label>
+						<span>Image</span>
+						<input type="text" name="seo_image_url">
+						<small>Default page image</small>
+					</label>
+				</fieldset>
+				<footer>
+					<button type="submit" name="save" value="frame">Save</button>
+				</footer>
+			</form>
+			<form action="sitemap" id="page" class="page">
+				<fieldset>
+					<legend>Local preview link</legend>
+					<div class="link">
+						<a id="page_link" href="" target="_blank" name="link"></a>
+					</div>
+				</fieldset>
+				<fieldset>
+					<legend>Page</legend>
+					<label>
+						<input type="checkbox" name="redirect" value="true">
+						<span>Redirect to first child</span>
+					</label>
+					<label class="lock">
+						<span>Uni</span>
+						<input type="text" name="uni">
+						<small>For reference in site menus and links</small>
+					</label>
+					<label>
+						<span>Title</span>
+						<input type="text" name="title">
+						<small>Specific page title</small>
+					</label>
+					<label>
+						<span>Path</span>
+						<input type="text" name="path">
+						<small>Name of path segment in URL</small>
+					</label>
+					<label class="lock">
+						<span>File</span>
+						<input type="text" name="file">
+						<small>Page markup <span class="path">frontend/markup/pages/</span></small>
+					</label>
+					<label>
+						<span>Target</span>
+						<input type="text" name="target" placeholder="main">
+						<small>Which content frame to load the page into</small>
+					</label>
+					<label>
+						<span>State</span>
+						<input type="text" name="state">
+						<small>A page state to activate</small>
+					</label>
+					<label>
+						<span>Conditions</span>
+						<textarea name="conditions" class="lined" spellcheck="false"></textarea>
+						<small>One condition per line</small>
+					</label>
+				</fieldset>
+				<fieldset>
+					<legend>Menu</legend>
+					<label>
+						<input type="checkbox" name="hidden" value="true">
+						<span>Hide in menu</span>
+					</label>
+					<label>
+						<span>Icon</span>
+						<input type="text" name="icon">
+						<small>Icon to display next to link in menus</small>
+					</label>
+					<label>
+						<span>Description</span>
+						<input type="text" name="description">
+						<small>Short description for menus</small>
+					</label>
+				</fieldset>
+				<fieldset>
+					<legend>SEO</legend>
+					<label>
+						<input type="checkbox" name="nofollow" value="true">
+						<span>Hide from search engines</span>
+					</label>
+					<label>
+						<span>Title</span>
+						<input type="text" name="seo_title">
+						<small>Specific page title</small>
+					</label>
+					<label>
+						<span>Description</span>
+						<textarea name="seo_description"></textarea>
+						<small>Specific page description</small>
+					</label>
+					<label>
+						<span>Keywords</span>
+						<input type="text" name="seo_keywords">
+						<small>Specific page keywords</small>
+					</label>
+					<label>
+						<span>Image URL</span>
+						<input type="text" name="seo_image_url">
+						<small>Specific page image</small>
+					</label>
+				</fieldset>
+				<footer>
+					<button type="submit" name="save" value="page">Save</button>
+				</footer>
+			</form>
+			<form action="sitemap" id="title" class="title">
+				<fieldset>
+					<legend>Title</legend>
+					<label>
+						<span>Title</span>
+						<input type="text" name="title">
+						<small>Visible in menus</small>
+					</label>
+					<label>
+						<span>Icon</span>
+						<input type="text" name="icon">
+						<small>Icon to display next to title in menus</small>
+					</label>
+					<label>
+						<span>Description</span>
+						<input type="text" name="description">
+						<small>Additional information</small>
+					</label>
+				</fieldset>
+				<footer>
+					<button type="submit" name="save" value="title">Save</button>
+				</footer>
+			</form>
+			<form action="sitemap" id="redirect" class="redirect">
+				<fieldset>
+					<legend>Redirect</legend>
+					<label>
+						<span>Uni</span>
+						<input type="text" name="uni">
+						<small>For reference in site menus and links</small>
+					</label>
+					<label>
+						<span>Title</span>
+						<input type="text" name="title">
+						<small>Visible in menus</small>
+					</label>
+					<label>
+						<span>Path</span>
+						<input type="text" name="path">
+						<small>Name of path segment in URL</small>
+					</label>
+					<label>
+						<span>Icon</span>
+						<input type="text" name="icon">
+						<small>Icon to display next to link in menus</small>
+					</label>
+					<label>
+						<span>Description</span>
+						<input type="text" name="description">
+						<small>Additional information</small>
+					</label>
+					<label>
+						<span>Destination</span>
+						<input type="text" name="destination">
+						<small>Uni or URL</small>
+					</label>
+					<label>
+						<span>Target</span>
+						<input type="text" name="target" placeholder="main">
+						<small>Which content frame to load the page into</small>
+					</label>
+					<label>
+						<input type="checkbox" name="permanent" value="true">
+						<span>Permanent redirect</span>
+					</label>
+				</fieldset>
+				<footer>
+					<button type="submit" name="save" value="redirect">Save</button>
+				</footer>
+			</form>
+			<form action="sitemap" id="element" class="element" data-type="element">
+				<fieldset>
+					<legend>Element</legend>
+					<label>
+						<span>Type</span>
+						<select id="element_type" name="button">
+							<option value="false" selected>This is an element</option>
+							<option value="true">This is a button</option>
+						</select>
+					</label>
+					<label>
+						<span>Uni</span>
+						<input type="text" name="uni">
+						<small class="contextual" data-element="Attribute of element" data-button="Value in signal"></small>
+					</label>
+					<label>
+						<span class="contextual" data-element="Element" data-button="Signal"></span>
+						<input type="text" name="element">
+						<small class="contextual" data-element="The element to use" data-button="The signal to send"></small>
+					</label>
+					<label class="contextual">
+						<span>Title</span>
+						<input type="text" name="title">
+						<small>The text on the button</small>
+					</label>
+					<label>
+						<span>Conditions</span>
+						<textarea name="conditions" class="lined" spellcheck="false"></textarea>
+						<small>One condition per line</small>
+					</label>
+				</fieldset>
+				<footer>
+					<button type="submit" name="save" value="element">Save</button>
+				</footer>
+			</form>
+		</div>
+	</section>
+	<section id="map" class="right"></section>
+</article>

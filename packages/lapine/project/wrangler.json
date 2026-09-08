@@ -1,0 +1,28 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "app-name",
+	"account_id": "",
+	"main": "backend/index.js",
+	"compatibility_date": "2026-01-16",
+	"compatibility_flags": [
+		"nodejs_compat",
+		"global_fetch_strictly_public"
+	],
+	"assets": {
+		"directory": "./frontend",
+		"binding": "ASSETS",
+		"run_worker_first": ["/api/*","/frontend/markup/*"],
+		"not_found_handling": "single-page-application"
+	},
+	"observability": {
+		"enabled": true
+	},
+	"placement": {
+		"mode": "smart"
+	},
+	"migrations": [],
+	"env": {
+		"development": {
+		}
+	}
+}

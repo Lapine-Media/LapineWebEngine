@@ -1,0 +1,37 @@
+
+:host([data-context="top"]) {
+	.environment {
+		display: none;
+	}
+}
+
+.bindings {
+	display: flex;
+	flex-direction: column;
+	background-color: var(--color-borders-darker);
+	border: 1px solid var(--color-borders);
+	border-radius: 4px;
+	height: 256px;
+	padding: 8px;
+	overflow: auto;
+	.binding {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		padding: 8px;
+		border-bottom: 1px solid var(--color-borders);
+		.icon {
+			display: flex;
+			align-items: center;
+		}
+		.details {
+			flex: 1;
+			small {
+				display: block;
+			}
+		}
+		&:last-of-type {
+			border-bottom: 0;
+		}
+	}
+}

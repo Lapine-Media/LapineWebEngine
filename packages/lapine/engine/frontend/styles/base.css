@@ -1,0 +1,131 @@
+
+@font-face {
+	font-family: 'Asap Black';
+	src: url('../fonts/Asap-Black.woff2') format('woff2'),
+		url('../fonts/Asap-Black.woff') format('woff');
+    font-style: normal;
+	font-weight: 900;
+}
+@font-face {
+	font-family: 'Asap Medium';
+	src: url('../fonts/Asap-Medium.woff2') format('woff2'),
+		url('../fonts/Asap-Medium.woff') format('woff');
+    font-style: normal;
+	font-weight: 600;
+}
+@font-face {
+	font-family: 'Roboto Mono Bold';
+	src: url('../fonts/RobotoMono-Bold.woff2') format('woff2'),
+		url('../fonts/RobotoMono-Bold.woff') format('woff');
+    font-style: normal;
+	font-weight: 600;
+}
+@font-face {
+	font-family: 'Roboto Mono Regular';
+	src: url('../fonts/RobotoMono-Regular.woff2') format('woff2'),
+		url('../fonts/RobotoMono-Regular.woff') format('woff');
+    font-style: normal;
+	font-weight: 400;
+}
+
+@keyframes stripes {
+	100% {
+		background-position: 181px 181px;
+	}
+}
+
+:root {
+	--color-accept: #00FF77;
+	--color-reject: #FF0022;
+	--color-danger: #FFCC22;
+	--color-inform: #00CCFF;
+
+	--color-background-1: #220022;
+	--color-background-2: #110022;
+	--color-background-3: #000011;
+	--color-background-4: #00000066;
+
+	--color-links: #0099FF;
+	--color-links-2: #66CCFF;
+	--color-borders: #550066;
+	--color-borders-light: #440055;
+	--color-borders-lighter: #330044;
+	--color-borders-dark: #220033;
+	--color-borders-darker: #220022;
+	--color-highlight: #FF00CC;
+	--color-highlight-dark: #CC00AA;
+	--color-disabled: #553377;
+
+	--color-idle-1: #77CC99;
+	--color-idle-2: #004444;
+	--color-log-background: #000f0f;
+
+	--color-notes-background: #000033;
+	--color-notes-foreground: #000066;
+
+	--color-white: #FFFFCC;
+	--color-orange: #FFCC88;
+	--color-orange-darker: #AA7744;
+	--color-blue: #9966FF;
+	--color-pink: #CC66CC;
+	--color-gray: #888877;
+	--color-nav: #0099FF11;
+	--color-nav-2: #0099FF33;
+	--color-nav-solid: #110033;
+
+	--color-red-light: #883355;
+	--color-red-dark: #330022;
+	--color-red-darker: #220011;
+
+	--gradient-background: linear-gradient(130deg, #220022 0%, #110022 50%, #110022 75%, #000011 100%);
+	--gradient-accept: repeating-linear-gradient(-45deg, transparent, transparent 8px, var(--color-accept) 8px, var(--color-accept) 16px);
+	--gradient-reject: repeating-linear-gradient(-45deg, transparent, transparent 8px, var(--color-reject) 8px, var(--color-reject) 16px);
+	--gradient-edited: repeating-linear-gradient(-45deg, transparent, transparent 8px, var(--color-highlight) 8px, var(--color-highlight) 16px);
+	--gradient-stripe: repeating-linear-gradient(-45deg, transparent, transparent 8px, var(--color-borders) 8px, var(--color-borders) 16px);
+
+	--animation-accept: stripes 8s linear infinite normal;
+	--animation-reject: stripes 8s linear infinite reverse;
+
+	--stripe-size: 181px 181px;
+
+}
+
+* {
+	outline: none;
+	box-sizing: border-box;
+	-webkit-font-smoothing: subpixel-antialiased;
+}
+*::-moz-selection {
+	background-color: var(--color-highligh);
+	color: var(--color-white);
+}
+*::selection {
+	background-color: var(--color-highligh);
+	color: var(--color-white);
+}
+
+*::-webkit-scrollbar {
+	height: 8px;
+	width: 8px;
+}
+*::-webkit-scrollbar-track {
+	border-radius: 0px;
+	background-color: var(--color-borders-dark);
+	border-left: 1px solid var(--color-borders);
+}
+*::-webkit-scrollbar-track:hover {
+	background-color: var(--color-borders-dark);
+}
+*::-webkit-scrollbar-track:active {
+	background-color: var(--color-borders-dark);
+}
+*::-webkit-scrollbar-thumb {
+	border-radius: 1px;
+	background-color: var(--color-borders);
+}
+*::-webkit-scrollbar-thumb:hover {
+	background-color: var(--color-highligh);
+}
+*::-webkit-scrollbar-thumb:active {
+	background-color: var(--color-highligh);
+}

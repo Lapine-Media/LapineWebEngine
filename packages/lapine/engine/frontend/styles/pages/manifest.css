@@ -1,0 +1,39 @@
+
+article {
+	display: flex;
+	overflow: hidden;
+	nav {
+		display: flex;
+		flex-direction: column;
+		align-items: start;
+		gap: 32px;
+		padding: 24px 16px;
+		background-color: var(--color-borders-dark);
+		border-right: 1px solid var(--color-borders);
+	}
+	section {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+		padding: 16px;
+		overflow: auto;
+		form {
+			display: none;
+			flex-direction: column;
+			gap: 16px;
+			width: 100%;
+			max-width: 640px;
+			margin: 0 auto 64px auto;
+		}
+	}
+	&[data-page="information"] section form.information,
+	&[data-page="appearance"]  section form.appearance,
+	&[data-page="urls"]  section form.urls,
+	&[data-page="protocols"]  section form.protocols,
+	&[data-page="shortcuts"]  section form.shortcuts,
+	&[data-page="icons"]  section form.icons,
+	&[data-page="screenshots"]  section form.screenshots {
+		display: flex;
+	}
+}

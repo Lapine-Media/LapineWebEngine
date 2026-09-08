@@ -1,0 +1,66 @@
+
+<link rel="stylesheet" href="styles/pages/project.css">
+<form id="project" action="project" hidden></form>
+
+<h2>Project</h2>
+
+<article class="project">
+	<section class="left">
+		<div class="details">
+			<div class="icon type"></div>
+			<div class="about">
+				<div class="title"><span id="project_title"></span> <span id="project_version"></span></div>
+				<div id="project_description" class="description"></div>
+			</div>
+			<div class="icon git"></div>
+		</div>
+		<form action="project">
+			<fieldset>
+				<legend>Settings</legend>
+				<div class="settings">
+					<button type="submit" form="project" name="edit" value="package">Package</button>
+					<button type="submit" form="project" name="edit" value="wrangler">Wrangler</button>
+					<button type="submit" form="project" name="edit" value="devvars">.dev.vars</button>
+				</div>
+			</fieldset>
+			<fieldset class="notes">
+				<legend>Notes</legend>
+				<label>
+					<span>/notes.txt</span>
+					<tab-textarea id="notes" name="notes"></tab-textarea>
+				</label>
+			</fieldset>
+			<footer>
+				<button type="submit" form="project" name="save" value="notes">Save</button>
+			</footer>
+		</form>
+	</section>
+	<section class="right">
+		<form action="project">
+			<fieldset form="project">
+				<legend>Scripts</legend>
+				<div id="project_scripts" class="list"></div>
+			</fieldset>
+			<fieldset form="project" id="project_actions">
+				<legend>Actions</legend>
+				<select-item name="confirm">
+					<optgroup label="Project">
+						<option value="project">Repair project</option>
+						<option value="prefix">Scan and prefix all CSS</option>
+						<option value="hashes">Create content hashes</option>
+						<option value="audit">Audit site</option>
+					</optgroup>
+					<optgroup label="Updates">
+						<option value="wrangler">Update Wrangler</option>
+						<option value="npm">Update NPM</option>
+						<option value="lapine">Update Lapine Web Engine</option>
+					</optgroup>
+				</select-item>
+			</fieldset>
+			<fieldset form="project">
+				<legend>Kits</legend>
+				<div id="kit_list" class="list"></div>
+			</fieldset>
+		</form>
+	</section>
+</article>

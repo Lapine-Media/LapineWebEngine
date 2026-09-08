@@ -1,0 +1,117 @@
+
+article {
+	display: flex;
+	gap: 16px;
+	padding: 16px;
+	overflow: auto;
+	section {
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+		flex: 1;
+		&.left {
+			.details {
+				display: flex;
+				column-gap: 8px;
+				align-items: center;
+				background-color: var(--color-orange);
+				color: #000000;
+				text-shadow: none;
+				padding: 4px;
+				border-radius: 24px;
+				height: 40px;
+				margin-bottom: 16px;
+
+				.icon {
+					width: 32px;
+					height: 32px;
+					background: url('../../graphics/logos.svg');
+					background-size: 128px;
+					border-radius: 16px;
+					background-color: #FFFFFF;
+				}
+				.git {
+					background-position: -168px -24px;
+					border: 4px solid #FFFFFF;
+					background-size: 96px;
+				}
+				.about {
+					flex: 1;
+
+					.title {
+						font-family: 'Asap Black';
+						font-size: 20px;
+					}
+					.description {
+						font-size: 12px;
+					}
+				}
+			}
+
+			form {
+				flex: 1;
+				.settings {
+					display: flex;
+					justify-content: center;
+					gap: 16px;
+				}
+				.notes {
+					flex: 1;
+					label {
+						flex-direction: column;
+						align-items: flex-start;
+
+						tab-textarea {
+							flex: 1;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+/*article.project .page {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	margin: auto;
+	padding: 16px;
+	width: 100%;
+	height: 100%;
+	max-width: 1024px;
+	column-gap: 16px;
+
+	& > div {
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+
+		& .settings {
+			justify-content: center;
+			gap: 16px;
+		}
+	}
+
+	& .left {
+
+		& form {
+			flex: 1;
+
+			& fieldset.notes {
+				flex: 1;
+
+				& label {
+					flex-direction: column;
+					align-items: flex-start;
+
+					& tab-textarea {
+						flex: 1;
+					}
+				}
+			}
+		}
+	}
+	& .right {
+
+	}
+}*/

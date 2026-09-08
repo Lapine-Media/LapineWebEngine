@@ -1,0 +1,84 @@
+
+<link rel="stylesheet" href="styles/cloudflare/bindings.css">
+
+<form id="binding" action="environments">
+	<fieldset>
+		<legend>D1 database</legend>
+		<div>
+			<small>For reference, see <a href="https://developers.cloudflare.com/workers/wrangler/configuration/#d1-databases" target="_blank">developers.cloudflare.com</a>.</small>
+		</div>
+		<label>
+			<span>Binding</span>
+			<input type="text" name="binding">
+			<small>Name of 'env.' binding property in the User Worker.</small>
+		</label>
+		<label>
+			<span>Database</span>
+			<select id="database" name="database"></select>
+			<small>The name of this D1 database.</small>
+		</label>
+		<label>
+			<span>Preview database</span>
+			<select id="preview" name="preview"></select>
+			<small>The UUID of this D1 database for Wrangler Dev.</small>
+		</label>
+		<label>
+			<span>Migrations table</span>
+			<input type="text" name="migrations_table" placeholder="d1_migrations">
+			<small>The name of the migrations table for this D1 database (defaults to 'd1_migrations').</small>
+		</label>
+		<label>
+			<span>Migrations directory</span>
+			<input type="text" name="migrations_dir" placeholder="./migrations">
+			<small>The path to the directory of migrations for this D1 database (defaults to './migrations').</small>
+		</label>
+		<label>
+			<input type="checkbox" name="remote" value="true">
+			<span>Remote</span>
+			<small>Whether the D1 database should be remote or not in local development.</small>
+		</label>
+	</fieldset>
+	<footer>
+		<input id="database_name" type="hidden" name="database_name" value="">
+		<input id="database_id" type="hidden" name="database_id" value="">
+		<input id="preview_database_id" type="hidden" name="preview_database_id" value="">
+
+		<input type="hidden" name="binding_environment" value="">
+		<input type="hidden" name="binding_path" value="d1_databases">
+		<input type="hidden" name="binding_type" value="array">
+
+		<button class="remove" type="submit" name="remove" value="binding">Remove</button>
+		<button class="save" type="submit" name="save" value="binding">Save</button>
+	</footer>
+</form>
+
+<script type="module" data-import="D1Databases">
+	const names = {};
+	const uuids = {};
+	const setup = async () => {
+		const databases = await D1Databases.getList();
+		const fragment = document.createDocumentFragment();
+		const options = entry => {
+			const element = document.createElement('option');
+			element.value = entry.name;
+			element.textContent = entry.name;
+			fragment.append(element);
+			uuids[entry.name] = entry.uuid;
+			names[entry.uuid] = entry.name;
+		}
+		databases.forEach(options);
+		const clone = fragment.cloneNode(true);
+		ViewContext.elements.database.append(fragment);
+		ViewContext.elements.preview.append(clone);
+		ViewContext.elements.database.value = ViewContext.elements.database_name.value;
+		ViewContext.elements.preview.value = names[ViewContext.elements.preview_database_id.value];
+	}
+	ViewContext.elements.database.onchange = event => {
+		ViewContext.elements.database_name.value = event.target.value;
+		ViewContext.elements.database_id.value = uuids[event.target.value];
+	}
+	ViewContext.elements.preview.onchange = event => {
+		ViewContext.elements.preview_database_id.value = uuids[event.target.value];
+	}
+	setup();
+</script>

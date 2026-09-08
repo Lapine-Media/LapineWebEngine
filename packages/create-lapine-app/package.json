@@ -1,0 +1,12 @@
+{
+	"name": "create-lapine-app",
+	"version": "1.0.8",
+	"bin": {
+		"create-lapine-app": "./index.js"
+	},
+	"type": "module",
+	"dependencies": {
+		"jsonc-simple-parser": "^3.0.0",
+		"prompts": "^2.4.2"
+	}
+}

@@ -1,0 +1,138 @@
+
+<link rel="stylesheet" href="styles/cloudflare/environments_edit.css">
+
+<form id="environment" class="environment" action="environments">
+	<fieldset>
+		<legend>Environment</legend>
+		<label>
+			<span>Name</span>
+			<input type="text" name="name">
+		</label>
+	</fieldset>
+	<footer>
+		<button type="submit" name="remove" value="environment">Remove</button>
+		<button type="submit" name="update" value="environment">Update</button>
+	</footer>
+</form>
+
+<form action="environments">
+	<fieldset>
+		<legend>Add binding</legend>
+		<div id="bindings" class="bindings"></div>
+	</fieldset>
+</form>
+
+<template id="binding">
+	<div class="binding">
+		<div class="icon">
+			<lapine-svg id="icon" as="cloudflare-icons"></lapine-svg>
+		</div>
+		<div class="details">
+			<a id="link" href="" target="_blank"></a>
+			<small id="description"></small>
+		</div>
+		<div class="button">
+			<button id="button" type="submit" name="bind" value="">Add</button>
+		</div>
+	</div>
+</template>
+
+<script type="module" data-import="Site">
+	const bindings = [
+		{
+			icon: 'ai',
+			href: 'https://developers.cloudflare.com/workers-ai/',
+			text: 'AI Project',
+			description: 'Connect your worker to machine learning models.',
+			value: 'ai'
+		},
+		{
+			icon: 'analytics_engine_datasets',
+			href: 'https://developers.cloudflare.com/analytics/analytics-engine/',
+			text: 'Analytics Engine',
+			description: 'Track and query your own data points.',
+			value: 'analytics_engine_datasets'
+		},
+		{
+			icon: 'workers',
+			href: 'https://developers.cloudflare.com/workers/static-assets/',
+			text: 'Static Assets',
+			description: 'Serve HTML, CSS, images and other files from your Worker.',
+			value: 'assets'
+		},
+		{
+			icon: 'd1_databases',
+			href: 'https://developers.cloudflare.com/d1/',
+			text: 'D1 Database',
+			description: 'Connect to an SQLite relational database.',
+			value: 'd1_databases'
+		},
+		{
+			icon: 'durable_objects',
+			href: 'https://developers.cloudflare.com/durable-objects/',
+			text: 'Durable Object',
+			description: 'Create collaborative applications with real-time interactions.',
+			value: 'durable_objects'
+		},
+		{
+			icon: 'workers',
+			href: 'https://developers.cloudflare.com/images/',
+			text: 'Images',
+			description: 'Store, transform, optimize, and deliver images at scale.',
+			value: 'images'
+		},
+		{
+			icon: 'kv_namespaces',
+			href: 'https://developers.cloudflare.com/kv/',
+			text: 'KV Namespace',
+			description: 'Simple non-relational key-value data storage.',
+			value: 'kv_namespaces'
+		},
+		{
+			icon: 'queues',
+			href: 'https://developers.cloudflare.com/queues/',
+			text: 'Queue Producer',
+			description: 'Send messages with guaranteed delivery, using batching, retries and delays.',
+			value: 'queues.producers'
+		},
+		{
+			icon: 'queues',
+			href: 'https://developers.cloudflare.com/queues/',
+			text: 'Queue Consumer',
+			description: 'Receive messages from a Queue Producer.',
+			value: 'queues.consumers'
+		},
+		{
+			icon: 'r2_buckets',
+			href: 'https://developers.cloudflare.com/r2/',
+			text: 'R2 Bucket',
+			description: 'Store large amounts of unstructured data.',
+			value: 'r2_buckets'
+		},
+		{
+			icon: 'workers',
+			href: 'https://developers.cloudflare.com/workers/runtime-apis/bindings/service-bindings/',
+			text: 'Service',
+			description: 'Fast Worker-to-Worker communication using JavaScript.',
+			value: 'services'
+		},
+		{
+			icon: 'workers',
+			href: 'https://developers.cloudflare.com/workers/configuration/environment-variables/',
+			text: 'Environment variables',
+			description: 'Attach text strings or JSON values to your Worker.',
+			value: 'vars'
+		}
+	];
+	const fragment = document.createDocumentFragment();
+	for (const binding of bindings) {
+		const template = await Site.getTemplate('binding');
+		template.link.href = binding.href;
+		template.link.textContent = binding.text;
+		template.description.textContent = binding.description;
+		template.button.value = binding.value;
+		template.icon.setAttribute('use',binding.icon);
+		fragment.append(template.fragment);
+	}
+	Site.elements[ViewContext.name].bindings.append(fragment);
+</script>

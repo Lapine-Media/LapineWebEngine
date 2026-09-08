@@ -1,0 +1,28 @@
+
+@import '../common.css';
+@import '../forms.css';
+
+:host {
+	display: block;
+}
+.container {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+	label {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+		width: 100%;
+		span {
+			color: var(--color-orange);
+			font-family: 'Asap Black';
+		}
+		small {
+			font-size: 12px;
+			margin: 0;
+			width: 100%;
+			padding-left: 4px;
+		}
+	}
+}

@@ -1,0 +1,78 @@
+
+@import '../common.css';
+@import '../forms.css';
+
+:host {
+	display: block;
+	.container {
+		display: flex;
+		gap: 8px;
+		padding: 8px;
+		border: 1px solid var(--color-borders);
+		background-color: var(--color-borders-light);
+		border-radius: 4px;
+		cursor: pointer;
+		transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+		.icon {
+			display: flex;
+			align-items: center;
+		}
+		.details {
+			font-size: 12px;
+			font-family: 'Asap Medium';
+			color: var(--color-orange);
+			transition: color 0.3s;
+			.type {
+
+			}
+			.binding {
+				font-family: 'Asap Black';
+				font-size: 18px;
+				& span {
+					color: var(--color-white);
+				}
+			}
+			.name {
+				color: var(--color-white);
+			}
+		}
+		& > * {
+			pointer-events: none;
+		}
+		&:hover {
+			background-color: var(--color-highlight);
+			color: var(--color-white);
+			border: 1px solid var(--color-highlight);
+			.icon lapine-svg {
+				box-shadow: 0 0 8px var(--color-white);
+				fill: var(--color-highlight);
+				background-color: var(--color-white);
+			}
+			.details {
+				color: var(--color-white);
+			}
+		}
+	}
+}
+
+:host([disabled]) {
+	pointer-events: none;
+	.container {
+		color: var(--color-white);
+		background-color: var(--color-highlight-dark);
+		background-size: var(--stripe-size);
+		background-image: var(--gradient-edited);
+		animation: var(--animation-reject);
+
+		border: 1px solid var(--color-highlight);
+		.icon svg {
+			box-shadow: 0 0 8px var(--color-white);
+			fill: var(--color-highlight);
+			background-color: var(--color-white);
+		}
+		.details {
+			color: var(--color-white);
+		}
+	}
+
+}
